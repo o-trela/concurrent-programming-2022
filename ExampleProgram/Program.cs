@@ -6,7 +6,7 @@ class ExampleClass
 {
     public static void Main()
     {
-        Console.WriteLine("Test");
+        Console.WriteLine("Program Test");
         Console.ReadKey();
     }
 }
