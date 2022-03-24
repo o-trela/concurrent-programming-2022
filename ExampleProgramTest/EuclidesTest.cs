@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ExampleProgram;
+using System;
 
 namespace ExampleProgramTest;
 
@@ -7,16 +8,23 @@ namespace ExampleProgramTest;
 public class EuclidesTest
 {
     [TestMethod]
-    public void TestGCD()
+    public void EuclidesGCDCalculatedCorrectly()
     {
         int a = 22;
         int b = 33;
-        int expectedGCD = 11;
 
-        var euclidean = new Euclidean(); 
+        int expected = 11;
+        int acutal = Euclidean.GCD(a, b);
 
-        int acutalGCD = euclidean.GCD(a, b);
+        Assert.AreEqual(expected, acutal);
+    }
 
-        Assert.AreEqual(acutalGCD, expectedGCD);
+    [TestMethod]
+    public void EuclidesGCDThrowsArgumentException()
+    {
+        int a = 0;
+        int b = 0;
+
+        Assert.ThrowsException<ArgumentException>(() => Euclidean.GCD(a, b));
     }
 }
