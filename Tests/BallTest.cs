@@ -36,12 +36,8 @@ namespace Tests
         public void SetAttributesTest()
         {
             int diff = 1;
-            int newRadius = _testRadius + diff;
             int newXPos = _testXPos + diff;
             int newYPos = _testYPos + diff;
-
-            _testBall.Radius = newRadius;
-            Assert.AreEqual(newRadius, _testBall.Radius);
             
             _testBall.PosX = newXPos;
             Assert.AreEqual(newXPos, _testBall.PosX);
