@@ -1,41 +1,40 @@
-﻿namespace Logic
+﻿namespace Logic;
+
+public class BallManager
 {
-    public class BallManager
+    private readonly int _boardHeight;
+    private readonly int _boardWidth;
+    private readonly int _ballRadius;
+    private readonly Random _rand;
+    
+    private Ball[] balls;
+
+    public BallManager(int boardHeight, int boardWidth, int ballRadius)
     {
-        private int _boardHeight;
-        private int _boardWidth;
-        private int _ballRadius;
-        private Ball[] balls;
+        _boardHeight = boardHeight;
+        _boardWidth = boardWidth;
+        _ballRadius = ballRadius;
+        _rand = new Random();
+    }
 
-        public BallManager(int boardHeight, int boardWidth, int ballRadius)
+    public Ball[] RandomBallCreation(int count)
+    {
+        balls = new Ball[count];
+
+        for (var i = 0; i < count; i++)
         {
-            _boardHeight = boardHeight;
-            _boardWidth = boardWidth;
-            _ballRadius = ballRadius;
+            var (x, y) = GetRandomPos();
+            balls[i] = new(_ballRadius, x, y);
         }
 
-        public Ball[] RandomBallCreation(int count)
-        {
-            balls = new Ball[count];
-            int x, y;
+        return balls;
+    }
 
-            for (int i = 0; i < count; i++)
-            {
-                (x, y) = GetRandomPos();
-                balls[i] = new(_ballRadius, x, y);
-            }
+    private (int x, int y) GetRandomPos()
+    {
+        int x = _rand.Next(0 + _ballRadius, _boardWidth - _ballRadius);
+        int y = _rand.Next(0 + _ballRadius, _boardHeight - _ballRadius);
 
-            return balls;
-        }
-
-        private (int, int) GetRandomPos()
-        {
-            Random rand = Random.Shared;
-
-            int x = rand.Next(0 + _ballRadius, _boardWidth - _ballRadius);
-            int y = rand.Next(0 + _ballRadius, _boardHeight - _ballRadius);
-
-            return (x, y);
-        }
+        return (x, y);
     }
 }
