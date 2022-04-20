@@ -1,5 +1,5 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BallSimulator.Logic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BallSimulator.Tests
 {
@@ -15,7 +15,7 @@ namespace BallSimulator.Tests
         public BallTest()
         {
             _testXPos = 5;
-            _testYPos = 5;  
+            _testYPos = 5;
             _testRadius = 2;
 
             _testBall = new Ball(_testRadius, _testXPos, _testYPos);
@@ -37,7 +37,7 @@ namespace BallSimulator.Tests
             int diff = 1;
             int newXPos = _testXPos + diff;
             int newYPos = _testYPos + diff;
-            
+
             _testBall.PosX = newXPos;
             Assert.AreEqual(newXPos, _testBall.PosX);
 

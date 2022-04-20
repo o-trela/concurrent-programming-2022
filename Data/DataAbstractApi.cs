@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BallSimulator.Data
+﻿namespace BallSimulator.Data
 {
     public abstract class DataAbstractApi
     {

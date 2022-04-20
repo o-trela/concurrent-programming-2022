@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using BallSimulator.Logic;
+﻿using BallSimulator.Logic;
 
 namespace BallSimulator.Presentation.Model
 {
@@ -11,8 +7,7 @@ namespace BallSimulator.Presentation.Model
         private readonly Ball _ball;
 
         public int Radius => _ball.Radius;
-        public int PosX => _ball.PosX;
-        public int PosY => _ball.PosY;
+        public Vector2 Position => _ball.Position;
         public float Speed => _ball.Speed;
         public float Direction => _ball.Direction;
 
