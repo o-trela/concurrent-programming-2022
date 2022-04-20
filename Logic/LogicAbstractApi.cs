@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BallSimulator.Logic
+﻿namespace BallSimulator.Logic
 {
     public abstract class LogicAbstractApi
     {

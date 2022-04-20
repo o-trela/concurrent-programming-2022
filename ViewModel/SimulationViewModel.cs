@@ -1,36 +1,33 @@
-﻿using System;
+﻿using BallSimulator.Presentation.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-
-using BallSimulator.Presentation.Model;
 
 namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase
     {
-        private readonly ObservableCollection<BallModel> _balls;
-        private LogicModel _logic = Logic;
-
         public IEnumerable<BallModel> Balls => _balls;
 
+        private readonly ObservableCollection<BallModel> _balls;
+        private readonly LogicModel _logic;
         private int _ballsCount;
+
+        public SimulationViewModel(LogicModel logic)
+        {
+            _logic = logic;
+        }
 
         public int BallsCount
         {
             get => _ballsCount;
-
-            set 
-            { 
+            set
+            {
                 _ballsCount = value;
                 OnPropertyChanged(nameof(BallsCount));
             }
-                 
+
         }
 
         public CommandBase StartSimulation { get; }
-
-
-
     }
 }

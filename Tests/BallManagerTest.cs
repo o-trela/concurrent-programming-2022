@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BallSimulator.Logic;
+﻿using BallSimulator.Logic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BallSimulator.Tests
 {
