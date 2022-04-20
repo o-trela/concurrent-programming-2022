@@ -8,8 +8,7 @@ namespace BallSimulator.Presentation.Model
 
         public int Radius => _ball.Radius;
         public Vector2 Position => _ball.Position;
-        public float Speed => _ball.Speed;
-        public float Direction => _ball.Direction;
+        public Vector2 Speed => _ball.Speed;
 
         public BallModel(Ball ball)
         {

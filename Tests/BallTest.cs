@@ -8,6 +8,8 @@ namespace BallSimulator.Tests
     {
         readonly int _testXPos;
         readonly int _testYPos;
+        readonly float _testXSpeed;
+        readonly float _testYSpeed;
         readonly int _testRadius;
 
         readonly Ball _testBall;
@@ -16,9 +18,14 @@ namespace BallSimulator.Tests
         {
             _testXPos = 5;
             _testYPos = 5;
+            _testXSpeed = 0.2f;
+            _testYSpeed = -0.1f;
             _testRadius = 2;
 
-            _testBall = new Ball(_testRadius, _testXPos, _testYPos);
+            Vector2 position = new Vector2(_testXPos, _testYPos);
+            Vector2 speed = new Vector2(_testXSpeed, _testYSpeed);
+
+            _testBall = new Ball(_testRadius, position, speed);
         }
 
         [TestMethod]

@@ -4,20 +4,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace BallSimulator.Tests
 {
     [TestClass]
-    public class BallManagerTest
+    public class SimulationManagerTest
     {
         readonly int _testRadius;
         readonly int _testHeight;
         readonly int _testWidth;
-        readonly BallManager _ballManager;
+        readonly SimulationManager _ballManager;
+        private Board _board;
 
-        public BallManagerTest()
+        public SimulationManagerTest()
         {
             _testRadius = 2;
             _testHeight = 100;
             _testWidth = 100;
+            _board = new Board(_testHeight, _testWidth);
 
-            _ballManager = new BallManager(_testHeight, _testWidth, _testRadius);
+            _ballManager = new SimulationManager(_board, _testRadius);
         }
 
         [TestMethod]

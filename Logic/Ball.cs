@@ -8,14 +8,15 @@ namespace BallSimulator.Logic
         public Vector2 Position { get; set; }
         public Vector2 Speed { get; set; }
 
-        public Ball(int radius, int posX, int posY)
-            : this(radius, new Vector2(posX, posY))
+        public Ball(int radius, int posX, int posY, float speedX, float speedY)
+            : this(radius, new Vector2(posX, posY), new Vector2(speedX, speedY))
         { }
 
-        public Ball(int radius, Vector2 position)
+        public Ball(int radius, Vector2 position, Vector2 speed)
         {
             Radius = radius;
             Position = position;
+            Speed = speed;
         }
 
         public void Move(float strength)

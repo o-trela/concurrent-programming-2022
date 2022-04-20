@@ -2,21 +2,27 @@
 
 namespace BallSimulator.Logic
 {
-    public class BallManager
+    public class SimulationManager
     {
-        private readonly int _boardHeight;
-        private readonly int _boardWidth;
+        private readonly Board _board;
         private readonly int _ballRadius;
         private readonly Random _rand;
 
         private Ball[] balls;
 
-        public BallManager(int boardHeight, int boardWidth, int ballRadius)
+        public SimulationManager(Board board, int ballRadius)
         {
-            _boardHeight = boardHeight;
-            _boardWidth = boardWidth;
+            _board = board;
             _ballRadius = ballRadius;
             _rand = new Random();
+        }
+
+        public void PushBalls(float strength = 0.1f)
+        {
+            foreach (var ball in balls)
+            {
+                ball.Move(strength);
+            }
         }
 
         public Ball[] RandomBallCreation(int count)
@@ -25,8 +31,9 @@ namespace BallSimulator.Logic
 
             for (var i = 0; i < count; i++)
             {
-                var (x, y) = GetRandomPos();
-                balls[i] = new Ball(_ballRadius, x, y);
+                var (posX, posY) = GetRandomPos();
+                var (speedX, speedY) = GetRandomSpeed();
+                balls[i] = new Ball(_ballRadius, posX, posY, speedX, speedY);
             }
 
             return balls;
@@ -34,10 +41,18 @@ namespace BallSimulator.Logic
 
         private (int x, int y) GetRandomPos()
         {
-            int x = _rand.Next(0 + _ballRadius, _boardWidth - _ballRadius);
-            int y = _rand.Next(0 + _ballRadius, _boardHeight - _ballRadius);
+            int x = _rand.Next(0 + _ballRadius, _board.Width - _ballRadius);
+            int y = _rand.Next(0 + _ballRadius, _board.Height - _ballRadius);
 
             return (x, y);
+        }
+
+        private (float x, float y) GetRandomSpeed()
+        {
+            double x = _rand.NextDouble() * 2 - 1;
+            double y = _rand.NextDouble() * 2 - 1;
+
+            return  ((float) x, (float) y);
         }
     }
 }
