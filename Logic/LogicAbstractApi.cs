@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
+using BallSimulator.Data;
+
 namespace BallSimulator.Logic
 {
     public abstract class LogicAbstractApi
     {
-        public static LogicAbstractApi CreateApi()
+        protected LogicAbstractApi CreateLogicApi(DataAbstractApi data = default)
         {
-            return new BallManager(100, 200, 2);
+            return new LogicApi(data ?? DataAbstractApi.CreateDataApi());
         }
     }
 }
