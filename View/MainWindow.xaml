@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="480" Width="820">
     <Grid Background="#FF5A65FF">
-        <Button Content="Start" FontSize="30" HorizontalAlignment="Left" Height="50" Margin="10,374,0,0" VerticalAlignment="Top" Width="130"/>
+        <Button Command="{Binding StartSimulation}" Content="Start" FontSize="30" HorizontalAlignment="Left" Height="50" Margin="10,374,0,0" VerticalAlignment="Top" Width="130"/>
         <TextBox x:Name="Balls_Amount" HorizontalAlignment="Left" Height="20" Margin="35,317,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Background="Gainsboro" TextAlignment="Center" Tag="Amount"/>
         <Rectangle HorizontalAlignment="Left" Height="434" Margin="150,0,0,0" Stroke="#FFFFA2A2" VerticalAlignment="Center" Width="650" StrokeThickness="10">
             <Rectangle.Fill>

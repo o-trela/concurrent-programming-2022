@@ -7,9 +7,10 @@ using BallSimulator.Presentation.Model;
 
 namespace BallSimulator.Presentation.ViewModel
 {
-    internal class SimulationViewModel : ViewModelBase
+    public class SimulationViewModel : ViewModelBase
     {
         private readonly ObservableCollection<BallModel> _balls;
+        private LogicModel _logic = Logic;
 
         public IEnumerable<BallModel> Balls => _balls;
 
@@ -26,6 +27,10 @@ namespace BallSimulator.Presentation.ViewModel
             }
                  
         }
+
+        public CommandBase StartSimulation { get; }
+
+
 
     }
 }
