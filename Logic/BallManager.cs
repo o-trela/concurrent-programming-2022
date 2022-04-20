@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logic
+namespace BallSimulator.Logic
 {
     public class BallManager
     {

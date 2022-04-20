@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ViewModel
+namespace BallSimulator.Presentation.ViewModel
 {
     public class Class1
     {

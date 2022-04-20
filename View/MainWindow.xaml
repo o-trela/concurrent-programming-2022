@@ -5,8 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="MainWindow" Height="480" Width="820">
+    <Grid Background="#FF5A65FF">
+        <Button Content="Start" FontSize="30" HorizontalAlignment="Left" Height="50" Margin="10,374,0,0" VerticalAlignment="Top" Width="130"/>
+        <TextBox x:Name="Balls_Amount" HorizontalAlignment="Left" Height="20" Margin="35,317,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Background="Gainsboro" TextAlignment="Center" Tag="Amount"/>
+        <Rectangle HorizontalAlignment="Left" Height="434" Margin="150,0,0,0" Stroke="#FFFFA2A2" VerticalAlignment="Center" Width="650" StrokeThickness="10">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF751500"/>
+                    <GradientStop Color="#FFFF4015" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Border HorizontalAlignment="Left" Height="434" Margin="150,0,0,0" VerticalAlignment="Center" Width="650" >
+            <Ellipse Margin="275,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Height="50">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="Black"/>
+                        <GradientStop Color="#FF8200B5"/>
+                        <GradientStop Color="#FFA500E6"/>
+                        <GradientStop Color="#FFB700FF" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Border>
     </Grid>
 </Window>

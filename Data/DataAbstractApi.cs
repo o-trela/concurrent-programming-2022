@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Data
+namespace BallSimulator.Data
 {
     public abstract class DataAbstractApi
     {

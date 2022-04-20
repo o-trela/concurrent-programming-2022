@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using BallSimulator.Logic;
 
-using Logic;
-
-namespace Tests
+namespace BallSimulator.Tests
 {
     [TestClass]
     public class BallManagerTest

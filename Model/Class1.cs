@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Model
+namespace BallSimulator.Presentation.Model
 {
     public class Class1
     {
