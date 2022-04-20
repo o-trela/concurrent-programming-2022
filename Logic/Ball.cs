@@ -1,4 +1,4 @@
-﻿namespace Logic
+﻿namespace BallSimulator.Logic
 {
     public class Ball
     {
