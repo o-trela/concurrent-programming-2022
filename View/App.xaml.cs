@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace View
+namespace BallSimulator.Presentation.View
 {
     /// <summary>
     /// Interaction logic for App.xaml
