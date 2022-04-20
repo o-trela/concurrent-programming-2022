@@ -2,7 +2,7 @@
 
 namespace BallSimulator.Logic
 {
-    public class BallManager : LogicAbstractApi
+    public class BallManager
     {
         private readonly int _boardHeight;
         private readonly int _boardWidth;
