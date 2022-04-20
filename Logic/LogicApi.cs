@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BallSimulator.Data;
+﻿using BallSimulator.Data;
 
 namespace BallSimulator.Logic
 {
@@ -9,7 +6,7 @@ namespace BallSimulator.Logic
     {
         private readonly DataAbstractApi _data;
 
-        public LogicApi(DataAbstractApi data) 
+        public LogicApi(DataAbstractApi data)
         {
             _data = data;
         }

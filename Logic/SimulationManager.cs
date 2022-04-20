@@ -52,7 +52,7 @@ namespace BallSimulator.Logic
             double x = _rand.NextDouble() * 2 - 1;
             double y = _rand.NextDouble() * 2 - 1;
 
-            return  ((float) x, (float) y);
+            return ((float)x, (float)y);
         }
     }
 }

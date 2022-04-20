@@ -7,7 +7,7 @@ namespace BallSimulator.Presentation.ViewModel
     public class SimulationViewModel : ViewModelBase
     {
         public IEnumerable<BallModel> Balls => _balls;
-        
+
         private readonly ObservableCollection<BallModel> _balls;
         private readonly LogicModel _logic;
         private int _ballsCount;
