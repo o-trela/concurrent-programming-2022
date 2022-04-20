@@ -18,7 +18,7 @@ namespace Tests
             _testHeight = 100;
             _testWidth = 100;
 
-            _ballManager = new(_testHeight, _testWidth, _testRadius);
+            _ballManager = new BallManager(_testHeight, _testWidth, _testRadius);
         }
 
         [TestMethod]

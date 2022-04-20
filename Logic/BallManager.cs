@@ -1,40 +1,43 @@
-﻿namespace Logic;
+﻿using System;
 
-public class BallManager
+namespace Logic
 {
-    private readonly int _boardHeight;
-    private readonly int _boardWidth;
-    private readonly int _ballRadius;
-    private readonly Random _rand;
-    
-    private Ball[] balls;
-
-    public BallManager(int boardHeight, int boardWidth, int ballRadius)
+    public class BallManager
     {
-        _boardHeight = boardHeight;
-        _boardWidth = boardWidth;
-        _ballRadius = ballRadius;
-        _rand = new Random();
-    }
+        private readonly int _boardHeight;
+        private readonly int _boardWidth;
+        private readonly int _ballRadius;
+        private readonly Random _rand;
 
-    public Ball[] RandomBallCreation(int count)
-    {
-        balls = new Ball[count];
+        private Ball[] balls;
 
-        for (var i = 0; i < count; i++)
+        public BallManager(int boardHeight, int boardWidth, int ballRadius)
         {
-            var (x, y) = GetRandomPos();
-            balls[i] = new(_ballRadius, x, y);
+            _boardHeight = boardHeight;
+            _boardWidth = boardWidth;
+            _ballRadius = ballRadius;
+            _rand = new Random();
         }
 
-        return balls;
-    }
+        public Ball[] RandomBallCreation(int count)
+        {
+            balls = new Ball[count];
 
-    private (int x, int y) GetRandomPos()
-    {
-        int x = _rand.Next(0 + _ballRadius, _boardWidth - _ballRadius);
-        int y = _rand.Next(0 + _ballRadius, _boardHeight - _ballRadius);
+            for (var i = 0; i < count; i++)
+            {
+                var (x, y) = GetRandomPos();
+                balls[i] = new Ball(_ballRadius, x, y);
+            }
 
-        return (x, y);
+            return balls;
+        }
+
+        private (int x, int y) GetRandomPos()
+        {
+            int x = _rand.Next(0 + _ballRadius, _boardWidth - _ballRadius);
+            int y = _rand.Next(0 + _ballRadius, _boardHeight - _ballRadius);
+
+            return (x, y);
+        }
     }
 }
