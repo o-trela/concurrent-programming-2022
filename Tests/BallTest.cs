@@ -26,8 +26,8 @@ namespace BallSimulator.Tests
         {
             Assert.IsNotNull(_testBall);
 
-            Assert.AreEqual(_testBall.PosX, _testXPos);
-            Assert.AreEqual(_testBall.PosY, _testYPos);
+            Assert.AreEqual((int)_testBall.Position.X, _testXPos);
+            Assert.AreEqual((int)_testBall.Position.Y, _testYPos);
             Assert.AreEqual(_testBall.Radius, _testRadius);
         }
 
@@ -37,12 +37,10 @@ namespace BallSimulator.Tests
             int diff = 1;
             int newXPos = _testXPos + diff;
             int newYPos = _testYPos + diff;
+            Vector2 newPos = new Vector2(newXPos, newYPos);
 
-            _testBall.PosX = newXPos;
-            Assert.AreEqual(newXPos, _testBall.PosX);
-
-            _testBall.PosY = newYPos;
-            Assert.AreEqual(newYPos, _testBall.PosY);
+            _testBall.Position = newPos;
+            Assert.AreEqual(newPos, _testBall.Position);
         }
     }
 }

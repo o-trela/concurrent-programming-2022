@@ -1,5 +1,4 @@
-﻿
-using BallSimulator.Logic;
+﻿using BallSimulator.Logic;
 
 namespace BallSimulator.Presentation.Model
 {
@@ -9,7 +8,7 @@ namespace BallSimulator.Presentation.Model
 
         public LogicModel(LogicAbstractApi logic = default)
         {
-            _logic = logic ?? LogicAbstractApi.CreateApi();
+            _logic = logic ?? LogicAbstractApi.CreateLogicApi();
         }
     }
 }

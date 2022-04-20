@@ -40,8 +40,8 @@ namespace BallSimulator.Tests
             {
                 Assert.IsNotNull(b);
                 Assert.AreEqual(_testRadius, b.Radius);
-                Assert.IsTrue(IsBallBetween(b.PosX, 0, _testWidth));
-                Assert.IsTrue(IsBallBetween(b.PosY, 0, _testHeight));
+                Assert.IsTrue(IsBallBetween((int)b.Position.X, 0, _testWidth));
+                Assert.IsTrue(IsBallBetween((int)b.Position.Y, 0, _testHeight));
                 counter++;
             }
             Assert.AreEqual(ballNumber, counter);

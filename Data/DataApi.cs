@@ -1,6 +1,6 @@
 ﻿namespace BallSimulator.Data
 {
-    internal class DataApi : DataAbstractApi
+    public class DataApi : DataAbstractApi
     {
 
     }

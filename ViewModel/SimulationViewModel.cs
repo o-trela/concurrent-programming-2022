@@ -15,6 +15,7 @@ namespace BallSimulator.Presentation.ViewModel
         public SimulationViewModel(LogicModel logic)
         {
             _logic = logic;
+            _balls = new ObservableCollection<BallModel>();
         }
 
         public int BallsCount
