@@ -7,7 +7,7 @@ namespace BallSimulator.Presentation.Model
     {
         private readonly LogicAbstractApi _logic;
 
-        public LogicModel(LogicAbstractApi logic = null)
+        public LogicModel(LogicAbstractApi logic = default)
         {
             _logic = logic ?? LogicAbstractApi.CreateApi();
         }
