@@ -79,6 +79,12 @@ namespace BallSimulator.Logic
             return $"[{X}, {Y}]";
         }
 
+        public void Deconstruct(out float x, out float y)
+        {
+            x = X;
+            y = Y;
+        }
+
         public override bool Equals(object obj)
         {
             return obj is Vector2 vector &&
