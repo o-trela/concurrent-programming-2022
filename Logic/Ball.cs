@@ -4,7 +4,7 @@ namespace BallSimulator.Logic
 {
     public class Ball
     {
-        public int Radius { get; private set; }
+        public int Radius { get; }
         public Vector2 Position { get; set; }
         public Vector2 Speed { get; set; }
 
