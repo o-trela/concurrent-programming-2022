@@ -1,4 +1,4 @@
-﻿using BallSimulator.Presentation.Model;
+using BallSimulator.Presentation.Model;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
