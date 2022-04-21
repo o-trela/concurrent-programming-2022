@@ -18,7 +18,7 @@ namespace BallSimulator.Logic
 
         public static LogicAbstractApi CreateLogicApi(DataAbstractApi data = default)
         {
-            return new LogicApi(data ?? DataAbstractApi.CreateDataApi());
+            return new SimulationController(data ?? DataAbstractApi.CreateDataApi());
         }
     }
 }

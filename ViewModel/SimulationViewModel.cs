@@ -8,7 +8,7 @@ namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase
     {
-        private ObservableCollection<BallViewModel> _balls;
+        private ObservableCollection<BallModel> _balls;
         private readonly LogicModel _logic;
         private readonly IValidator<int> _ballsCountValidator;
         private int _ballsCount = 10;
@@ -36,7 +36,7 @@ namespace BallSimulator.Presentation.ViewModel
                 OnPropertyChanged(nameof(IsSimulationRunning));
             }
         }
-        public IEnumerable<BallViewModel> Balls => _balls; //change to IEnumerable
+        public IEnumerable<BallModel> Balls => _balls; //change to IEnumerable
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
@@ -67,19 +67,8 @@ namespace BallSimulator.Presentation.ViewModel
 
         public void UpdateBalls(IEnumerable<BallModel> ballModels)
         {
-            IEnumerable<BallViewModel> ballViewModels = MapBallModelToBallViewModel(ballModels);
-            _balls = new ObservableCollection<BallViewModel>(ballViewModels);
+            _balls = new ObservableCollection<BallModel>(ballModels);
             OnPropertyChanged(nameof(Balls));
-        }
-
-        public IEnumerable<BallViewModel> MapBallModelToBallViewModel(IEnumerable<BallModel> ballModels)
-        {
-            List<BallViewModel> result = new List<BallViewModel>();
-            foreach (BallModel ball in ballModels)
-            {
-                result.Add(new BallViewModel(ball));
-            }
-            return result;
         }
     }
 }

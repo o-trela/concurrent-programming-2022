@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BallSimulator.Logic
 {
-    internal class LogicApi : LogicAbstractApi
+    internal class SimulationController : LogicAbstractApi
     {
         public override Ball[] Balls => _simulationManager.Balls;
 
@@ -13,7 +13,7 @@ namespace BallSimulator.Logic
 
         private bool _running = false;
 
-        public LogicApi(DataAbstractApi data = default)
+        public SimulationController(DataAbstractApi data = default)
         {
             _data = data ?? DataAbstractApi.CreateDataApi();
             _simulationManager = new SimulationManager(new Board(_data.BoardHeight, _data.BoardWidth), _data.BallRadius);
