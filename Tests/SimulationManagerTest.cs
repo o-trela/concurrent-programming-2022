@@ -31,20 +31,16 @@ namespace BallSimulator.Tests
             {
                 Assert.IsNotNull(b);
                 Assert.AreEqual(TestRadius, b.Radius);
-                Assert.IsTrue(IsBallBetween((int)b.Position.X, 0, TestWidth));
-                Assert.IsTrue(IsBallBetween((int)b.Position.Y, 0, TestHeight));
+                Assert.IsTrue(IsBallBetween(b.Position.X, 0, TestWidth));
+                Assert.IsTrue(IsBallBetween(b.Position.Y, 0, TestHeight));
                 counter++;
             }
             Assert.AreEqual(ballNumber, counter);
         }
 
-        private bool IsBallBetween(int value, int bottom, int top)
+        private static bool IsBallBetween(float value, float bottom, float top)
         {
-            if (value < top - TestRadius && value > bottom + TestRadius)
-            {
-                return true;
-            }
-            return false;
+            return value <= top - TestRadius && value >= bottom + TestRadius;
         }
     }
 }

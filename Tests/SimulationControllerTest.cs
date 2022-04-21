@@ -9,7 +9,7 @@ namespace BallSimulator.Tests
     [TestClass]
     public class SimulationControllerTests
     {
-        readonly LogicAbstractApi controller;
+        private readonly LogicAbstractApi controller;
 
         public SimulationControllerTests()
         {
@@ -32,7 +32,6 @@ namespace BallSimulator.Tests
             Thread.Sleep(100);
             controller.StopSimulation();
             Assert.AreNotEqual(controller.Balls[0].Position.X, xPos);
-
         }
     }
 }
