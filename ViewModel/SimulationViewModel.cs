@@ -30,19 +30,19 @@ namespace BallSimulator.Presentation.ViewModel
         public bool IsSimulationRunning
         {
             get => _isSimulationRunning;
-            set
+            private set
             {
                 _isSimulationRunning = value;
                 OnPropertyChanged(nameof(IsSimulationRunning));
             }
         }
-        public IEnumerable<BallModel> Balls => _balls; //change to IEnumerable
+        public IEnumerable<BallModel> Balls => _balls;
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
         public SimulationViewModel(ModelApi model = default, IValidator<int> ballsCountValidator = default)
         {
-            _logic = model ?? ModelApi.CreateLogicModelApi();
+            _logic = model ?? ModelApi.CreateModelApi();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
 
             StartSimulationCommand = new StartSimulationCommand(this);
@@ -65,8 +65,9 @@ namespace BallSimulator.Presentation.ViewModel
             _logic.Stop();
         }
 
-        public void UpdateBalls(IEnumerable<BallModel> ballModels)
+        public void UpdateBalls(IEnumerable<BallModel> ballModels = default)
         {
+            if (ballModels is null) ballModels = new List<BallModel>();
             _balls = new ObservableCollection<BallModel>(ballModels);
             OnPropertyChanged(nameof(Balls));
         }
