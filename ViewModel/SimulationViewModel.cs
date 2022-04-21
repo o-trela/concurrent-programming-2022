@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
+using BallSimulator.Logic;
+
 namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase
     {
-        private readonly ObservableCollection<BallViewModel> _balls;
+        private ObservableCollection<BallModel> _balls;
         private readonly LogicModel _logic;
         private readonly IValidator<int> _ballsCountValidator;
         private int _ballsCount = 1;
@@ -36,7 +38,7 @@ namespace BallSimulator.Presentation.ViewModel
                 OnPropertyChanged(nameof(IsSimulationRunning));
             }
         }
-        public IEnumerable<BallViewModel> Balls => _balls;
+        public IList<BallModel> Balls => _balls;
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
@@ -45,21 +47,31 @@ namespace BallSimulator.Presentation.ViewModel
             _logic = logic ?? new LogicModel();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
 
-            _balls = new ObservableCollection<BallViewModel>();
+            _balls = new ObservableCollection<BallModel>();
             StartSimulationCommand = new StartSimulationCommand(this);
             StopSimulationCommand = new StopSimulationCommand(this);
+            _logic.SetObserver(UpdateBalls);
         }
 
         public void StartSimulation()
         {
             IsSimulationRunning = true;
             Trace.WriteLine("Simulation Started");
+            _logic.SpawnBalls(10);
+            _logic.Start();
         }
 
         public void StopSimulation()
         {
             IsSimulationRunning = false;
             Trace.WriteLine("Simulation Stopped");
+            _logic.Stop();
+        }
+
+        public void UpdateBalls(IEnumerable<BallModel> ballModels)
+        {
+            _balls = new ObservableCollection<BallModel>(ballModels);
+            Trace.WriteLine(Balls[0].Position.ToString());
         }
     }
 }

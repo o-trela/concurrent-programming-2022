@@ -1,29 +1,50 @@
 ﻿using BallSimulator.Logic;
+using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
-    public class LogicModel
+    public class LogicModel : LogicModelApi
     {
         private readonly LogicAbstractApi _logic;
+        public IEnumerable<BallModel> _ballModels => MapBallToBallModel();
 
         public LogicModel(LogicAbstractApi logic = default)
         {
             _logic = logic ?? LogicAbstractApi.CreateLogicApi();
+            _logic.SetObserver(NotifyUpdate);
         }
 
-        public void SpawnBalls(int count)
+        public override void SpawnBalls(int count)
         {
             _logic.CreateBalls(count);
         }
 
-        public void Start()
+        public override void Start()
         {
             _logic.StartSimulation();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             _logic.StopSimulation();
+        }
+
+        public override void NotifyUpdate()
+        {
+            _observer.Invoke(_ballModels);
+        }
+        
+        public override IEnumerable<BallModel> MapBallToBallModel()
+        {
+            List<BallModel> result = new List<BallModel>();
+            foreach (Ball ball in _logic.GetBalls()) {
+                result.Add(new BallModel(ball));
+            }
+            return result;
+        }
+        public override void SetObserver(Observer modelObserver)
+        {
+            _observer = modelObserver;
         }
     }
 }
