@@ -34,5 +34,13 @@ namespace BallSimulator.Logic
                 Speed = new Vector2(Speed.X, -Speed.Y);
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Ball ball &&
+                   Radius == ball.Radius &&
+                   Position == ball.Position &&
+                   Speed == ball.Speed;
+        }
     }
 }
