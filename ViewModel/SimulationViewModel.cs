@@ -5,17 +5,18 @@ using System.Collections.ObjectModel;
 namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase
-    {
-        public IEnumerable<BallModel> Balls => _balls;
-
-        private readonly ObservableCollection<BallModel> _balls;
+    { 
+        public ObservableCollection<BallModel> _balls;
         private readonly LogicModel _logic;
         private int _ballsCount;
 
-        public SimulationViewModel(LogicModel logic)
+        public IEnumerable<BallModel> Balls => _balls;
+
+        public SimulationViewModel(LogicModel logic = default)
         {
-            _logic = logic;
+            _logic = logic ?? new LogicModel();
             _balls = new ObservableCollection<BallModel>();
+            _ballsCount = 10;
         }
 
         public int BallsCount
@@ -27,6 +28,17 @@ namespace BallSimulator.Presentation.ViewModel
                 OnPropertyChanged(nameof(BallsCount));
             }
 
+        }
+
+        private void StartHandler()
+        {
+            _logic.SpawnBalls(BallsCount);
+            _logic.Start();
+            foreach (BallModel ball in _balls)
+            {
+                _balls.Add(ball);
+            }
+            OnPropertyChanged(nameof(_balls));
         }
 
         public CommandBase StartSimulation { get; }

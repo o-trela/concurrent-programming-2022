@@ -8,7 +8,7 @@ namespace BallSimulator.Logic
         private readonly int _ballRadius;
         private readonly Random _rand;
 
-        private Ball[] balls;
+        public Ball[] Balls { get; private set; }
 
         public SimulationManager(Board board, int ballRadius)
         {
@@ -19,7 +19,7 @@ namespace BallSimulator.Logic
 
         public void PushBalls(float strength = 0.1f)
         {
-            foreach (var ball in balls)
+            foreach (var ball in Balls)
             {
                 ball.Move(strength);
             }
@@ -27,16 +27,16 @@ namespace BallSimulator.Logic
 
         public Ball[] RandomBallCreation(int count)
         {
-            balls = new Ball[count];
+            Balls = new Ball[count];
 
             for (var i = 0; i < count; i++)
             {
                 var (posX, posY) = GetRandomPos();
                 var (speedX, speedY) = GetRandomSpeed();
-                balls[i] = new Ball(_ballRadius, posX, posY, speedX, speedY);
+                Balls[i] = new Ball(_ballRadius, posX, posY, speedX, speedY);
             }
 
-            return balls;
+            return Balls;
         }
 
         private (int x, int y) GetRandomPos()
