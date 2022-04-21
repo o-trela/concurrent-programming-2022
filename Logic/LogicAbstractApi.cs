@@ -5,6 +5,7 @@ namespace BallSimulator.Logic
     public abstract class LogicAbstractApi
     {
         protected Observer _observer;
+        public abstract Ball[] Balls { get; }
 
         public delegate void Observer();
         public abstract void NotifyUpdate();
@@ -14,7 +15,6 @@ namespace BallSimulator.Logic
         public abstract void InvokeSimulation();
         public abstract void StartSimulation();
         public abstract void StopSimulation();
-        public abstract Ball[] GetBalls();
 
         public static LogicAbstractApi CreateLogicApi(DataAbstractApi data = default)
         {

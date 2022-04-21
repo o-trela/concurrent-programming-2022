@@ -6,39 +6,22 @@ namespace BallSimulator.Logic
 {
     internal class LogicApi : LogicAbstractApi
     {
+        public override Ball[] Balls => _simulationManager.Balls;
+
         private readonly DataAbstractApi _data;
         private readonly SimulationManager _simulationManager;
 
-        private bool _run;
+        private bool _running = false;
 
-        public LogicApi(DataAbstractApi data)
+        public LogicApi(DataAbstractApi data = default)
         {
-            _data = data;
-
-            Board board = new Board(430, 630);
-            _simulationManager = new SimulationManager(board, 10);
-
-            _run = false;
+            _data = data ?? DataAbstractApi.CreateDataApi();
+            _simulationManager = new SimulationManager(new Board(_data.BoardHeight, _data.BoardWidth), _data.BallRadius);
         }
 
         public override void CreateBalls(int count)
         {
             _simulationManager.RandomBallCreation(count);
-        }
-
-        public override Ball[] GetBalls()
-        {
-            return _simulationManager.Balls;
-        }
-
-        public override void InvokeSimulation()
-        {
-            while (_run)
-            {
-                _simulationManager.PushBalls();
-                NotifyUpdate();
-                Thread.Sleep(10);
-            }
         }
 
         public override void NotifyUpdate()
@@ -48,16 +31,26 @@ namespace BallSimulator.Logic
 
         public override void StartSimulation()
         {
-            if (!_run)
+            if (!_running)
             {
-                _run = true;
+                _running = true;
                 Task.Run(InvokeSimulation);
             }
         }
 
         public override void StopSimulation()
         {
-            if (_run) _run = false;
+            if (_running) _running = false;
+        }
+
+        public override void InvokeSimulation()
+        {
+            while (_running)
+            {
+                _simulationManager.PushBalls();
+                NotifyUpdate();
+                Thread.Sleep(10);
+            }
         }
 
         public override void SetObserver(Observer observer)

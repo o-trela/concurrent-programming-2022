@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BallSimulator.Presentation.View"
         xmlns:views="clr-namespace:BallSimulator.Presentation.View.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="480" Width="820">
+        Title="MainWindow" Height="490" Width="820">
     <Grid Background="#FF5A65FF">
         <views:SimulationsWindow DataContext="{Binding CurrentViewModel}"/>
     </Grid>
