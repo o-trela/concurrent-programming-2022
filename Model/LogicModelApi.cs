@@ -1,9 +1,5 @@
-﻿using System;
+﻿using BallSimulator.Logic;
 using System.Collections.Generic;
-using System.Text;
-
-using BallSimulator.Logic;
-using BallSimulator.Presentation.Model;
 
 namespace BallSimulator.Presentation.Model
 {

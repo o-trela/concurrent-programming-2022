@@ -1,5 +1,5 @@
-﻿using System;
-using BallSimulator.Logic;
+﻿using BallSimulator.Logic;
+using System;
 
 namespace BallSimulator.Presentation.Model
 {

@@ -32,6 +32,38 @@ namespace BallSimulator.Logic
             return xDifference * xDifference + yDifference * yDifference;
         }
 
+        public override string ToString()
+        {
+            return $"[{X}, {Y}]";
+        }
+
+        public void Deconstruct(out float x, out float y)
+        {
+            x = X;
+            y = Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vector2 vector
+                && Equals(vector);
+        }
+
+        public bool Equals(Vector2 other)
+        {
+            float xDiff = X - other.X;
+            float yDiff = Y - other.Y;
+            return xDiff * xDiff + yDiff * yDiff < 9.99999944E-11f;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1861411795;
+            hashCode = hashCode * -1521134295 + X.GetHashCode();
+            hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            return hashCode;
+        }
+
         public static Vector2 operator +(Vector2 lhs, Vector2 rhs)
         {
             return new Vector2
@@ -102,38 +134,6 @@ namespace BallSimulator.Logic
         public static bool operator !=(Vector2 lhs, Vector2 rhs)
         {
             return !(lhs == rhs);
-        }
-
-        public override string ToString()
-        {
-            return $"[{X}, {Y}]";
-        }
-
-        public void Deconstruct(out float x, out float y)
-        {
-            x = X;
-            y = Y;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Vector2 vector
-                && Equals(vector);
-        }
-
-        public bool Equals(Vector2 other)
-        {
-            float xDiff = X - other.X;
-            float yDiff = Y - other.Y;
-            return xDiff * xDiff + yDiff * yDiff < 9.99999944E-11f;
-        }
-
-        public override int GetHashCode()
-        {
-            int hashCode = 1861411795;
-            hashCode = hashCode * -1521134295 + X.GetHashCode();
-            hashCode = hashCode * -1521134295 + Y.GetHashCode();
-            return hashCode;
         }
     }
 }

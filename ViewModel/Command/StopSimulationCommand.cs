@@ -15,7 +15,7 @@ namespace BallSimulator.Presentation.ViewModel
 
         public override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) 
+            return base.CanExecute(parameter)
                 && _simulationViewModel.IsSimulationRunning;
         }
 

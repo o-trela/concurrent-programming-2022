@@ -1,5 +1,5 @@
-﻿using BallSimulator.Presentation.Model;
-using BallSimulator.Logic;
+﻿using BallSimulator.Logic;
+using BallSimulator.Presentation.Model;
 
 namespace BallSimulator.Presentation.ViewModel
 {

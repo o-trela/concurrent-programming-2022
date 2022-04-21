@@ -33,11 +33,12 @@ namespace BallSimulator.Presentation.Model
         {
             _observer.Invoke(_ballModels);
         }
-        
+
         public override IEnumerable<BallModel> MapBallToBallModel()
         {
             List<BallModel> result = new List<BallModel>();
-            foreach (Ball ball in _logic.GetBalls()) {
+            foreach (Ball ball in _logic.GetBalls())
+            {
                 result.Add(new BallModel(ball));
             }
             return result;

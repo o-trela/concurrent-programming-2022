@@ -21,7 +21,7 @@ namespace BallSimulator.Logic
         {
             foreach (var ball in Balls)
             {
-                ball.Move(strength);
+                ball.Move(_board.xBoundry, _board.yBoundry, strength);
             }
         }
 
@@ -43,14 +43,13 @@ namespace BallSimulator.Logic
         {
             int x = _rand.Next(0 + _ballRadius, _board.Width - _ballRadius);
             int y = _rand.Next(0 + _ballRadius, _board.Height - _ballRadius);
-
             return (x, y);
         }
 
         private (float x, float y) GetRandomSpeed()
         {
-            double x = _rand.NextDouble() * 2 - 1;
-            double y = _rand.NextDouble() * 2 - 1;
+            double x = _rand.NextDouble() * 20 - 10;
+            double y = _rand.NextDouble() * 20 - 10;
 
             return ((float)x, (float)y);
         }
