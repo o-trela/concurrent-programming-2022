@@ -1,46 +1,65 @@
-﻿using BallSimulator.Presentation.Model;
+using BallSimulator.Presentation.Model;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase
-    { 
-        public ObservableCollection<BallModel> _balls;
+    {
+        private readonly ObservableCollection<BallViewModel> _balls;
         private readonly LogicModel _logic;
-        private int _ballsCount;
-
-        public IEnumerable<BallModel> Balls => _balls;
-
-        public SimulationViewModel(LogicModel logic = default)
-        {
-            _logic = logic ?? new LogicModel();
-            _balls = new ObservableCollection<BallModel>();
-            _ballsCount = 10;
-        }
+        private readonly IValidator<int> _ballsCountValidator;
+        private int _ballsCount = 1;
+        private bool _isSimulationRunning = false;
 
         public int BallsCount
         {
             get => _ballsCount;
             set
             {
-                _ballsCount = value;
-                OnPropertyChanged(nameof(BallsCount));
+                if (_ballsCountValidator.IsValid(value))
+                {
+                    _ballsCount = value;
+                    OnPropertyChanged(nameof(BallsCount));
+                }
+                else _ballsCount = 1;
             }
-
         }
-
-        private void StartHandler()
+        public bool IsSimulationRunning
         {
-            _logic.SpawnBalls(BallsCount);
-            _logic.Start();
-            foreach (BallModel ball in _balls)
+            get => _isSimulationRunning;
+            set
             {
-                _balls.Add(ball);
+                _isSimulationRunning = value;
+                OnPropertyChanged(nameof(IsSimulationRunning));
             }
-            OnPropertyChanged(nameof(_balls));
+        }
+        public IEnumerable<BallViewModel> Balls => _balls;
+        public ICommand StartSimulationCommand { get; }
+        public ICommand StopSimulationCommand { get; }
+
+        public SimulationViewModel(LogicModel logic = default, IValidator<int> ballsCountValidator = default)
+        {
+            _logic = logic ?? new LogicModel();
+            _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
+
+            _balls = new ObservableCollection<BallViewModel>();
+            StartSimulationCommand = new StartSimulationCommand(this);
+            StopSimulationCommand = new StopSimulationCommand(this);
         }
 
-        public CommandBase StartSimulation { get; }
+        public void StartSimulation()
+        {
+            IsSimulationRunning = true;
+            Trace.WriteLine("Simulation Started");
+        }
+
+        public void StopSimulation()
+        {
+            IsSimulationRunning = false;
+            Trace.WriteLine("Simulation Stopped");
+        }
     }
 }
