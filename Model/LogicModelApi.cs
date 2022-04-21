@@ -11,7 +11,6 @@ namespace BallSimulator.Presentation.Model
     {
         protected Observer _observer;
 
-
         public delegate void Observer(IEnumerable<BallModel> ballModels);
         public abstract void NotifyUpdate();
         public abstract void SetObserver(Observer observer);

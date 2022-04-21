@@ -43,7 +43,7 @@ namespace BallSimulator.Presentation.ViewModel
                 OnPropertyChanged(nameof(IsSimulationRunning));
             }
         }
-        public IList<BallModel> Balls => _balls; //change to IEnumerable
+        public IList<BallViewModel> Balls => _balls; //change to IEnumerable
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
@@ -76,7 +76,7 @@ namespace BallSimulator.Presentation.ViewModel
             StopSimulationCommand = new StopSimulationCommand(this);
             _logic.SetObserver(UpdateBalls);
 
-            StartPrevSimulation();
+            //StartPrevSimulation();
         }
 
         private void StartPrevSimulation()
@@ -118,8 +118,20 @@ namespace BallSimulator.Presentation.ViewModel
 
         public void UpdateBalls(IEnumerable<BallModel> ballModels)
         {
-            _balls = new ObservableCollection<BallModel>(ballModels);
-            //Trace.WriteLine(Balls[0].Position.ToString());
+            IEnumerable<BallViewModel> ballViewModels = MapBallModelToBallViewModel(ballModels);
+            _balls = new ObservableCollection<BallViewModel>(ballViewModels);
+            OnPropertyChanged(nameof(Balls));
+            Trace.WriteLine(Balls[0].Position.ToString());
+        }
+
+        public IEnumerable<BallViewModel> MapBallModelToBallViewModel(IEnumerable<BallModel> ballModels)
+        {
+            List<BallViewModel> result = new List<BallViewModel>();
+            foreach (BallModel ball in ballModels)
+            {
+                result.Add(new BallViewModel(ball));
+            }
+            return result;
         }
     }
 }

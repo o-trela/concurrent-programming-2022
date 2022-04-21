@@ -1,5 +1,6 @@
 ﻿using BallSimulator.Data;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BallSimulator.Logic
@@ -16,7 +17,7 @@ namespace BallSimulator.Logic
             _data = data;
 
             Board board = new Board(100, 100);
-            _simulationManager = new SimulationManager(board, 2);
+            _simulationManager = new SimulationManager(board, 10);
 
             _run = false;
         }
@@ -37,6 +38,7 @@ namespace BallSimulator.Logic
             {
                 _simulationManager.PushBalls();
                 NotifyUpdate();
+                Thread.Sleep(10);
             }
         }
 
