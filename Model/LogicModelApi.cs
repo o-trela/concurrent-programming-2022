@@ -16,9 +16,9 @@ namespace BallSimulator.Presentation.Model
         public abstract void Stop();
         public abstract IEnumerable<BallModel> MapBallToBallModel();
 
-        public static LogicModel CreateLogicModelApi(LogicAbstractApi logic = default)
+        public static LogicModel CreateLogicModelApi(LogicApi logic = default)
         {
-            return new LogicModel(logic ?? LogicAbstractApi.CreateLogicApi());
+            return new LogicModel(logic ?? LogicApi.CreateLogicApi());
         }
     }
 }

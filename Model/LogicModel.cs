@@ -5,12 +5,12 @@ namespace BallSimulator.Presentation.Model
 {
     public class LogicModel : LogicModelApi
     {
-        private readonly LogicAbstractApi _logic;
+        private readonly LogicApi _logic;
         public IEnumerable<BallModel> _ballModels => MapBallToBallModel();
 
-        public LogicModel(LogicAbstractApi logic = default)
+        public LogicModel(LogicApi logic = default)
         {
-            _logic = logic ?? LogicAbstractApi.CreateLogicApi();
+            _logic = logic ?? LogicApi.CreateLogicApi();
             _logic.SetObserver(NotifyUpdate);
         }
 
