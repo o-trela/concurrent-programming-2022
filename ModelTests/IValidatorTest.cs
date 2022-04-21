@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BallSimulator.Presentation.Model;
+﻿using BallSimulator.Presentation.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ModelTests
 {

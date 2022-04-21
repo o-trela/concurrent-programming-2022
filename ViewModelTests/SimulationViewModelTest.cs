@@ -1,7 +1,6 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BallSimulator.Presentation.ViewModel;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel;
-using System.Collections.Generic;
 
 namespace ViewModelTests
 {
