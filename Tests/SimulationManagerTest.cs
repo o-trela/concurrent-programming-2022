@@ -6,21 +6,10 @@ namespace BallSimulator.Tests
     [TestClass]
     public class SimulationManagerTest
     {
-        readonly int _testRadius;
-        readonly int _testHeight;
-        readonly int _testWidth;
-        readonly SimulationManager _ballManager;
-        private Board _board;
-
-        public SimulationManagerTest()
-        {
-            _testRadius = 2;
-            _testHeight = 100;
-            _testWidth = 100;
-            _board = new Board(_testHeight, _testWidth);
-
-            _ballManager = new SimulationManager(_board, _testRadius);
-        }
+        private const int TestRadius = 2;
+        private const int TestHeight = 100;
+        private const int TestWidth = 100;
+        private readonly SimulationManager _ballManager = new SimulationManager(new Board(TestHeight, TestWidth), TestRadius);
 
         [TestMethod]
         public void ConstructorTest()
@@ -41,9 +30,9 @@ namespace BallSimulator.Tests
             foreach (Ball b in balls)
             {
                 Assert.IsNotNull(b);
-                Assert.AreEqual(_testRadius, b.Radius);
-                Assert.IsTrue(IsBallBetween((int)b.Position.X, 0, _testWidth));
-                Assert.IsTrue(IsBallBetween((int)b.Position.Y, 0, _testHeight));
+                Assert.AreEqual(TestRadius, b.Radius);
+                Assert.IsTrue(IsBallBetween((int)b.Position.X, 0, TestWidth));
+                Assert.IsTrue(IsBallBetween((int)b.Position.Y, 0, TestHeight));
                 counter++;
             }
             Assert.AreEqual(ballNumber, counter);
@@ -51,7 +40,7 @@ namespace BallSimulator.Tests
 
         private bool IsBallBetween(int value, int bottom, int top)
         {
-            if (value < top - _testRadius && value > bottom + _testRadius)
+            if (value < top - TestRadius && value > bottom + TestRadius)
             {
                 return true;
             }

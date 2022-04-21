@@ -20,7 +20,7 @@ namespace BallSimulator.Logic
             Y = y;
         }
 
-        public static float Distnace(Vector2 point1, Vector2 point2)
+        public static float Distance(Vector2 point1, Vector2 point2)
         {
             return (float)Math.Sqrt(DistanceSquared(point1, point2));
         }
