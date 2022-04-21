@@ -7,12 +7,15 @@ using BallSimulator.Logic;
 using System;
 using System.Threading;
 
+using BallSimulator.Logic;
+
 namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase
     {
         private readonly List<BallViewModel> _ballsList;
         private ObservableCollection<BallViewModel> _balls;
+        
         private readonly LogicModel _logic;
         private readonly IValidator<int> _ballsCountValidator;
         private int _ballsCount = 1;
@@ -40,7 +43,7 @@ namespace BallSimulator.Presentation.ViewModel
                 OnPropertyChanged(nameof(IsSimulationRunning));
             }
         }
-        public IEnumerable<BallViewModel> Balls => _balls;
+        public IList<BallModel> Balls => _balls; //change to IEnumerable
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
@@ -48,7 +51,7 @@ namespace BallSimulator.Presentation.ViewModel
         {
             _logic = logic ?? new LogicModel();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
-
+            
             _ballsList = new List<BallViewModel>
             {
                 new BallViewModel(
@@ -71,6 +74,7 @@ namespace BallSimulator.Presentation.ViewModel
             _balls = new ObservableCollection<BallViewModel>(_ballsList);
             StartSimulationCommand = new StartSimulationCommand(this);
             StopSimulationCommand = new StopSimulationCommand(this);
+            _logic.SetObserver(UpdateBalls);
 
             StartPrevSimulation();
         }
@@ -101,12 +105,21 @@ namespace BallSimulator.Presentation.ViewModel
         {
             IsSimulationRunning = true;
             Trace.WriteLine("Simulation Started");
+            _logic.SpawnBalls(10);
+            _logic.Start();
         }
 
         public void StopSimulation()
         {
             IsSimulationRunning = false;
             Trace.WriteLine("Simulation Stopped");
+            _logic.Stop();
+        }
+
+        public void UpdateBalls(IEnumerable<BallModel> ballModels)
+        {
+            _balls = new ObservableCollection<BallModel>(ballModels);
+            Trace.WriteLine(Balls[0].Position.ToString());
         }
     }
 }

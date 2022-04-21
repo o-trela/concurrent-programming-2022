@@ -1,12 +1,14 @@
 ﻿using BallSimulator.Data;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace BallSimulator.Logic
 {
-    public class LogicApi : LogicAbstractApi
+    internal class LogicApi : LogicAbstractApi
     {
         private readonly DataAbstractApi _data;
         private readonly SimulationManager _simulationManager;
+        private Observer _observer;
 
         private bool _run;
 
@@ -25,12 +27,23 @@ namespace BallSimulator.Logic
             _simulationManager.RandomBallCreation(count);
         }
 
+        public override Ball[] GetBalls()
+        {
+            return _simulationManager.Balls;
+        }
+
         public override void InvokeSimulation()
         {
             while (_run)
             {
                 _simulationManager.PushBalls();
+                NotifyChange();
             }
+        }
+
+        public override void NotifyChange()
+        {
+            _observer.Invoke();
         }
 
         public override void StartSimulation()
@@ -45,6 +58,11 @@ namespace BallSimulator.Logic
         public override void StopSimulation()
         {
             if (_run) _run = false;
+        }
+
+        public override void SetObserver(Observer observer)
+        {
+            _observer = observer;
         }
     }
 }
