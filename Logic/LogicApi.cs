@@ -8,7 +8,6 @@ namespace BallSimulator.Logic
     {
         private readonly DataAbstractApi _data;
         private readonly SimulationManager _simulationManager;
-        private Observer _observer;
 
         private bool _run;
 
@@ -37,11 +36,11 @@ namespace BallSimulator.Logic
             while (_run)
             {
                 _simulationManager.PushBalls();
-                NotifyChange();
+                NotifyUpdate();
             }
         }
 
-        public override void NotifyChange()
+        public override void NotifyUpdate()
         {
             _observer.Invoke();
         }

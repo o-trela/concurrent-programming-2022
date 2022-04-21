@@ -71,7 +71,7 @@ namespace BallSimulator.Presentation.ViewModel
         public void UpdateBalls(IEnumerable<BallModel> ballModels)
         {
             _balls = new ObservableCollection<BallModel>(ballModels);
-            Trace.WriteLine(Balls[0].Position.ToString());
+            //Trace.WriteLine(Balls[0].Position.ToString());
         }
     }
 }

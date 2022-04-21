@@ -42,9 +42,9 @@ namespace BallSimulator.Presentation.Model
             }
             return result;
         }
-        public override void SetObserver(Observer modelObserver)
+        public override void SetObserver(Observer observer)
         {
-            _observer = modelObserver;
+            _observer = observer;
         }
     }
 }

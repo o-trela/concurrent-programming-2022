@@ -14,7 +14,7 @@ namespace BallSimulator.Presentation.Model
 
         public delegate void Observer(IEnumerable<BallModel> ballModels);
         public abstract void NotifyUpdate();
-        public abstract void SetObserver(Observer modelObserver);
+        public abstract void SetObserver(Observer observer);
 
         public abstract void SpawnBalls(int count);
         public abstract void Start();
