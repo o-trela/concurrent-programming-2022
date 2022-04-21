@@ -4,8 +4,10 @@ namespace BallSimulator.Logic
 {
     public abstract class LogicAbstractApi
     {
+        protected Observer _observer;
+
         public delegate void Observer();
-        public abstract void NotifyChange();
+        public abstract void NotifyUpdate();
         public abstract void SetObserver(Observer observer);
 
         public abstract void CreateBalls(int count);
