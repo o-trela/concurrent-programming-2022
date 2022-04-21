@@ -1,5 +1,4 @@
-﻿
-using BallSimulator.Logic;
+﻿using BallSimulator.Logic;
 
 namespace Model
 {

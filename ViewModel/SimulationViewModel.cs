@@ -9,7 +9,7 @@ namespace BallSimulator.Presentation.ViewModel
     public class SimulationViewModel : ViewModelBase
     {
         private ObservableCollection<BallModel> _balls;
-        private readonly LogicModel _logic;
+        private readonly ModelApi _logic;
         private readonly IValidator<int> _ballsCountValidator;
         private int _ballsCount = 10;
         private bool _isSimulationRunning = false;
@@ -40,9 +40,9 @@ namespace BallSimulator.Presentation.ViewModel
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
-        public SimulationViewModel(LogicModel logic = default, IValidator<int> ballsCountValidator = default)
+        public SimulationViewModel(ModelApi model = default, IValidator<int> ballsCountValidator = default)
         {
-            _logic = logic ?? new LogicModel();
+            _logic = model ?? ModelApi.CreateLogicModelApi();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
 
             StartSimulationCommand = new StartSimulationCommand(this);

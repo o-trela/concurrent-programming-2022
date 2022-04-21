@@ -21,7 +21,7 @@ namespace BallSimulator.Logic
         {
             foreach (var ball in Balls)
             {
-                ball.Move(_board.xBoundry, _board.yBoundry, strength);
+                ball.Move(_board.XBoundry, _board.YBoundry, strength);
             }
         }
 

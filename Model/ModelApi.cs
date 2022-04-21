@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
-    public abstract class LogicModelApi
+    public abstract class ModelApi
     {
         protected Observer _observer;
 
@@ -16,9 +16,9 @@ namespace BallSimulator.Presentation.Model
         public abstract void Stop();
         public abstract IEnumerable<BallModel> MapBallToBallModel();
 
-        public static LogicModel CreateLogicModelApi(LogicAbstractApi logic = default)
+        public static ModelApi CreateLogicModelApi(LogicAbstractApi logic = default)
         {
-            return new LogicModel(logic ?? LogicAbstractApi.CreateLogicApi());
+            return new Model(logic ?? LogicAbstractApi.CreateLogicApi());
         }
     }
 }

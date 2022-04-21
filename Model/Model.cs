@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
-    public class LogicModel : LogicModelApi
+    internal class Model : ModelApi
     {
         private readonly LogicAbstractApi _logic;
         public IEnumerable<BallModel> _ballModels => MapBallToBallModel();
 
-        public LogicModel(LogicAbstractApi logic = default)
+        public Model(LogicAbstractApi logic = default)
         {
             _logic = logic ?? LogicAbstractApi.CreateLogicApi();
             _logic.SetObserver(NotifyUpdate);
