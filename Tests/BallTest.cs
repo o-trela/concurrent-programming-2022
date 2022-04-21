@@ -1,5 +1,6 @@
 using BallSimulator.Logic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace BallSimulator.Tests
 {
@@ -48,6 +49,46 @@ namespace BallSimulator.Tests
 
             _testBall.Position = newPos;
             Assert.AreEqual(newPos, _testBall.Position);
+        }
+
+        [TestMethod]
+        public void MoveTest()
+        {
+            Vector2 boundX = new Vector2(0, 100);
+            Vector2 boundY = new Vector2(0, 100);
+            Vector2 speed = new Vector2(-2.5f, 0);
+
+            _testBall.Speed = speed;
+
+            _testBall.Move(boundX, boundY, 1);
+            Assert.AreEqual(_testBall.Position.X, _testXPos - 2.5);
+
+            _testBall.Move(boundX, boundY, 1);
+            _testBall.Move(boundX, boundY, 1);
+            _testBall.Move(boundX, boundY, 1);
+
+            Assert.AreEqual(_testBall.Speed.X, -speed.X);
+
+            speed = new Vector2(0, -2.5f);
+            _testBall.Speed = speed;
+
+            _testBall.Move(boundX, boundY, 1);
+            Assert.AreEqual(_testBall.Position.Y, _testYPos - 2.5);
+
+            _testBall.Move(boundX, boundY, 1);
+            _testBall.Move(boundX, boundY, 1);
+            _testBall.Move(boundX, boundY, 1);
+
+            Assert.AreEqual(_testBall.Speed, -speed);
+
+            Assert.ThrowsException<ArgumentException>(() => _testBall.Move(boundX, boundY, 2));
+        }
+
+        [TestMethod]
+        public void EqualTest()
+        {
+            Ball newBall = _testBall;
+            Assert.AreEqual(_testBall, newBall);
         }
     }
 }
