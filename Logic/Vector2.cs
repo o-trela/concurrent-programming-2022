@@ -10,8 +10,6 @@ namespace BallSimulator.Logic
         public static readonly Vector2 Down = new Vector2(0f, -1f);
         public static readonly Vector2 Left = new Vector2(-1f, 0f);
         public static readonly Vector2 Right = new Vector2(1f, 0f);
-        public static readonly Vector2 PositiveInfinity = new Vector2(Single.PositiveInfinity, Single.PositiveInfinity);
-        public static readonly Vector2 negativeInfinity = new Vector2(Single.NegativeInfinity, Single.NegativeInfinity);
 
         public float X { get; set; }
         public float Y { get; set; }

@@ -2,14 +2,14 @@
 {
     public static class Extension
     {
-        public static bool Between(this float f, float a, float b)
+        public static bool Between(this float value, float min, float max)
         {
-            return (f > a) && (f < b);
+            return (value >= min) && (value <= max);
         }
 
-        public static bool Between(this int f, int a, int b)
+        public static bool Between(this int value, int min, int max)
         {
-            return (f > a) && (f < b);
+            return (value >= min) && (value <= max);
         }
     }
 }

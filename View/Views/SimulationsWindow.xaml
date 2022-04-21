@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:BallSimulator.Presentation.View.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#FF5A65FF">
+    <Canvas Background="#FF5A65FF">
         <TextBox 
             x:Name="Balls_Amount" 
             HorizontalAlignment="Left" 
@@ -37,39 +37,49 @@
             Margin="10,375,0,0" 
             VerticalAlignment="Top"
             />
-        <Rectangle 
-            HorizontalAlignment="Left" 
-            Height="434" Width="650" 
-            Margin="150,0,0,0" 
-            Stroke="#FFFFA2A2" 
-            VerticalAlignment="Center" 
-            StrokeThickness="10">
-            <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF751500"/>
-                    <GradientStop Color="#FFFF4015" Offset="1"/>
-                </LinearGradientBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-        <Border
-            HorizontalAlignment="Left" 
-            Height="434" Width="650"
-            Margin="150,0,0,0" 
-            VerticalAlignment="Center">
-            <Ellipse 
-                Margin="275,0,0,0"
-                Height="50" Width="50" 
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="Black"/>
-                        <GradientStop Color="#FF8200B5"/>
-                        <GradientStop Color="#FFA500E6"/>
-                        <GradientStop Color="#FFB700FF" Offset="1"/>
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
+        <Border BorderThickness="5"
+                Margin="150, 0, 0 0"
+                BorderBrush="#FFFFA2A2"
+                Width="650"
+                Height="450">
+            <ItemsControl ItemsSource="{Binding Balls}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Name="BallSpace"
+                                Width="640"
+                                Height="440">
+                            <Canvas.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FF751500"/>
+                                    <GradientStop Color="#FFFF4015" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding Position.X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Position.Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Height="{Binding Radius}"
+                                 Width="{Binding Radius}"
+                                 Margin="0, 0, 0, 0">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="Black"/>
+                                    <GradientStop Color="#FF8200B5"/>
+                                    <GradientStop Color="#FFA500E6"/>
+                                    <GradientStop Color="#FFB700FF" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Border>
-    </Grid>
+    </Canvas>
 </UserControl>
