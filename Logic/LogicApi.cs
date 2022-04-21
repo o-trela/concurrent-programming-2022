@@ -51,7 +51,7 @@ namespace BallSimulator.Logic
             if (!_run)
             {
                 _run = true;
-                Task.Run(() => InvokeSimulation());
+                Task.Run(InvokeSimulation);
             }
         }
 

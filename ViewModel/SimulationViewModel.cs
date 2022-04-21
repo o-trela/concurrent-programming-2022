@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using BallSimulator.Logic;
+using System;
+using System.Threading;
 
 using BallSimulator.Logic;
 
@@ -10,7 +13,9 @@ namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase
     {
-        private ObservableCollection<BallModel> _balls;
+        private readonly List<BallViewModel> _ballsList;
+        private ObservableCollection<BallViewModel> _balls;
+        
         private readonly LogicModel _logic;
         private readonly IValidator<int> _ballsCountValidator;
         private int _ballsCount = 1;
@@ -38,7 +43,7 @@ namespace BallSimulator.Presentation.ViewModel
                 OnPropertyChanged(nameof(IsSimulationRunning));
             }
         }
-        public IList<BallModel> Balls => _balls;
+        public IList<BallModel> Balls => _balls; //change to IEnumerable
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
@@ -46,11 +51,54 @@ namespace BallSimulator.Presentation.ViewModel
         {
             _logic = logic ?? new LogicModel();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
+            
+            _ballsList = new List<BallViewModel>
+            {
+                new BallViewModel(
+                    new BallModel(
+                        new Ball(10, new Vector2(100, 200), new Vector2(0.5f, 0.5f))
+                        )
+                    ),
+                new BallViewModel(
+                     new BallModel(
+                         new Ball(10, new Vector2(200, 200), new Vector2(0.5f, 0.5f))
+                         )
+                     ),
+                new BallViewModel(
+                     new BallModel(
+                         new Ball(10, new Vector2(300, 100), new Vector2(0.5f, 0.5f))
+                         )
+                     )
+            };
 
-            _balls = new ObservableCollection<BallModel>();
+            _balls = new ObservableCollection<BallViewModel>(_ballsList);
             StartSimulationCommand = new StartSimulationCommand(this);
             StopSimulationCommand = new StopSimulationCommand(this);
             _logic.SetObserver(UpdateBalls);
+
+            StartPrevSimulation();
+        }
+
+        private void StartPrevSimulation()
+        {
+            Thread sim = new Thread(Simulation);
+            sim.Start();
+
+            void Simulation()
+            {
+                while (true)
+                {
+                    for (int i = 0; i < _balls.Count; i++)
+                    {
+                        var ball = _ballsList[i];
+                        ball._ball._ball.Position += (Vector2.One * 2);
+                    }
+                    _balls = new ObservableCollection<BallViewModel>(_ballsList);
+                    OnPropertyChanged(nameof(Balls));
+
+                    Thread.Sleep(100);
+                }
+            }
         }
 
         public void StartSimulation()
