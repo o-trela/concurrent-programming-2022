@@ -7,6 +7,7 @@ namespace BallSimulator.Presentation.ViewModel
         public ViewModelBase CurrentViewModel { get; }
 
         public MainViewModel()
+            : base()
         {
             CurrentViewModel = new SimulationViewModel(
                 ballsCountValidator: new BallsCountValidator(1, 20)

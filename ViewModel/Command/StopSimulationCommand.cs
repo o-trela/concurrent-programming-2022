@@ -7,6 +7,7 @@ namespace BallSimulator.Presentation.ViewModel
         private readonly SimulationViewModel _simulationViewModel;
 
         public StopSimulationCommand(SimulationViewModel simulationViewModel)
+            : base()
         {
             _simulationViewModel = simulationViewModel;
 

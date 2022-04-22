@@ -2,7 +2,7 @@
 
 namespace BallSimulator.Logic
 {
-    public class Ball
+    public class Ball : IEquatable<Ball>
     {
         public int Radius { get; }
         public Vector2 Position { get; set; }
@@ -25,11 +25,12 @@ namespace BallSimulator.Logic
 
             Position += Speed * strength;
 
-            if (!Position.X.Between(xBoundry.X, xBoundry.Y))
+            var (posX, posY) = Position;
+            if (!posX.Between(xBoundry.X, xBoundry.Y))
             {
                 Speed = new Vector2(-Speed.X, Speed.Y);
             }
-            if (!Position.Y.Between(yBoundry.X, yBoundry.Y))
+            if (!posY.Between(yBoundry.X, yBoundry.Y))
             {
                 Speed = new Vector2(Speed.X, -Speed.Y);
             }
@@ -37,10 +38,25 @@ namespace BallSimulator.Logic
 
         public override bool Equals(object obj)
         {
-            return obj is Ball ball &&
-                   Radius == ball.Radius &&
-                   Position == ball.Position &&
-                   Speed == ball.Speed;
+            return obj is Ball ball
+                && Equals(ball);
+        }
+
+        public bool Equals(Ball other)
+        {
+            return !(other is null)
+                && Radius == other.Radius
+                && Position == other.Position
+                && Speed == other.Speed;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 883467613;
+            hashCode = hashCode * -1521134295 + Radius.GetHashCode();
+            hashCode = hashCode * -1521134295 + Position.GetHashCode();
+            hashCode = hashCode * -1521134295 + Speed.GetHashCode();
+            return hashCode;
         }
     }
 }

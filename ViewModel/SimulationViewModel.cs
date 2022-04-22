@@ -41,6 +41,7 @@ namespace BallSimulator.Presentation.ViewModel
         public ICommand StopSimulationCommand { get; }
 
         public SimulationViewModel(ModelApi model = default, IValidator<int> ballsCountValidator = default)
+            : base()
         {
             _logic = model ?? ModelApi.CreateModelApi();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
