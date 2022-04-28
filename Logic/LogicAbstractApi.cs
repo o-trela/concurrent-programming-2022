@@ -1,6 +1,4 @@
 using BallSimulator.Data;
-using System;
-using System.Collections.Generic;
 
 namespace BallSimulator.Logic
 {
@@ -15,7 +13,7 @@ namespace BallSimulator.Logic
 
         public abstract IDisposable Subscribe(IObserver<IEnumerable<Ball>> observer);
 
-        public static LogicAbstractApi CreateLogicApi(DataAbstractApi data = default)
+        public static LogicAbstractApi CreateLogicApi(DataAbstractApi? data = default)
         {
             return new SimulationController(data ?? DataAbstractApi.CreateDataApi());
         }

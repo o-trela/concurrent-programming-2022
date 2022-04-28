@@ -1,6 +1,4 @@
 ﻿using BallSimulator.Logic;
-using System;
-using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
@@ -15,7 +13,7 @@ namespace BallSimulator.Presentation.Model
         public abstract void OnNext(IEnumerable<Ball> value);
         public abstract IDisposable Subscribe(IObserver<IEnumerable<BallModel>> observer);
 
-        public static ModelApi CreateModelApi(LogicAbstractApi logic = default)
+        public static ModelApi CreateModelApi(LogicAbstractApi? logic = default)
         {
             return new Model(logic ?? LogicAbstractApi.CreateLogicApi());
         }

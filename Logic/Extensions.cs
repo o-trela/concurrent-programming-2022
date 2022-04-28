@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BallSimulator.Logic
+﻿namespace BallSimulator.Logic
 {
     public static class Extension
     {

@@ -1,22 +1,20 @@
 ﻿using BallSimulator.Logic;
-using System;
-using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
     internal class Model : ModelApi
     {
         // provider
-        private readonly List<IObserver<IEnumerable<BallModel>>> _observers;
+        private readonly ISet<IObserver<IEnumerable<BallModel>>> _observers;
         // observer
-        private IDisposable _unsubscriber;
+        private IDisposable? _unsubscriber;
 
         private readonly LogicAbstractApi _logic;
 
-        public Model(LogicAbstractApi logic = default)
+        public Model(LogicAbstractApi? logic = default)
         {
             _logic = logic ?? LogicAbstractApi.CreateLogicApi();
-            _observers = new List<IObserver<IEnumerable<BallModel>>>();
+            _observers = new HashSet<IObserver<IEnumerable<BallModel>>>();
             Subscribe(_logic);
         }
 
@@ -37,7 +35,7 @@ namespace BallSimulator.Presentation.Model
 
         public IEnumerable<BallModel> MapBallToBallModel(IEnumerable<Ball> balls)
         {
-            List<BallModel> result = new List<BallModel>();
+            IList<BallModel> result = new List<BallModel>();
             foreach (Ball ball in balls)
             {
                 result.Add(new BallModel(ball));
@@ -54,7 +52,7 @@ namespace BallSimulator.Presentation.Model
 
         public void Subscribe(IObservable<IEnumerable<Ball>> provider)
         {
-            _unsubscriber = provider?.Subscribe(this);
+            _unsubscriber = provider.Subscribe(this);
         }
 
         public override void OnCompleted()
@@ -75,7 +73,7 @@ namespace BallSimulator.Presentation.Model
 
         public void Unsubscribe()
         {
-            _unsubscriber.Dispose();
+            _unsubscriber?.Dispose();
         }
 
 
@@ -101,10 +99,10 @@ namespace BallSimulator.Presentation.Model
 
         private class Unsubscriber : IDisposable
         {
-            private readonly List<IObserver<IEnumerable<BallModel>>> _observers;
+            private readonly ISet<IObserver<IEnumerable<BallModel>>> _observers;
             private readonly IObserver<IEnumerable<BallModel>> _observer;
 
-            public Unsubscriber(List<IObserver<IEnumerable<BallModel>>> observers, IObserver<IEnumerable<BallModel>> observer)
+            public Unsubscriber(ISet<IObserver<IEnumerable<BallModel>>> observers, IObserver<IEnumerable<BallModel>> observer)
             {
                 _observers = observers;
                 _observer = observer;
@@ -112,7 +110,7 @@ namespace BallSimulator.Presentation.Model
 
             public void Dispose()
             {
-                if (_observer is object) _observers.Remove(_observer);
+                if (_observer is not null) _observers.Remove(_observer);
             }
         }
 

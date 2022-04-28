@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace BallSimulator.Logic
+﻿namespace BallSimulator.Logic
 {
     public class Ball : IEquatable<Ball>
     {
-        public int Diameter { get; }
-        public int Radius { get; }
+        public int Diameter { get; init; }
+        public int Radius { get; init; }
         public Vector2 Position { get; private set; }
         public Vector2 Speed { get; private set; }
 
@@ -46,15 +44,15 @@ namespace BallSimulator.Logic
             return Speed;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Ball ball
                 && Equals(ball);
         }
 
-        public bool Equals(Ball other)
+        public bool Equals(Ball? other)
         {
-            return other is Ball
+            return other is not null
                 && Diameter == other.Diameter
                 && Position == other.Position
                 && Speed == other.Speed;
@@ -62,11 +60,7 @@ namespace BallSimulator.Logic
 
         public override int GetHashCode()
         {
-            int hashCode = 883467613;
-            hashCode = hashCode * -1521134295 + Diameter.GetHashCode();
-            hashCode = hashCode * -1521134295 + Position.GetHashCode();
-            hashCode = hashCode * -1521134295 + Speed.GetHashCode();
-            return hashCode;
+            return HashCode.Combine(Diameter, Position, Speed);
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BallSimulator.Logic
+﻿namespace BallSimulator.Logic
 {
     public class SimulationManager
     {
@@ -12,7 +9,7 @@ namespace BallSimulator.Logic
         private readonly int _ballRadius;
         private readonly Random _rand;
 
-        public List<Ball> Balls { get; private set; }
+        public IList<Ball> Balls { get; private set; }
 
         public SimulationManager(Board board, int ballDiameter)
         {
@@ -20,6 +17,7 @@ namespace BallSimulator.Logic
             _ballDiameter = ballDiameter;
             _rand = new Random();
             _ballRadius = ballDiameter / 2;
+            Balls = new List<Ball>();
         }
 
         public void PushBalls(float strength = 0.1f)
@@ -30,7 +28,7 @@ namespace BallSimulator.Logic
             }
         }
 
-        public List<Ball> RandomBallCreation(int count)
+        public IList<Ball> RandomBallCreation(int count)
         {
             Balls = new List<Ball>(count);
 

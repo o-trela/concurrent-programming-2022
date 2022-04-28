@@ -1,7 +1,7 @@
 ﻿using BallSimulator.Logic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading;
 using System.Linq;
+using System.Threading;
 
 namespace BallSimulator.Tests
 {
