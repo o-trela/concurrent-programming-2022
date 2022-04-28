@@ -6,7 +6,7 @@ namespace BallSimulator.Logic
     {
         public static bool Between(this float value, float min, float max, float padding = 0f)
         {
-            if (padding < 0f) throw new ArgumentException("Accuracy must be a positive number!", nameof(padding));
+            if (padding < 0f) throw new ArgumentException("Padding must be a positive number!", nameof(padding));
             return (value - padding >= min) && (value + padding <= max);
         }
 

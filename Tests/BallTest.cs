@@ -7,26 +7,20 @@ namespace BallSimulator.Tests
     [TestClass]
     public class BallTest
     {
-        readonly int _testXPos;
-        readonly int _testYPos;
-        readonly float _testXSpeed;
-        readonly float _testYSpeed;
-        readonly int _testDiameter;
+        private static readonly int TestXPos = 5;
+        private static readonly int TestYPos = 5;
+        private static readonly float TestXSpeed = 0.2f;
+        private static readonly float TestYSpeed = -0.1f;
+        private static readonly int TestDiameter = 2;
 
         readonly Ball _testBall;
 
         public BallTest()
         {
-            _testXPos = 5;
-            _testYPos = 5;
-            _testXSpeed = 0.2f;
-            _testYSpeed = -0.1f;
-            _testDiameter = 2;
+            Vector2 position = new Vector2(TestXPos, TestYPos);
+            Vector2 speed = new Vector2(TestXSpeed, TestYSpeed);
 
-            Vector2 position = new Vector2(_testXPos, _testYPos);
-            Vector2 speed = new Vector2(_testXSpeed, _testYSpeed);
-
-            _testBall = new Ball(_testDiameter, position, speed);
+            _testBall = new Ball(TestDiameter, position, speed);
         }
 
         [TestMethod]
@@ -34,21 +28,9 @@ namespace BallSimulator.Tests
         {
             Assert.IsNotNull(_testBall);
 
-            Assert.AreEqual((int)_testBall.Position.X, _testXPos);
-            Assert.AreEqual((int)_testBall.Position.Y, _testYPos);
-            Assert.AreEqual(_testBall.Diameter, _testDiameter);
-        }
-
-        [TestMethod]
-        public void SetAttributesTest()
-        {
-            int diff = 1;
-            int newXPos = _testXPos + diff;
-            int newYPos = _testYPos + diff;
-            Vector2 newPos = new Vector2(newXPos, newYPos);
-
-            _testBall.Position = newPos;
-            Assert.AreEqual(newPos, _testBall.Position);
+            Assert.AreEqual((int)_testBall.Position.X, TestXPos);
+            Assert.AreEqual((int)_testBall.Position.Y, TestYPos);
+            Assert.AreEqual(_testBall.Diameter, TestDiameter);
         }
 
         [TestMethod]
@@ -56,32 +38,29 @@ namespace BallSimulator.Tests
         {
             Vector2 boundX = new Vector2(0, 100);
             Vector2 boundY = new Vector2(0, 100);
-            Vector2 speed = new Vector2(-2.5f, 0);
+            Ball ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero);
 
-            _testBall.Speed = speed;
+            ball.AddSpeed(new Vector2(-2.5f, 0));
+            Assert.AreEqual(ball.Speed.X, -2.5f);
 
-            _testBall.Move(boundX, boundY, 1);
-            Assert.AreEqual(_testBall.Position.X, _testXPos - 2.5);
+            ball.Move(boundX, boundY);
+            Assert.AreEqual(ball.Position.X, TestXPos - 2.5f);
 
-            _testBall.Move(boundX, boundY, 1);
-            _testBall.Move(boundX, boundY, 1);
-            _testBall.Move(boundX, boundY, 1);
+            ball.Move(boundX, boundY);
+            ball.Move(boundX, boundY);
+            ball.Move(boundX, boundY);
 
-            Assert.AreEqual(_testBall.Speed.X, -speed.X);
+            ball.AddSpeed(new Vector2(-2.5f, -2.5f));
+            Assert.AreEqual(ball.Speed, new Vector2(0, -2.5f));
 
-            speed = new Vector2(0, -2.5f);
-            _testBall.Speed = speed;
+            ball.Move(boundX, boundY);
+            Assert.AreEqual(ball.Position.Y, TestYPos - 2.5f);
 
-            _testBall.Move(boundX, boundY, 1);
-            Assert.AreEqual(_testBall.Position.Y, _testYPos - 2.5);
+            ball.Move(boundX, boundY);
+            ball.Move(boundX, boundY);
+            ball.Move(boundX, boundY);
 
-            _testBall.Move(boundX, boundY, 1);
-            _testBall.Move(boundX, boundY, 1);
-            _testBall.Move(boundX, boundY, 1);
-
-            Assert.AreEqual(_testBall.Speed, -speed);
-
-            Assert.ThrowsException<ArgumentException>(() => _testBall.Move(boundX, boundY, 2));
+            Assert.ThrowsException<ArgumentException>(() => ball.Move(boundX, boundY, 2));
         }
 
         [TestMethod]

@@ -2,8 +2,8 @@
 {
     internal class DataApi : DataAbstractApi
     {
-        public override int BoardHeight { get; } = 440;
-        public override int BoardWidth { get; } = 640;
-        public override int BallDiameter { get; } = 10;
+        public override int BoardHeight { get; } = 450;
+        public override int BoardWidth { get; } = 650;
+        public override int BallDiameter { get; } = 20;
     }
 }

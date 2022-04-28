@@ -5,9 +5,11 @@ namespace BallSimulator.Logic
 {
     public class SimulationManager
     {
+        private const float MaxSpeed = 30;
+
         private readonly Board _board;
         private readonly int _ballDiameter;
-        private readonly int _ballRadiu;
+        private readonly int _ballRadius;
         private readonly Random _rand;
 
         public List<Ball> Balls { get; private set; }
@@ -17,7 +19,7 @@ namespace BallSimulator.Logic
             _board = board;
             _ballDiameter = ballDiameter;
             _rand = new Random();
-            _ballRadiu = ballDiameter / 2;
+            _ballRadius = ballDiameter / 2;
         }
 
         public void PushBalls(float strength = 0.1f)
@@ -34,27 +36,27 @@ namespace BallSimulator.Logic
 
             for (var i = 0; i < count; i++)
             {
-                var (posX, posY) = GetRandomPos();
-                var (speedX, speedY) = GetRandomSpeed();
-                Balls.Add(new Ball(_ballDiameter, posX, posY, speedX, speedY));
+                Vector2 position = GetRandomPos();
+                Vector2 speed = GetRandomSpeed();
+                Balls.Add(new Ball(_ballDiameter, position, speed));
             }
 
             return Balls;
         }
 
-        private (int x, int y) GetRandomPos()
+        private Vector2 GetRandomPos()
         {
-            int x = _rand.Next(0 + _ballDiameter, _board.Width - _ballDiameter);
-            int y = _rand.Next(0 + _ballDiameter, _board.Height - _ballDiameter);
-            return (x, y);
+            int x = _rand.Next(_ballRadius, _board.Width - _ballRadius);
+            int y = _rand.Next(_ballRadius, _board.Height - _ballRadius);
+            return new Vector2(x, y);
         }
 
-        private (float x, float y) GetRandomSpeed()
+        private Vector2 GetRandomSpeed()
         {
-            double x = _rand.NextDouble() * 20 - 10;
-            double y = _rand.NextDouble() * 20 - 10;
-
-            return ((float)x, (float)y);
+            const float half = MaxSpeed / 2f;
+            double x = _rand.NextDouble() * MaxSpeed - half;
+            double y = _rand.NextDouble() * MaxSpeed - half;
+            return new Vector2((float)x, (float)y);
         }
     }
 }

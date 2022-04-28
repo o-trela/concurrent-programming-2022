@@ -32,6 +32,11 @@ namespace BallSimulator.Logic
             return xDifference * xDifference + yDifference * yDifference;
         }
 
+        public bool IsZero()
+        {
+            return Equals(Zero);
+        }
+
         public override string ToString()
         {
             return $"[{X}, {Y}]";
