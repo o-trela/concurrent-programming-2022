@@ -14,18 +14,18 @@ namespace BallSimulator.Presentation.ViewModel
             _simulationViewModel.PropertyChanged += OnSimulationViewModelPropertyChanged;
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecute(object? parameter)
         {
             return base.CanExecute(parameter)
                 && _simulationViewModel.IsSimulationRunning;
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             _simulationViewModel.StopSimulation();
         }
 
-        private void OnSimulationViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnSimulationViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(_simulationViewModel.IsSimulationRunning))
             {

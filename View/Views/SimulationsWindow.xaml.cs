@@ -8,6 +8,7 @@ namespace BallSimulator.Presentation.View.Views
     public partial class SimulationsWindow : UserControl
     {
         public SimulationsWindow()
+            : base()
         {
             InitializeComponent();
         }

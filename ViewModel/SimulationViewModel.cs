@@ -57,7 +57,6 @@ namespace BallSimulator.Presentation.ViewModel
         public void StartSimulation()
         {
             IsSimulationRunning = true;
-            Trace.WriteLine("Simulation Started");
             _logic.SpawnBalls(BallsCount);
             _logic.Start();
         }
@@ -65,16 +64,10 @@ namespace BallSimulator.Presentation.ViewModel
         public void StopSimulation()
         {
             IsSimulationRunning = false;
-            Trace.WriteLine("Simulation Stopped");
             _logic.Stop();
         }
 
         #region Observer
-
-        //   ||
-        //   ||    Observer  
-        //  \  /
-        //   \/
 
         public void Subscribe(IObservable<IEnumerable<BallModel>> provider)
         {
@@ -102,11 +95,6 @@ namespace BallSimulator.Presentation.ViewModel
         {
             unsubscriber?.Dispose();
         }
-
-        //   /\
-        //  /  \   Observer  
-        //   ||
-        //   ||
 
         #endregion
     }

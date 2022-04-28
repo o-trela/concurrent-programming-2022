@@ -51,11 +51,6 @@ namespace BallSimulator.Logic
 
         #region Provider
 
-        //   ||
-        //   ||    Provider   
-        //  \  /
-        //   \/
-
         public override IDisposable Subscribe(IObserver<IEnumerable<Ball>> observer)
         {
             _observers.Add(observer);
@@ -97,11 +92,6 @@ namespace BallSimulator.Logic
 
             _observers.Clear();
         }
-
-        //   /\
-        //  /  \   Provider  
-        //   ||
-        //   ||
 
         #endregion
     }
