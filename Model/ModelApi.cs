@@ -1,20 +1,19 @@
 ﻿using BallSimulator.Logic;
+using System;
 using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
-    public abstract class ModelApi
+    public abstract class ModelApi : IObserver<Ball[]>, IObservable<IEnumerable<BallModel>>
     {
-        protected Observer _observer;
-
-        public delegate void Observer(IEnumerable<BallModel> ballModels);
-        public abstract void NotifyUpdate();
-        public abstract void SetObserver(Observer observer);
-
         public abstract void SpawnBalls(int count);
         public abstract void Start();
         public abstract void Stop();
-        public abstract IEnumerable<BallModel> MapBallToBallModel();
+
+        public abstract void OnCompleted();
+        public abstract void OnError(Exception error);
+        public abstract void OnNext(Ball[] value);
+        public abstract IDisposable Subscribe(IObserver<IEnumerable<BallModel>> observer);
 
         public static ModelApi CreateModelApi(LogicAbstractApi logic = default)
         {
