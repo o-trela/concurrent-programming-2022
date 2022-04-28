@@ -21,26 +21,18 @@ namespace BallSimulator.Presentation.ViewModel
             get => _ballsCount;
             set
             {
-                if (_ballsCountValidator.IsValid(value))
-                {
-                    _ballsCount = value;
-                    OnPropertyChanged(nameof(BallsCount));
-                }
+                if (_ballsCountValidator.IsValid(value)) SetField(ref _ballsCount, value);
                 else _ballsCount = 1;
             }
         }
         public bool IsSimulationRunning
         {
             get => _isSimulationRunning;
-            private set
-            {
-                _isSimulationRunning = value;
-                OnPropertyChanged(nameof(IsSimulationRunning));
-            }
+            private set => SetField(ref _isSimulationRunning, value);
         }
         public IEnumerable<BallModel> Balls => _balls;
-        public ICommand StartSimulationCommand { get; }
-        public ICommand StopSimulationCommand { get; }
+        public ICommand StartSimulationCommand { get; init; }
+        public ICommand StopSimulationCommand { get; init; }
 
         public SimulationViewModel(ModelApi? model = default, IValidator<int>? ballsCountValidator = default)
             : base()
