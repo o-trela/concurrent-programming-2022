@@ -1,4 +1,5 @@
 using BallSimulator.Presentation.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -6,8 +7,11 @@ using System.Windows.Input;
 
 namespace BallSimulator.Presentation.ViewModel
 {
-    public class SimulationViewModel : ViewModelBase
+    public class SimulationViewModel : ViewModelBase, IObserver<IEnumerable<BallModel>>
     {
+        // observer
+        private IDisposable unsubscriber;
+
         private ObservableCollection<BallModel> _balls;
         private readonly ModelApi _logic;
         private readonly IValidator<int> _ballsCountValidator;
@@ -48,7 +52,7 @@ namespace BallSimulator.Presentation.ViewModel
 
             StartSimulationCommand = new StartSimulationCommand(this);
             StopSimulationCommand = new StopSimulationCommand(this);
-            _logic.SetObserver(UpdateBalls);
+            Subscribe(_logic);
         }
 
         public void StartSimulation()
@@ -66,11 +70,46 @@ namespace BallSimulator.Presentation.ViewModel
             _logic.Stop();
         }
 
-        public void UpdateBalls(IEnumerable<BallModel> ballModels = default)
+        #region Observer
+
+        //   ||
+        //   ||    Observer  
+        //  \  /
+        //   \/
+
+        public void Subscribe(IObservable<IEnumerable<BallModel>> provider)
         {
-            if (ballModels is null) ballModels = new List<BallModel>();
-            _balls = new ObservableCollection<BallModel>(ballModels);
+            if (provider != null)
+                this.unsubscriber = provider.Subscribe(this);
+        }
+
+        public void OnCompleted()
+        {
+            this.Unsubscribe();
+        }
+
+        public void OnError(Exception error)
+        {
+            throw error;
+        }
+
+        public void OnNext(IEnumerable<BallModel> balls)
+        {
+            if (balls is null) balls = new List<BallModel>();
+            _balls = new ObservableCollection<BallModel>(balls);
             OnPropertyChanged(nameof(Balls));
         }
+
+        public void Unsubscribe()
+        {
+            this.unsubscriber.Dispose();
+        }
+
+        //   /\
+        //  /  \   Observer  
+        //   ||
+        //   ||
+
+        #endregion
     }
 }
