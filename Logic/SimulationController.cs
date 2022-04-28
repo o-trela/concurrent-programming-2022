@@ -48,7 +48,7 @@ namespace BallSimulator.Logic
         {
             while (_running)
             {
-                //_simulationManager.PushBalls();
+                _simulationManager.PushBalls();
                 TrackBalls(Balls);
                 Thread.Sleep(10);
             }

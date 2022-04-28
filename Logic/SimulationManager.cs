@@ -32,16 +32,11 @@ namespace BallSimulator.Logic
         {
             Balls = new List<Ball>(count);
 
-            for (var i = 0; i < count/4; i++)
+            for (var i = 0; i < count; i++)
             {
-                /*var (posX, posY) = GetRandomPos();
+                var (posX, posY) = GetRandomPos();
                 var (speedX, speedY) = GetRandomSpeed();
-                Balls.Add(new Ball(_ballDiameter, posX, posY, speedX, speedY));*/
-
-                Balls.Add(new Ball(_ballDiameter, _ballRadiu, _ballRadiu, 0, 0));
-                Balls.Add(new Ball(_ballDiameter, _ballRadiu, _board.Height - _ballRadiu, 0, 0));
-                Balls.Add(new Ball(_ballDiameter, _board.Width - _ballRadiu, _ballRadiu, 0, 0));
-                Balls.Add(new Ball(_ballDiameter, _board.Width - _ballRadiu, _board.Height - _ballRadiu, 0, 0));
+                Balls.Add(new Ball(_ballDiameter, posX, posY, speedX, speedY));
             }
 
             return Balls;
