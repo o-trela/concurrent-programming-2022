@@ -37,8 +37,8 @@
             Margin="10,375,0,0" 
             VerticalAlignment="Top"
             />
-        <Border BorderThickness="5"
-                Margin="150, 0, 0 0"
+        <Border BorderThickness="0"
+                Margin="150, 0, 0, 0"
                 BorderBrush="#FFFFA2A2"
                 Width="650"
                 Height="450">
@@ -46,8 +46,8 @@
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Name="BallSpace"
-                                Width="640"
-                                Height="440">
+                                Width="650"
+                                Height="450">
                             <Canvas.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FF751500"/>
@@ -65,8 +65,8 @@
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Ellipse Height="{Binding Radius}"
-                                 Width="{Binding Radius}"
+                        <Ellipse Height="{Binding Diameter}"
+                                 Width="{Binding Diameter}"
                                  Margin="0, 0, 0, 0">
                             <Ellipse.Fill>
                                 <RadialGradientBrush>

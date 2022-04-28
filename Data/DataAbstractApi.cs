@@ -4,7 +4,7 @@
     {
         public abstract int BoardHeight { get; }
         public abstract int BoardWidth { get; }
-        public abstract int BallRadius { get; }
+        public abstract int BallDiameter { get; }
 
         public static DataAbstractApi CreateDataApi()
         {

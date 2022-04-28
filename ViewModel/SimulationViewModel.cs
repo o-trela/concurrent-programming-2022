@@ -1,6 +1,4 @@
 using BallSimulator.Presentation.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -10,7 +8,7 @@ namespace BallSimulator.Presentation.ViewModel
     public class SimulationViewModel : ViewModelBase, IObserver<IEnumerable<BallModel>>
     {
         // observer
-        private IDisposable unsubscriber;
+        private IDisposable? unsubscriber;
 
         private ObservableCollection<BallModel> _balls;
         private readonly ModelApi _logic;
@@ -44,11 +42,12 @@ namespace BallSimulator.Presentation.ViewModel
         public ICommand StartSimulationCommand { get; }
         public ICommand StopSimulationCommand { get; }
 
-        public SimulationViewModel(ModelApi model = default, IValidator<int> ballsCountValidator = default)
+        public SimulationViewModel(ModelApi? model = default, IValidator<int>? ballsCountValidator = default)
             : base()
         {
             _logic = model ?? ModelApi.CreateModelApi();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
+            _balls = new ObservableCollection<BallModel>();
 
             StartSimulationCommand = new StartSimulationCommand(this);
             StopSimulationCommand = new StopSimulationCommand(this);
@@ -79,13 +78,12 @@ namespace BallSimulator.Presentation.ViewModel
 
         public void Subscribe(IObservable<IEnumerable<BallModel>> provider)
         {
-            if (provider != null)
-                this.unsubscriber = provider.Subscribe(this);
+            unsubscriber = provider.Subscribe(this);
         }
 
         public void OnCompleted()
         {
-            this.Unsubscribe();
+            Unsubscribe();
         }
 
         public void OnError(Exception error)
@@ -102,7 +100,7 @@ namespace BallSimulator.Presentation.ViewModel
 
         public void Unsubscribe()
         {
-            this.unsubscriber.Dispose();
+            unsubscriber?.Dispose();
         }
 
         //   /\

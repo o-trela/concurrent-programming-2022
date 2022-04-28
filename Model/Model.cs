@@ -1,22 +1,20 @@
 ﻿using BallSimulator.Logic;
-using System;
-using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
-    internal class Model : ModelApi, IObserver<Ball[]>, IObservable<IEnumerable<BallModel>>
+    internal class Model : ModelApi
     {
         // provider
-        private List<IObserver<IEnumerable<BallModel>>> observers;
+        private readonly ISet<IObserver<IEnumerable<BallModel>>> _observers;
         // observer
-        private IDisposable unsubscriber;
+        private IDisposable? _unsubscriber;
 
         private readonly LogicAbstractApi _logic;
 
-        public Model(LogicAbstractApi logic = default)
+        public Model(LogicAbstractApi? logic = default)
         {
             _logic = logic ?? LogicAbstractApi.CreateLogicApi();
-            observers = new List<IObserver<IEnumerable<BallModel>>>();
+            _observers = new HashSet<IObserver<IEnumerable<BallModel>>>();
             Subscribe(_logic);
         }
 
@@ -35,9 +33,9 @@ namespace BallSimulator.Presentation.Model
             _logic.StopSimulation();
         }
 
-        public IEnumerable<BallModel> MapBallToBallModel(Ball[] balls)
+        public IEnumerable<BallModel> MapBallToBallModel(IEnumerable<Ball> balls)
         {
-            List<BallModel> result = new List<BallModel>();
+            IList<BallModel> result = new List<BallModel>();
             foreach (Ball ball in balls)
             {
                 result.Add(new BallModel(ball));
@@ -52,15 +50,14 @@ namespace BallSimulator.Presentation.Model
         //  \  /
         //   \/
 
-        public void Subscribe(IObservable<Ball[]> provider)
+        public void Subscribe(IObservable<IEnumerable<Ball>> provider)
         {
-            if (provider != null)
-                this.unsubscriber = provider.Subscribe(this);
+            _unsubscriber = provider.Subscribe(this);
         }
 
         public override void OnCompleted()
         {
-            this.Unsubscribe();
+            Unsubscribe();
             EndTransmission();
         }
 
@@ -69,14 +66,14 @@ namespace BallSimulator.Presentation.Model
             throw error;
         }
 
-        public override void OnNext(Ball[] balls)
+        public override void OnNext(IEnumerable<Ball> balls)
         {
             TrackBalls(MapBallToBallModel(balls));
         }
 
         public void Unsubscribe()
         {
-            this.unsubscriber.Dispose();
+            _unsubscriber?.Dispose();
         }
 
 
@@ -96,45 +93,44 @@ namespace BallSimulator.Presentation.Model
 
         public override IDisposable Subscribe(IObserver<IEnumerable<BallModel>> observer)
         {
-            if (!observers.Contains(observer))
-                observers.Add(observer);
-            return new Unsubscriber(observers, observer);
+            if (!_observers.Contains(observer)) _observers.Add(observer);
+            return new Unsubscriber(_observers, observer);
         }
 
         private class Unsubscriber : IDisposable
         {
-            private List<IObserver<IEnumerable<BallModel>>> _observers;
-            private IObserver<IEnumerable<BallModel>> _observer;
+            private readonly ISet<IObserver<IEnumerable<BallModel>>> _observers;
+            private readonly IObserver<IEnumerable<BallModel>> _observer;
 
-            public Unsubscriber(List<IObserver<IEnumerable<BallModel>>> observers, IObserver<IEnumerable<BallModel>> observer)
+            public Unsubscriber(ISet<IObserver<IEnumerable<BallModel>>> observers, IObserver<IEnumerable<BallModel>> observer)
             {
-                this._observers = observers;
-                this._observer = observer;
+                _observers = observers;
+                _observer = observer;
             }
 
             public void Dispose()
             {
-                if (_observer != null && _observers.Contains(_observer))
-                    _observers.Remove(_observer);
+                if (_observer is not null) _observers.Remove(_observer);
             }
         }
 
         public void TrackBalls(IEnumerable<BallModel> balls)
         {
-            foreach (var observer in observers)
-                if (balls == null)
-                    observer.OnError(new NullReferenceException("Ball Object Is Null"));
-                else
-                    observer.OnNext(balls);
+            foreach (var observer in _observers)
+            {
+                if (balls is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
+                else observer.OnNext(balls);
+            }
         }
 
         public void EndTransmission()
         {
-            foreach (var observer in observers.ToArray())
-                if (observers.Contains(observer))
-                    observer.OnCompleted();
+            foreach (var observer in _observers)
+            {
+                observer.OnCompleted();
+            }
 
-            observers.Clear();
+            _observers.Clear();
         }
 
         //   /\

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BallSimulator.Logic
+﻿namespace BallSimulator.Logic
 {
     public struct Vector2 : IEquatable<Vector2>
     {
@@ -32,6 +30,11 @@ namespace BallSimulator.Logic
             return xDifference * xDifference + yDifference * yDifference;
         }
 
+        public bool IsZero()
+        {
+            return Equals(Zero);
+        }
+
         public override string ToString()
         {
             return $"[{X}, {Y}]";
@@ -43,7 +46,7 @@ namespace BallSimulator.Logic
             y = Y;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Vector2 vector
                 && Equals(vector);

@@ -1,10 +1,8 @@
 ﻿using BallSimulator.Logic;
-using System;
-using System.Collections.Generic;
 
 namespace BallSimulator.Presentation.Model
 {
-    public abstract class ModelApi : IObserver<Ball[]>, IObservable<IEnumerable<BallModel>>
+    public abstract class ModelApi : IObserver<IEnumerable<Ball>>, IObservable<IEnumerable<BallModel>>
     {
         public abstract void SpawnBalls(int count);
         public abstract void Start();
@@ -12,10 +10,10 @@ namespace BallSimulator.Presentation.Model
 
         public abstract void OnCompleted();
         public abstract void OnError(Exception error);
-        public abstract void OnNext(Ball[] value);
+        public abstract void OnNext(IEnumerable<Ball> value);
         public abstract IDisposable Subscribe(IObserver<IEnumerable<BallModel>> observer);
 
-        public static ModelApi CreateModelApi(LogicAbstractApi logic = default)
+        public static ModelApi CreateModelApi(LogicAbstractApi? logic = default)
         {
             return new Model(logic ?? LogicAbstractApi.CreateLogicApi());
         }

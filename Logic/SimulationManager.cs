@@ -1,20 +1,23 @@
-﻿using System;
-
-namespace BallSimulator.Logic
+﻿namespace BallSimulator.Logic
 {
     public class SimulationManager
     {
+        private const float MaxSpeed = 30;
+
         private readonly Board _board;
+        private readonly int _ballDiameter;
         private readonly int _ballRadius;
         private readonly Random _rand;
 
-        public Ball[] Balls { get; private set; }
+        public IList<Ball> Balls { get; private set; }
 
-        public SimulationManager(Board board, int ballRadius)
+        public SimulationManager(Board board, int ballDiameter)
         {
             _board = board;
-            _ballRadius = ballRadius;
+            _ballDiameter = ballDiameter;
             _rand = new Random();
+            _ballRadius = ballDiameter / 2;
+            Balls = new List<Ball>();
         }
 
         public void PushBalls(float strength = 0.1f)
@@ -25,33 +28,33 @@ namespace BallSimulator.Logic
             }
         }
 
-        public Ball[] RandomBallCreation(int count)
+        public IList<Ball> RandomBallCreation(int count)
         {
-            Balls = new Ball[count];
+            Balls = new List<Ball>(count);
 
             for (var i = 0; i < count; i++)
             {
-                var (posX, posY) = GetRandomPos();
-                var (speedX, speedY) = GetRandomSpeed();
-                Balls[i] = new Ball(_ballRadius, posX, posY, speedX, speedY);
+                Vector2 position = GetRandomPos();
+                Vector2 speed = GetRandomSpeed();
+                Balls.Add(new Ball(_ballDiameter, position, speed));
             }
 
             return Balls;
         }
 
-        private (int x, int y) GetRandomPos()
+        private Vector2 GetRandomPos()
         {
-            int x = _rand.Next(0 + _ballRadius, _board.Width - _ballRadius);
-            int y = _rand.Next(0 + _ballRadius, _board.Height - _ballRadius);
-            return (x, y);
+            int x = _rand.Next(_ballRadius, _board.Width - _ballRadius);
+            int y = _rand.Next(_ballRadius, _board.Height - _ballRadius);
+            return new Vector2(x, y);
         }
 
-        private (float x, float y) GetRandomSpeed()
+        private Vector2 GetRandomSpeed()
         {
-            double x = _rand.NextDouble() * 20 - 10;
-            double y = _rand.NextDouble() * 20 - 10;
-
-            return ((float)x, (float)y);
+            const float half = MaxSpeed / 2f;
+            double x = _rand.NextDouble() * MaxSpeed - half;
+            double y = _rand.NextDouble() * MaxSpeed - half;
+            return new Vector2((float)x, (float)y);
         }
     }
 }

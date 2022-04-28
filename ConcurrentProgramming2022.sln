@@ -4,13 +4,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logic", "Logic\Logic.csproj", "{00BF09DD-718B-4D5C-800A-1C4D99F5C672}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0A23BE80-B97F-40E5-A8F8-FEAF496D7273} = {0A23BE80-B97F-40E5-A8F8-FEAF496D7273}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicTests", "Tests\LogicTests.csproj", "{2D43CD2C-B3EE-4ABA-97C1-A672A8EB6F0D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{0A23BE80-B97F-40E5-A8F8-FEAF496D7273}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{D7A758A0-2E91-41B7-8301-38ED2F98712E}"
 EndProject
@@ -24,15 +19,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{4788B56D-E410-4376-B8FC-340420BC9FD3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTests", "DataTests\DataTests.csproj", "{5C34D98C-1E7F-4E76-83C9-798357589448}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0A23BE80-B97F-40E5-A8F8-FEAF496D7273} = {0A23BE80-B97F-40E5-A8F8-FEAF496D7273}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelTests", "ModelTests\ModelTests.csproj", "{C2053AD3-C5C8-412B-A9C4-35EFCAB24B5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModelTests", "ViewModelTests\ViewModelTests.csproj", "{BD921880-5DE2-4B4E-AB82-0A35FCD13E53}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D392772E-FC47-42E8-A9BA-C451D34B8615}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{1A6E05B4-DEA0-4B75-8BE9-460706F410E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +42,6 @@ Global
 		{2D43CD2C-B3EE-4ABA-97C1-A672A8EB6F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D43CD2C-B3EE-4ABA-97C1-A672A8EB6F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D43CD2C-B3EE-4ABA-97C1-A672A8EB6F0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A23BE80-B97F-40E5-A8F8-FEAF496D7273}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A23BE80-B97F-40E5-A8F8-FEAF496D7273}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A23BE80-B97F-40E5-A8F8-FEAF496D7273}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A23BE80-B97F-40E5-A8F8-FEAF496D7273}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10F8B3CA-440B-41EE-8D6A-F471D3991551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10F8B3CA-440B-41EE-8D6A-F471D3991551}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10F8B3CA-440B-41EE-8D6A-F471D3991551}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +66,10 @@ Global
 		{BD921880-5DE2-4B4E-AB82-0A35FCD13E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD921880-5DE2-4B4E-AB82-0A35FCD13E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD921880-5DE2-4B4E-AB82-0A35FCD13E53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A6E05B4-DEA0-4B75-8BE9-460706F410E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A6E05B4-DEA0-4B75-8BE9-460706F410E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A6E05B4-DEA0-4B75-8BE9-460706F410E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A6E05B4-DEA0-4B75-8BE9-460706F410E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
