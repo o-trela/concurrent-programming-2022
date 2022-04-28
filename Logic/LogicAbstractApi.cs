@@ -7,7 +7,7 @@ namespace BallSimulator.Logic
         public abstract IEnumerable<Ball> Balls { get; }
 
         public abstract void CreateBalls(int count);
-        public abstract void InvokeSimulation();
+        public abstract void Simulation();
         public abstract void StartSimulation();
         public abstract void StopSimulation();
 

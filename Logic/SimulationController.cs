@@ -29,7 +29,7 @@ namespace BallSimulator.Logic
             if (!_running)
             {
                 _running = true;
-                Task.Run(InvokeSimulation);
+                Task.Run(Simulation);
             }
         }
 
@@ -39,7 +39,7 @@ namespace BallSimulator.Logic
 
         }
 
-        public override void InvokeSimulation()
+        public override void Simulation()
         {
             while (_running)
             {

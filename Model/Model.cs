@@ -33,22 +33,12 @@ namespace BallSimulator.Presentation.Model
             _logic.StopSimulation();
         }
 
-        public IEnumerable<BallModel> MapBallToBallModel(IEnumerable<Ball> balls)
+        public static IEnumerable<BallModel> MapBallToBallModel(IEnumerable<Ball> balls)
         {
-            IList<BallModel> result = new List<BallModel>();
-            foreach (Ball ball in balls)
-            {
-                result.Add(new BallModel(ball));
-            }
-            return result;
+            return balls.Select(ball => new BallModel(ball));
         }
 
         #region Observer
-
-        //   ||
-        //   ||    Observer  
-        //  \  /
-        //   \/
 
         public void Subscribe(IObservable<IEnumerable<Ball>> provider)
         {
@@ -76,20 +66,9 @@ namespace BallSimulator.Presentation.Model
             _unsubscriber?.Dispose();
         }
 
-
-        //   /\
-        //  /  \   Observer  
-        //   ||
-        //   ||
-
         #endregion
 
         #region Provider
-
-        //   ||
-        //   ||    Provider   
-        //  \  /
-        //   \/
 
         public override IDisposable Subscribe(IObserver<IEnumerable<BallModel>> observer)
         {
@@ -132,11 +111,6 @@ namespace BallSimulator.Presentation.Model
 
             _observers.Clear();
         }
-
-        //   /\
-        //  /  \   Provider  
-        //   ||
-        //   ||
 
         #endregion
     }
