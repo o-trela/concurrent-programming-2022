@@ -11,7 +11,7 @@ namespace BallSimulator.Tests
         readonly int _testYPos;
         readonly float _testXSpeed;
         readonly float _testYSpeed;
-        readonly int _testRadius;
+        readonly int _testDiameter;
 
         readonly Ball _testBall;
 
@@ -21,12 +21,12 @@ namespace BallSimulator.Tests
             _testYPos = 5;
             _testXSpeed = 0.2f;
             _testYSpeed = -0.1f;
-            _testRadius = 2;
+            _testDiameter = 2;
 
             Vector2 position = new Vector2(_testXPos, _testYPos);
             Vector2 speed = new Vector2(_testXSpeed, _testYSpeed);
 
-            _testBall = new Ball(_testRadius, position, speed);
+            _testBall = new Ball(_testDiameter, position, speed);
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace BallSimulator.Tests
 
             Assert.AreEqual((int)_testBall.Position.X, _testXPos);
             Assert.AreEqual((int)_testBall.Position.Y, _testYPos);
-            Assert.AreEqual(_testBall.Radius, _testRadius);
+            Assert.AreEqual(_testBall.Diameter, _testDiameter);
         }
 
         [TestMethod]

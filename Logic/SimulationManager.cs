@@ -1,20 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BallSimulator.Logic
 {
     public class SimulationManager
     {
         private readonly Board _board;
-        private readonly int _ballRadius;
+        private readonly int _ballDiameter;
+        private readonly int _ballRadiu;
         private readonly Random _rand;
 
-        public Ball[] Balls { get; private set; }
+        public List<Ball> Balls { get; private set; }
 
-        public SimulationManager(Board board, int ballRadius)
+        public SimulationManager(Board board, int ballDiameter)
         {
             _board = board;
-            _ballRadius = ballRadius;
+            _ballDiameter = ballDiameter;
             _rand = new Random();
+            _ballRadiu = ballDiameter / 2;
         }
 
         public void PushBalls(float strength = 0.1f)
@@ -25,15 +28,20 @@ namespace BallSimulator.Logic
             }
         }
 
-        public Ball[] RandomBallCreation(int count)
+        public List<Ball> RandomBallCreation(int count)
         {
-            Balls = new Ball[count];
+            Balls = new List<Ball>(count);
 
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < count/4; i++)
             {
-                var (posX, posY) = GetRandomPos();
+                /*var (posX, posY) = GetRandomPos();
                 var (speedX, speedY) = GetRandomSpeed();
-                Balls[i] = new Ball(_ballRadius, posX, posY, speedX, speedY);
+                Balls.Add(new Ball(_ballDiameter, posX, posY, speedX, speedY));*/
+
+                Balls.Add(new Ball(_ballDiameter, _ballRadiu, _ballRadiu, 0, 0));
+                Balls.Add(new Ball(_ballDiameter, _ballRadiu, _board.Height - _ballRadiu, 0, 0));
+                Balls.Add(new Ball(_ballDiameter, _board.Width - _ballRadiu, _ballRadiu, 0, 0));
+                Balls.Add(new Ball(_ballDiameter, _board.Width - _ballRadiu, _board.Height - _ballRadiu, 0, 0));
             }
 
             return Balls;
@@ -41,8 +49,8 @@ namespace BallSimulator.Logic
 
         private (int x, int y) GetRandomPos()
         {
-            int x = _rand.Next(0 + _ballRadius, _board.Width - _ballRadius);
-            int y = _rand.Next(0 + _ballRadius, _board.Height - _ballRadius);
+            int x = _rand.Next(0 + _ballDiameter, _board.Width - _ballDiameter);
+            int y = _rand.Next(0 + _ballDiameter, _board.Height - _ballDiameter);
             return (x, y);
         }
 

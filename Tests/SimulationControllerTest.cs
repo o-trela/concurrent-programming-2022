@@ -1,6 +1,7 @@
 ﻿using BallSimulator.Logic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
+using System.Linq;
 
 namespace BallSimulator.Tests
 {
@@ -18,18 +19,18 @@ namespace BallSimulator.Tests
         public void BallCreationTest()
         {
             controller.CreateBalls(2);
-            Assert.AreEqual(controller.Balls.Length, 2);
+            Assert.AreEqual(controller.Balls.Count(), 2);
         }
 
         [TestMethod]
         public void SimulationTest()
         {
             controller.CreateBalls(2);
-            float xPos = controller.Balls[0].Position.X;
+            float xPos = controller.Balls.First().Position.X;
             controller.StartSimulation();
             Thread.Sleep(100);
             controller.StopSimulation();
-            Assert.AreNotEqual(controller.Balls[0].Position.X, xPos);
+            Assert.AreNotEqual(controller.Balls.First().Position.X, xPos);
         }
     }
 }

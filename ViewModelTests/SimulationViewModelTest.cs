@@ -14,7 +14,7 @@ namespace ViewModelTests
         {
             bool ballsCountChangedRaised = false;
 
-            simulationViewModel.PropertyChanged += (object sender, PropertyChangedEventArgs e) => ballsCountChangedRaised = true;
+            simulationViewModel.PropertyChanged += (object? sender, PropertyChangedEventArgs e) => ballsCountChangedRaised = true;
 
             Assert.IsFalse(ballsCountChangedRaised);
 
@@ -27,7 +27,7 @@ namespace ViewModelTests
         {
             bool isSimulationRunningChangedRaised = false;
 
-            simulationViewModel.PropertyChanged += (object sender, PropertyChangedEventArgs e) => isSimulationRunningChangedRaised = true;
+            simulationViewModel.PropertyChanged += (object? sender, PropertyChangedEventArgs e) => isSimulationRunningChangedRaised = true;
 
             Assert.IsFalse(simulationViewModel.IsSimulationRunning);
             Assert.IsFalse(isSimulationRunningChangedRaised);
@@ -45,12 +45,12 @@ namespace ViewModelTests
         {
             bool ballsChangedRaised = false;
 
-            simulationViewModel.PropertyChanged += (object sender, PropertyChangedEventArgs e) => ballsChangedRaised = true;
+            simulationViewModel.PropertyChanged += (object? sender, PropertyChangedEventArgs e) => ballsChangedRaised = true;
 
             Assert.IsFalse(ballsChangedRaised);
             var collectionBefore = simulationViewModel.Balls;
 
-            simulationViewModel.UpdateBalls();
+            simulationViewModel.OnNext(collectionBefore);
 
             Assert.IsTrue(ballsChangedRaised);
             var collectionAfter = simulationViewModel.Balls;

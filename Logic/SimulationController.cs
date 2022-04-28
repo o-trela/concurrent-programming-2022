@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BallSimulator.Logic
 {
-    internal class SimulationController : LogicAbstractApi, IObservable<Ball[]>
+    internal class SimulationController : LogicAbstractApi
     {
-        private List<IObserver<Ball[]>> observers;
+        private readonly List<IObserver<IEnumerable<Ball>>> observers;
 
-        public override Ball[] Balls => _simulationManager.Balls;
+        public override IEnumerable<Ball> Balls => _simulationManager.Balls;
 
         private readonly DataAbstractApi _data;
         private readonly SimulationManager _simulationManager;
@@ -20,8 +20,8 @@ namespace BallSimulator.Logic
         public SimulationController(DataAbstractApi data = default)
         {
             _data = data ?? DataAbstractApi.CreateDataApi();
-            _simulationManager = new SimulationManager(new Board(_data.BoardHeight, _data.BoardWidth), _data.BallRadius);
-            observers = new List<IObserver<Ball[]>>();
+            _simulationManager = new SimulationManager(new Board(_data.BoardHeight, _data.BoardWidth), _data.BallDiameter);
+            observers = new List<IObserver<IEnumerable<Ball>>>();
         }
 
         public override void CreateBalls(int count)
@@ -48,7 +48,7 @@ namespace BallSimulator.Logic
         {
             while (_running)
             {
-                _simulationManager.PushBalls();
+                //_simulationManager.PushBalls();
                 TrackBalls(Balls);
                 Thread.Sleep(10);
             }
@@ -61,45 +61,44 @@ namespace BallSimulator.Logic
         //  \  /
         //   \/
 
-        public override IDisposable Subscribe(IObserver<Ball[]> observer)
+        public override IDisposable Subscribe(IObserver<IEnumerable<Ball>> observer)
         {
-            if (! observers.Contains(observer))
-                observers.Add(observer);
+            if (! observers.Contains(observer)) observers.Add(observer);
             return new Unsubscriber(observers, observer);
         }
 
         private class Unsubscriber : IDisposable
         {
-            private List<IObserver<Ball[]>> _observers;
-            private IObserver<Ball[]> _observer;
+            private readonly List<IObserver<IEnumerable<Ball>>> _observers;
+            private readonly IObserver<IEnumerable<Ball>> _observer;
 
-            public Unsubscriber(List<IObserver<Ball[]>> observers, IObserver<Ball[]> observer)
+            public Unsubscriber(List<IObserver<IEnumerable<Ball>>> observers, IObserver<IEnumerable<Ball>> observer)
             {
-                this._observers = observers;
-                this._observer = observer;
+                _observers = observers;
+                _observer = observer;
             }
 
             public void Dispose()
             {
-                if (_observer != null && _observers.Contains(_observer))
-                    _observers.Remove(_observer);
+                if (_observer is object) _observers.Remove(_observer);
             }
         }
 
-        public void TrackBalls(Ball[] balls)
+        public void TrackBalls(IEnumerable<Ball> balls)
         {
             foreach (var observer in observers)
-                if (balls == null)
-                    observer.OnError(new NullReferenceException("Ball Object Is Null"));
-                else
-                    observer.OnNext(balls);
+            {
+                if (balls is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
+                else observer.OnNext(balls);
+            }
         }
 
         public void EndTransmission()
         {
-            foreach (var observer in observers.ToArray())
-                if (observers.Contains(observer))
-                    observer.OnCompleted();
+            foreach (var observer in observers)
+            {
+                if (observers.Contains(observer)) observer.OnCompleted();
+            }
 
             observers.Clear();
         }

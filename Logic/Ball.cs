@@ -4,19 +4,23 @@ namespace BallSimulator.Logic
 {
     public class Ball : IEquatable<Ball>
     {
-        public int Radius { get; }
+        public int Diameter { get; }
         public Vector2 Position { get; set; }
         public Vector2 Speed { get; set; }
 
-        public Ball(int radius, int posX, int posY, float speedX, float speedY)
-            : this(radius, new Vector2(posX, posY), new Vector2(speedX, speedY))
+        private readonly int _diameter;
+
+        public Ball(int diameter, int posX, int posY, float speedX, float speedY)
+            : this(diameter, new Vector2(posX, posY), new Vector2(speedX, speedY))
         { }
 
-        public Ball(int radius, Vector2 position, Vector2 speed)
+        public Ball(int diameter, Vector2 position, Vector2 speed)
         {
-            Radius = radius;
+            Diameter = diameter;
             Position = position;
             Speed = speed;
+
+            _diameter = diameter / 2;
         }
 
         public void Move(Vector2 xBoundry, Vector2 yBoundry, float strength = 1f)
@@ -26,11 +30,11 @@ namespace BallSimulator.Logic
             Position += Speed * strength;
 
             var (posX, posY) = Position;
-            if (!posX.Between(xBoundry.X, xBoundry.Y))
+            if (!posX.Between(xBoundry.X, xBoundry.Y, _diameter))
             {
                 Speed = new Vector2(-Speed.X, Speed.Y);
             }
-            if (!posY.Between(yBoundry.X, yBoundry.Y))
+            if (!posY.Between(yBoundry.X, yBoundry.Y, Diameter))
             {
                 Speed = new Vector2(Speed.X, -Speed.Y);
             }
@@ -45,7 +49,7 @@ namespace BallSimulator.Logic
         public bool Equals(Ball other)
         {
             return !(other is null)
-                && Radius == other.Radius
+                && Diameter == other.Diameter
                 && Position == other.Position
                 && Speed == other.Speed;
         }
@@ -53,7 +57,7 @@ namespace BallSimulator.Logic
         public override int GetHashCode()
         {
             int hashCode = 883467613;
-            hashCode = hashCode * -1521134295 + Radius.GetHashCode();
+            hashCode = hashCode * -1521134295 + Diameter.GetHashCode();
             hashCode = hashCode * -1521134295 + Position.GetHashCode();
             hashCode = hashCode * -1521134295 + Speed.GetHashCode();
             return hashCode;

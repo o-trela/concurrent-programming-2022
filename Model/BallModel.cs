@@ -6,7 +6,7 @@ namespace BallSimulator.Presentation.Model
     {
         public readonly Ball _ball;
 
-        public int Radius => _ball.Radius;
+        public int Diameter => _ball.Diameter;
         public Vector2 Position => _ball.Position;
         public Vector2 Speed => _ball.Speed;
 
