@@ -9,6 +9,8 @@ namespace BallSimulator.Logic
         public int Radius { get; }
         public Vector2 Speed { get; }
         public Vector2 Position { get;  }
+
+        void Dispose();
     }
 
     public class BallChangedEventArgs : EventArgs
