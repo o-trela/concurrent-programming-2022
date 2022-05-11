@@ -2,7 +2,7 @@
 
 namespace BallSimulator.Logic;
 
-public interface IBall : IObservable<IBall>, INotifyPropertyChanged, IDisposable
+public interface IBall : IObservable<IBall>, /*INotifyPropertyChanged,*/ IDisposable
 {
     public int Diameter { get; }
     public int Radius { get; }

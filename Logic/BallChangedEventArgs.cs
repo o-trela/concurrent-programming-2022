@@ -2,7 +2,7 @@
 
 public class BallChangedEventArgs : EventArgs
 {
-    public IBall Ball { get; set; }
+    public IBall Ball { get; init; }
 
     public BallChangedEventArgs(IBall ball)
     {

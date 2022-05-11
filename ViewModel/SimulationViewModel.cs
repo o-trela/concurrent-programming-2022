@@ -23,7 +23,7 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
         get => _isSimulationRunning;
         private set => SetField(ref _isSimulationRunning, value);
     }
-    public ObservableCollection<IBallModel> Balls { get; } = new ObservableCollection<IBallModel>();
+    public ObservableCollection<IBallModel> Balls { get; } = new ();
     public ICommand StartSimulationCommand { get; init; }
     public ICommand StopSimulationCommand { get; init; }
 
@@ -36,13 +36,13 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
         StartSimulationCommand = new StartSimulationCommand(this);
         StopSimulationCommand = new StopSimulationCommand(this);
 
-        Subscribe(_model);
+        Follow(_model);
     }
 
     public void StartSimulation()
     {
         IsSimulationRunning = true;
-        _model.SpawnBalls(BallsCount);
+        _model.Start(BallsCount);
     }
 
     public void StopSimulation()
@@ -54,14 +54,14 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
 
     #region Observer
 
-    public void Subscribe(IObservable<IBallModel> provider)
+    public void Follow(IObservable<IBallModel> provider)
     {
         unsubscriber = provider.Subscribe(this);
     }
 
     public void OnCompleted()
     {
-        Unsubscribe();
+        unsubscriber?.Dispose();
     }
 
     public void OnError(Exception error)
@@ -72,11 +72,6 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
     public void OnNext(IBallModel ball)
     {
         Balls.Add(ball);
-    }
-
-    public void Unsubscribe()
-    {
-        unsubscriber?.Dispose();
     }
 
     #endregion

@@ -4,15 +4,11 @@ namespace BallSimulator.Logic;
 
 internal class LogicApi : LogicAbstractApi
 {
-    private const float MaxSpeed = 30;
-
     public IList<IBall> DisposableBalls { get; private set; }
 
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly DataAbstractApi _data;
     private readonly Board _board;
-    private readonly int _ballDiameter;
-    private readonly int _ballRadius;
     private readonly Random _rand = new();
 
     public LogicApi(DataAbstractApi? data = default)
@@ -21,40 +17,43 @@ internal class LogicApi : LogicAbstractApi
         _observers = new HashSet<IObserver<IBall>>();
 
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
-        _ballDiameter = _data.BallDiameter;
-        _ballRadius = _ballDiameter / 2;
-
         DisposableBalls = new List<IBall>();
     }
 
     public override void CreateBalls(int count)
     {
-        DisposableBalls = new List<IBall>(count);
-
         for (var i = 0; i < count; i++)
         {
-            Vector2 position = GetRandomPos();
+            int diameter = GetRandomDiameter();
+            Vector2 position = GetRandomPos(diameter);
             Vector2 speed = GetRandomSpeed();
-            Ball newBall = new Ball(_ballDiameter, position, speed, _board);
+            Ball newBall = new(diameter, position, speed, _board);
             DisposableBalls.Add(newBall);
 
             TrackBall(newBall);
         }
     }
 
-    private Vector2 GetRandomPos()
+    private Vector2 GetRandomPos(int diameter)
     {
-        int x = _rand.Next(_ballRadius, _board.Width - _ballRadius);
-        int y = _rand.Next(_ballRadius, _board.Height - _ballRadius);
+        int radius = diameter / 2;
+        int x = _rand.Next(radius, _board.Width - radius);
+        int y = _rand.Next(radius, _board.Height - radius);
         return new Vector2(x, y);
     }
 
     private Vector2 GetRandomSpeed()
     {
-        const float half = MaxSpeed / 2f;
-        double x = _rand.NextDouble() * MaxSpeed - half;
-        double y = _rand.NextDouble() * MaxSpeed - half;
+        float half = _data.MaxSpeed / 2f;
+        double x = _rand.NextDouble() * _data.MaxSpeed - half;
+        double y = _rand.NextDouble() * _data.MaxSpeed - half;
         return new Vector2((float)x, (float)y);
+    }
+
+    private int GetRandomDiameter()
+    {
+        int diameter = _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
+        return diameter;
     }
 
     #region Provider
@@ -67,7 +66,6 @@ internal class LogicApi : LogicAbstractApi
 
     public void TrackBall(IBall ball)
     {
-        //if (ball is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
         foreach (var observer in _observers)
         {
             observer.OnNext(ball);
@@ -106,6 +104,9 @@ internal class LogicApi : LogicAbstractApi
     {
         EndTransmission();
 
-        foreach (var ball in DisposableBalls) ball.Dispose();
+        foreach (var ball in DisposableBalls)
+        {
+            ball.Dispose();
+        }
     }
 }

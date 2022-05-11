@@ -19,7 +19,7 @@ public class BallModel : IBallModel
     public BallModel(IBall ball)
     {
         _ball = ball;
-        Subscribe(_ball);
+        Follow(_ball);
     }
 
     private Vector2 CalculateOffsetPosition(Vector2 position)
@@ -27,25 +27,11 @@ public class BallModel : IBallModel
         return new Vector2(position.X - Radius, position.Y - Radius);
     }
 
-    #region INotifyPropertyChanged
-
-    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    #endregion
-
     #region Observer
 
-    public void Subscribe(IObservable<IBall> provider)
+    public void Follow(IObservable<IBall> provider)
     {
         _unsubscriber = provider.Subscribe(this);
-    }
-
-    public void OnCompleted()
-    {
-        Unsubscribe();
     }
 
     public void OnError(Exception error)
@@ -53,16 +39,21 @@ public class BallModel : IBallModel
         throw error;
     }
 
-    public void OnNext(IBall ball)
-    {
-        _ball = ball;
-        OnPropertyChanged(nameof(Position));
-    }
-
-    public void Unsubscribe()
+    public void OnCompleted()
     {
         _unsubscriber?.Dispose();
     }
 
+    public void OnNext(IBall ball)
+    {
+        _ball = ball; // Można usunąć, bo to ten sam ball
+        OnPropertyChanged(nameof(Position));
+    }
+
     #endregion
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }

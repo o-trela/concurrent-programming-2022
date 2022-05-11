@@ -9,11 +9,11 @@ public abstract class ModelAbstractApi : IObserver<IBall>, IObservable<IBallMode
         return new ModelApi(logic ?? LogicAbstractApi.CreateLogicApi());
     }
 
-    public abstract void SpawnBalls(int count);
+    public abstract void Start(int count);
     public abstract void Stop();
 
     public abstract void OnCompleted();
-    public abstract void OnError(Exception error);
+    public virtual void OnError(Exception error) => throw error;
     public abstract void OnNext(IBall value);
     public abstract IDisposable Subscribe(IObserver<IBallModel> observer);
 }

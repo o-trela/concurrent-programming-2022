@@ -13,12 +13,12 @@ internal class ModelApi : ModelAbstractApi
     {
         _logic = logic ?? LogicAbstractApi.CreateLogicApi();
         _observers = new HashSet<IObserver<IBallModel>>();
-        Subscribe(_logic);
+        Follow(_logic);
     }
 
-    public override void SpawnBalls(int count)
+    public override void Start(int ballsCount)
     {
-        _logic.CreateBalls(count);
+        _logic.CreateBalls(ballsCount);
     }
 
     public override void Stop()
@@ -33,30 +33,20 @@ internal class ModelApi : ModelAbstractApi
 
     #region Observer
 
-    public void Subscribe(IObservable<IBall> provider)
+    public void Follow(IObservable<IBall> provider)
     {
         _unsubscriber = provider.Subscribe(this);
     }
 
     public override void OnCompleted()
     {
-        Unsubscribe();
+        _unsubscriber?.Dispose();
         EndTransmission();
-    }
-
-    public override void OnError(Exception error)
-    {
-        throw error;
     }
 
     public override void OnNext(IBall ball)
     {
         TrackBall(MapBallToBallModel(ball));
-    }
-
-    public void Unsubscribe()
-    {
-        _unsubscriber?.Dispose();
     }
 
     #endregion

@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace BallSimulator.Logic;
 
-public class Ball : IBall, IEquatable<Ball>, IDisposable
+public class Ball : IBall, IEquatable<Ball>
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
+    //public event PropertyChangedEventHandler? PropertyChanged;
 
     public int Diameter { get; init; }
     public int Radius { get; init; }
@@ -57,11 +58,13 @@ public class Ball : IBall, IEquatable<Ball>, IDisposable
         Position += Speed * 0.1f;
 
         var (posX, posY) = Position;
-        if (!posX.Between(_board.XBoundry.X, _board.XBoundry.Y, Radius))
+        var (boundryXx, boundryXy) = _board.BoundryX;
+        if (!posX.Between(boundryXx, boundryXy, Radius))
         {
             Speed = new Vector2(-Speed.X, Speed.Y);
         }
-        if (!posY.Between(_board.YBoundry.X, _board.YBoundry.Y, Radius))
+        var (boundryYx, boundryYy) = _board.BoundryY;
+        if (!posY.Between(boundryYx, boundryYy, Radius))
         {
             Speed = new Vector2(Speed.X, -Speed.Y);
         }
@@ -86,7 +89,6 @@ public class Ball : IBall, IEquatable<Ball>, IDisposable
 
     public void TrackBall(IBall ball)
     {
-        //if (ball is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
         if (_observers == null) return;
         foreach (var observer in _observers)
         {
@@ -94,14 +96,14 @@ public class Ball : IBall, IEquatable<Ball>, IDisposable
         }
     }
 
-    public void EndTransmission()
+    /*public void EndTransmission()
     {
         foreach (var observer in _observers)
         {
             observer.OnCompleted();
         }
         _observers.Clear();
-    }
+    }*/
 
     private class Unsubscriber : IDisposable
     {
