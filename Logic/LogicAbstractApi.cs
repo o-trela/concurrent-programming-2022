@@ -10,8 +10,6 @@ public abstract class LogicAbstractApi : IObservable<IBall>, IDisposable
     }
 
     public abstract void CreateBalls(int count);
-
     public abstract IDisposable Subscribe(IObserver<IBall> observer);
-
     public abstract void Dispose();
 }

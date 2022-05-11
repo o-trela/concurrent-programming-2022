@@ -6,8 +6,6 @@ namespace BallSimulator.Logic;
 
 public class Ball : IBall, IEquatable<Ball>
 {
-    //public event PropertyChangedEventHandler? PropertyChanged;
-
     public int Diameter { get; init; }
     public int Radius { get; init; }
     public Vector2 Speed { get; private set; }
@@ -18,7 +16,7 @@ public class Ball : IBall, IEquatable<Ball>
         {
             if (_position == value) return;
             _position = value;
-            OnPropertyChanged();
+            TrackBall(this);
         }
     }
 
@@ -42,11 +40,6 @@ public class Ball : IBall, IEquatable<Ball>
 
         _observers = new HashSet<IObserver<IBall>>();
         _moveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(10));
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        TrackBall(this);
     }
 
     public void Move(object? state)

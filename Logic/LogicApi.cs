@@ -4,8 +4,7 @@ namespace BallSimulator.Logic;
 
 internal class LogicApi : LogicAbstractApi
 {
-    public IList<IBall> DisposableBalls { get; private set; }
-
+    private readonly IList<IBall> _balls;
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly DataAbstractApi _data;
     private readonly Board _board;
@@ -17,7 +16,7 @@ internal class LogicApi : LogicAbstractApi
         _observers = new HashSet<IObserver<IBall>>();
 
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
-        DisposableBalls = new List<IBall>();
+        _balls = new List<IBall>();
     }
 
     public override void CreateBalls(int count)
@@ -28,7 +27,7 @@ internal class LogicApi : LogicAbstractApi
             Vector2 position = GetRandomPos(diameter);
             Vector2 speed = GetRandomSpeed();
             Ball newBall = new(diameter, position, speed, _board);
-            DisposableBalls.Add(newBall);
+            _balls.Add(newBall);
 
             TrackBall(newBall);
         }
@@ -104,7 +103,7 @@ internal class LogicApi : LogicAbstractApi
     {
         EndTransmission();
 
-        foreach (var ball in DisposableBalls)
+        foreach (var ball in _balls)
         {
             ball.Dispose();
         }

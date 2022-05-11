@@ -1,4 +1,5 @@
 ﻿using BallSimulator.Logic;
+using System.Diagnostics;
 
 namespace BallSimulator.Presentation.Model;
 
@@ -6,6 +7,7 @@ internal class ModelApi : ModelAbstractApi
 {
     private readonly LogicAbstractApi _logic;
     private readonly ISet<IObserver<IBallModel>> _observers;
+    private readonly IDictionary<IBall, IBallModel> _ballToBallModel;
 
     private IDisposable? _unsubscriber;
 
@@ -13,6 +15,7 @@ internal class ModelApi : ModelAbstractApi
     {
         _logic = logic ?? LogicAbstractApi.CreateLogicApi();
         _observers = new HashSet<IObserver<IBallModel>>();
+        _ballToBallModel = new Dictionary<IBall, IBallModel>();
         Follow(_logic);
     }
 
@@ -24,11 +27,6 @@ internal class ModelApi : ModelAbstractApi
     public override void Stop()
     {
         _logic.Dispose();
-    }
-
-    private static IBallModel MapBallToBallModel(IBall ball)
-    {
-        return new BallModel(ball);
     }
 
     #region Observer
@@ -46,7 +44,13 @@ internal class ModelApi : ModelAbstractApi
 
     public override void OnNext(IBall ball)
     {
-        TrackBall(MapBallToBallModel(ball));
+        bool contains = _ballToBallModel.TryGetValue(ball, out var ballModel);
+        if (!contains)
+        {
+            ballModel = new BallModel(ball);
+            _ballToBallModel.Add(ball, ballModel);
+        }
+        TrackBall(ballModel!);
     }
 
     #endregion
