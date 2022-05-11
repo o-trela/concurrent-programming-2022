@@ -6,24 +6,14 @@ using System.Runtime.CompilerServices;
 
 namespace BallSimulator.Presentation.Model
 {
-    public class BallModel : IBallModel, IObserver<IBall>, INotifyPropertyChanged
+    public class BallModel : IBallModel
     {
-        // observer
-        private IDisposable? _unsubscriber;
-
         private IBall _ball;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public int Diameter => _ball.Diameter;
         public int Radius => _ball.Radius;
         public Vector2 Position => CalculateOffsetPosition(_ball.Position);
         public Vector2 Speed => _ball.Speed;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public BallModel(IBall ball)
         {
@@ -35,6 +25,21 @@ namespace BallSimulator.Presentation.Model
         {
             return new Vector2(position.X - Radius, position.Y - Radius);
         }
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region Observer
+
+        private IDisposable? _unsubscriber;
 
         public void Subscribe(IObservable<IBall> provider)
         {
@@ -61,5 +66,8 @@ namespace BallSimulator.Presentation.Model
         {
             _unsubscriber?.Dispose();
         }
+
+        #endregion
+
     }
 }

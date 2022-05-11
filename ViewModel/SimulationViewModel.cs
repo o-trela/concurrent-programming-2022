@@ -7,10 +7,8 @@ namespace BallSimulator.Presentation.ViewModel
 {
     public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
     {
-        // observer
-        private IDisposable? unsubscriber;
-
         private readonly ModelAbstractApi _model;
+
         private readonly IValidator<int> _ballsCountValidator;
         private int _ballsCount = 10;
         private bool _isSimulationRunning = false;
@@ -41,24 +39,26 @@ namespace BallSimulator.Presentation.ViewModel
 
             StartSimulationCommand = new StartSimulationCommand(this);
             StopSimulationCommand = new StopSimulationCommand(this);
+
             Subscribe(_model);
-            //_model.Subscribe<IBallModel>(x => Balls.Add(x));
         }
 
         public void StartSimulation()
         {
             IsSimulationRunning = true;
             _model.SpawnBalls(BallsCount);
-            //_model.Start();
         }
 
         public void StopSimulation()
         {
             IsSimulationRunning = false;
+            Balls.Clear();
             _model.Stop();
         }
 
         #region Observer
+
+        private IDisposable? unsubscriber;
 
         public void Subscribe(IObservable<IBallModel> provider)
         {
@@ -78,9 +78,6 @@ namespace BallSimulator.Presentation.ViewModel
         public void OnNext(IBallModel ball)
         {
             Balls.Add(ball);
-            OnPropertyChanged(nameof(Balls));
-            Trace.WriteLine(Balls.Count);
-
         }
 
         public void Unsubscribe()

@@ -5,11 +5,6 @@ namespace BallSimulator.Presentation.Model
 {
     internal class ModelApi : ModelAbstractApi
     {
-        // provider
-        private readonly ISet<IObserver<IBallModel>> _observers;
-        // observer
-        private IDisposable? _unsubscriber;
-
         private readonly LogicAbstractApi _logic;
 
         public ModelApi(LogicAbstractApi? logic = default)
@@ -21,17 +16,8 @@ namespace BallSimulator.Presentation.Model
 
         public override void SpawnBalls(int count)
         {
-            var balls = _logic.CreateBalls(count);
-            foreach (var ball in balls)
-            {
-                OnNext(ball);
-            }
+            _logic.CreateBalls(count);
         }
-
-/*        public override void Start()
-        {
-            _logic.StartSimulation();
-        }*/
 
         public override void Stop()
         {
@@ -44,6 +30,8 @@ namespace BallSimulator.Presentation.Model
         }
 
         #region Observer
+
+        private IDisposable? _unsubscriber;
 
         public void Subscribe(IObservable<IBall> provider)
         {
@@ -74,6 +62,8 @@ namespace BallSimulator.Presentation.Model
         #endregion
 
         #region Provider
+        
+        private readonly ISet<IObserver<IBallModel>> _observers;
 
         public override IDisposable Subscribe(IObserver<IBallModel> observer)
         {

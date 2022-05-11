@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace BallSimulator.Logic
 {
-    public interface IBall : INotifyPropertyChanged, IObservable<IBall>
+    public interface IBall : IObservable<IBall>, INotifyPropertyChanged
     {
         public int Diameter { get; }
         public int Radius { get; }
@@ -20,10 +20,7 @@ namespace BallSimulator.Logic
 
     public abstract class LogicAbstractApi : IObservable<IBall>, IDisposable
     {
-        public abstract List<IBall> CreateBalls(int count);
-/*        public abstract void Simulation();
-        public abstract void StartSimulation();
-        public abstract void StopSimulation();*/
+        public abstract void CreateBalls(int count);
 
         public abstract IDisposable Subscribe(IObserver<IBall> observer);
 

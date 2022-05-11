@@ -7,9 +7,6 @@ namespace BallSimulator.Logic
 {
     internal class LogicApi : LogicAbstractApi
     {
-        public IList<IBall> Balls { get; private set; }
-
-        private readonly ISet<IObserver<IBall>> _observers;
         private readonly DataAbstractApi _data;
 
         private const float MaxSpeed = 30;
@@ -17,64 +14,33 @@ namespace BallSimulator.Logic
         private readonly Board _board;
         private readonly int _ballDiameter;
         private readonly int _ballRadius;
-        private readonly Random _rand;
-
-        public event EventHandler<BallChangedEventArgs> BallChanged;
-        private IObservable<EventPattern<BallChangedEventArgs>> eventObservable = null;
-
-        private bool _running = false;
+        private readonly Random _rand = new();
 
         public LogicApi(DataAbstractApi? data = default)
         {
             _data = data ?? DataAbstractApi.CreateDataApi();
             _observers = new HashSet<IObserver<IBall>>();
+
             _board = new Board(_data.BoardHeight, _data.BoardWidth);
             _ballDiameter = _data.BallDiameter;
-            _rand = new Random();
             _ballRadius = _ballDiameter / 2;
-            Balls = new List<IBall>();
-            eventObservable = Observable.FromEventPattern<BallChangedEventArgs>(this, "BallChanged");
+
+            DisposableBalls = new List<IBall>();
         }
 
-/*        public override void StartSimulation()
+        public override void CreateBalls(int count)
         {
-            if (!_running)
-            {
-                _running = true;
-                Task.Run(Simulation);
-            }
-        }
-
-        public override void StopSimulation()
-        {
-            if (_running) _running = false;
-            Dispose();
-        }
-
-        public override void Simulation()
-        {
-            while (_running)
-            {
-*//*                _simulationManager.PushBalls();
-                TrackBalls(Balls);
-                Thread.Sleep(10);*//*
-            }
-        }*/
-
-        public override List<IBall> CreateBalls(int count)
-        {
-            Balls = new List<IBall>(count);
+            DisposableBalls = new List<IBall>(count);
 
             for (var i = 0; i < count; i++)
             {
                 Vector2 position = GetRandomPos();
                 Vector2 speed = GetRandomSpeed();
                 Ball newBall = new Ball(_ballDiameter, position, speed, _board);
-                Balls.Add(newBall);
-                //BallChanged?.Invoke(this, new BallChangedEventArgs() { Ball = newBall });
-            }
+                DisposableBalls.Add(newBall);
 
-            return (List<IBall>)Balls;
+                TrackBall(newBall);
+            }
         }
 
         private Vector2 GetRandomPos()
@@ -94,12 +60,9 @@ namespace BallSimulator.Logic
 
         #region Provider
 
-        public override IDisposable Subscribe(IObserver<IBall> observer)
-        {
-            return eventObservable.Subscribe(x => observer.OnNext(x.EventArgs.Ball), ex => observer.OnError(ex), () => observer.OnCompleted());
-        }
+        private readonly ISet<IObserver<IBall>> _observers;
 
-/*        public override IDisposable Subscribe(IObserver<IBall> observer)
+        public override IDisposable Subscribe(IObserver<IBall> observer)
         {
             _observers.Add(observer);
             return new Unsubscriber(_observers, observer);
@@ -139,14 +102,18 @@ namespace BallSimulator.Logic
             }
 
             _observers.Clear();
-        }*/
-
-        public override void Dispose()
-        {
-            foreach (Ball ball in Balls)
-                ball.Dispose();
         }
 
         #endregion
+
+        public IList<IBall> DisposableBalls { get; private set; }
+
+        public override void Dispose()
+        {
+            EndTransmission();
+
+            foreach (Ball ball in DisposableBalls)
+                ball.Dispose();
+        }
     }
 }
