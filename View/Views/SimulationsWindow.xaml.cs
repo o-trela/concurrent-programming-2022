@@ -1,16 +1,15 @@
 ﻿using System.Windows.Controls;
 
-namespace BallSimulator.Presentation.View.Views
+namespace BallSimulator.Presentation.View.Views;
+
+/// <summary>
+/// Interaction logic for SimulationsWindow.xaml
+/// </summary>
+public partial class SimulationsWindow : UserControl
 {
-    /// <summary>
-    /// Interaction logic for SimulationsWindow.xaml
-    /// </summary>
-    public partial class SimulationsWindow : UserControl
+    public SimulationsWindow()
+        : base()
     {
-        public SimulationsWindow()
-            : base()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

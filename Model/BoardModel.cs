@@ -1,16 +1,16 @@
 ﻿using BallSimulator.Logic;
 
-namespace Model
-{
-    internal class BoardModel
-    {
-        private readonly Board _board;
-        public int Height => _board.Height;
-        public int Width => _board.Width;
+namespace BallSimulator.Presentation.Model;
 
-        public BoardModel(Board board)
-        {
-            _board = board;
-        }
+internal class BoardModel
+{
+    public int Height => _board.Height;
+    public int Width => _board.Width;
+
+    private readonly Board _board;
+
+    public BoardModel(Board board)
+    {
+        _board = board;
     }
 }

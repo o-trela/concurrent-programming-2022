@@ -1,7 +1,7 @@
-﻿namespace BallSimulator.Presentation.Model
+﻿namespace BallSimulator.Presentation.Model;
+
+public interface IValidator<T>
 {
-    public interface IValidator<T>
-    {
-        bool IsValid(T value);
-    }
+    bool IsValid(T value);
+    bool IsInvalid(T value);
 }

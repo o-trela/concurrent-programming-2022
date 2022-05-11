@@ -1,119 +1,111 @@
 ﻿using BallSimulator.Data;
-using System.Diagnostics;
-using System.Reactive;
-using System.Reactive.Linq;
 
-namespace BallSimulator.Logic
+namespace BallSimulator.Logic;
+
+internal class LogicApi : LogicAbstractApi
 {
-    internal class LogicApi : LogicAbstractApi
+    private const float MaxSpeed = 30;
+
+    public IList<IBall> DisposableBalls { get; private set; }
+
+    private readonly ISet<IObserver<IBall>> _observers;
+    private readonly DataAbstractApi _data;
+    private readonly Board _board;
+    private readonly int _ballDiameter;
+    private readonly int _ballRadius;
+    private readonly Random _rand = new();
+
+    public LogicApi(DataAbstractApi? data = default)
     {
-        private readonly DataAbstractApi _data;
+        _data = data ?? DataAbstractApi.CreateDataApi();
+        _observers = new HashSet<IObserver<IBall>>();
 
-        private const float MaxSpeed = 30;
+        _board = new Board(_data.BoardHeight, _data.BoardWidth);
+        _ballDiameter = _data.BallDiameter;
+        _ballRadius = _ballDiameter / 2;
 
-        private readonly Board _board;
-        private readonly int _ballDiameter;
-        private readonly int _ballRadius;
-        private readonly Random _rand = new();
+        DisposableBalls = new List<IBall>();
+    }
 
-        public LogicApi(DataAbstractApi? data = default)
+    public override void CreateBalls(int count)
+    {
+        DisposableBalls = new List<IBall>(count);
+
+        for (var i = 0; i < count; i++)
         {
-            _data = data ?? DataAbstractApi.CreateDataApi();
-            _observers = new HashSet<IObserver<IBall>>();
+            Vector2 position = GetRandomPos();
+            Vector2 speed = GetRandomSpeed();
+            Ball newBall = new Ball(_ballDiameter, position, speed, _board);
+            DisposableBalls.Add(newBall);
 
-            _board = new Board(_data.BoardHeight, _data.BoardWidth);
-            _ballDiameter = _data.BallDiameter;
-            _ballRadius = _ballDiameter / 2;
-
-            DisposableBalls = new List<IBall>();
+            TrackBall(newBall);
         }
+    }
 
-        public override void CreateBalls(int count)
+    private Vector2 GetRandomPos()
+    {
+        int x = _rand.Next(_ballRadius, _board.Width - _ballRadius);
+        int y = _rand.Next(_ballRadius, _board.Height - _ballRadius);
+        return new Vector2(x, y);
+    }
+
+    private Vector2 GetRandomSpeed()
+    {
+        const float half = MaxSpeed / 2f;
+        double x = _rand.NextDouble() * MaxSpeed - half;
+        double y = _rand.NextDouble() * MaxSpeed - half;
+        return new Vector2((float)x, (float)y);
+    }
+
+    #region Provider
+
+    public override IDisposable Subscribe(IObserver<IBall> observer)
+    {
+        _observers.Add(observer);
+        return new Unsubscriber(_observers, observer);
+    }
+
+    public void TrackBall(IBall ball)
+    {
+        //if (ball is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
+        foreach (var observer in _observers)
         {
-            DisposableBalls = new List<IBall>(count);
-
-            for (var i = 0; i < count; i++)
-            {
-                Vector2 position = GetRandomPos();
-                Vector2 speed = GetRandomSpeed();
-                Ball newBall = new Ball(_ballDiameter, position, speed, _board);
-                DisposableBalls.Add(newBall);
-
-                TrackBall(newBall);
-            }
+            observer.OnNext(ball);
         }
+    }
 
-        private Vector2 GetRandomPos()
+    public void EndTransmission()
+    {
+        foreach (var observer in _observers)
         {
-            int x = _rand.Next(_ballRadius, _board.Width - _ballRadius);
-            int y = _rand.Next(_ballRadius, _board.Height - _ballRadius);
-            return new Vector2(x, y);
+            observer.OnCompleted();
         }
+        _observers.Clear();
+    }
 
-        private Vector2 GetRandomSpeed()
-        {
-            const float half = MaxSpeed / 2f;
-            double x = _rand.NextDouble() * MaxSpeed - half;
-            double y = _rand.NextDouble() * MaxSpeed - half;
-            return new Vector2((float)x, (float)y);
-        }
-
-        #region Provider
-
+    private class Unsubscriber : IDisposable
+    {
         private readonly ISet<IObserver<IBall>> _observers;
+        private readonly IObserver<IBall> _observer;
 
-        public override IDisposable Subscribe(IObserver<IBall> observer)
+        public Unsubscriber(ISet<IObserver<IBall>> observers, IObserver<IBall> observer)
         {
-            _observers.Add(observer);
-            return new Unsubscriber(_observers, observer);
+            _observers = observers;
+            _observer = observer;
         }
 
-        private class Unsubscriber : IDisposable
+        public void Dispose()
         {
-            private readonly ISet<IObserver<IBall>> _observers;
-            private readonly IObserver<IBall> _observer;
-
-            public Unsubscriber(ISet<IObserver<IBall>> observers, IObserver<IBall> observer)
-            {
-                _observers = observers;
-                _observer = observer;
-            }
-
-            public void Dispose()
-            {
-                if (_observer is not null) _observers.Remove(_observer);
-            }
+            _observers.Remove(_observer);
         }
+    }
 
-        public void TrackBall(IBall ball)
-        {
-            foreach (var observer in _observers)
-            {
-                if (ball is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
-                else observer.OnNext(ball);
-            }
-        }
+    #endregion
 
-        public void EndTransmission()
-        {
-            foreach (var observer in _observers)
-            {
-                if (_observers.Contains(observer)) observer.OnCompleted();
-            }
+    public override void Dispose()
+    {
+        EndTransmission();
 
-            _observers.Clear();
-        }
-
-        #endregion
-
-        public IList<IBall> DisposableBalls { get; private set; }
-
-        public override void Dispose()
-        {
-            EndTransmission();
-
-            foreach (Ball ball in DisposableBalls)
-                ball.Dispose();
-        }
+        foreach (var ball in DisposableBalls) ball.Dispose();
     }
 }

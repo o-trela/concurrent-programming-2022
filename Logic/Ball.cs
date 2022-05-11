@@ -1,52 +1,52 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace BallSimulator.Logic
+namespace BallSimulator.Logic;
+
+public class Ball : IBall, IEquatable<Ball>, IDisposable
 {
-    public class Ball : IBall, IEquatable<Ball>, IDisposable
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public int Diameter { get; init; }
+    public int Radius { get; init; }
+    public Vector2 Speed { get; private set; }
+    public Vector2 Position
     {
-        private readonly ISet<IObserver<IBall>> _observers;
-
-        public int Diameter { get; init; }
-        public int Radius { get; init; }
-        public Vector2 Speed { get; private set; }
-        public Vector2 Position { get { return _position; }
-            private set
-            {
-                if (_position == value)
-                    return;
-                _position = value;
-                OnPropertyChanged();
-            }
+        get => _position;
+        private set
+        {
+            if (_position == value) return;
+            _position = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Board _board;
-        private Timer MoveTimer;
-        private Vector2 _position;
+    private readonly ISet<IObserver<IBall>> _observers;
+    private readonly Board _board;
+    private readonly Timer _moveTimer;
+
+    private Vector2 _position;
 
     public Ball(int diameter, int posX, int posY, float speedX, float speedY, Board board)
         : this(diameter, new Vector2(posX, posY), new Vector2(speedX, speedY), board)
     { }
 
-        public Ball(int diameter, Vector2 position, Vector2 speed, Board board)
-        {
-            Diameter = diameter;
-            Position = position;
-            Speed = speed;
-            Radius = diameter / 2;
-            _board = board;
-            
-            _observers = new HashSet<IObserver<IBall>>();
-            MoveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
-        }
+    public Ball(int diameter, Vector2 position, Vector2 speed, Board board)
+    {
+        Diameter = diameter;
+        Position = position;
+        Speed = speed;
+        Radius = diameter / 2;
+        _board = board;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        _observers = new HashSet<IObserver<IBall>>();
+        _moveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(10));
+    }
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            TrackBall(this);
-        }
+    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        TrackBall(this);
+    }
 
     public void Move(object? state)
     {
@@ -68,8 +68,56 @@ namespace BallSimulator.Logic
     }
 
     public Vector2 AddSpeed(Vector2 speed)
-    { 
+    {
         return Speed += speed;
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        _moveTimer.Dispose();
+    }
+
+    public IDisposable Subscribe(IObserver<IBall> observer)
+    {
+        _observers.Add(observer);
+        return new Unsubscriber(_observers, observer);
+    }
+
+    public void TrackBall(IBall ball)
+    {
+        //if (ball is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
+        if (_observers == null) return;
+        foreach (var observer in _observers)
+        {
+            observer.OnNext(ball);
+        }
+    }
+
+    public void EndTransmission()
+    {
+        foreach (var observer in _observers)
+        {
+            observer.OnCompleted();
+        }
+        _observers.Clear();
+    }
+
+    private class Unsubscriber : IDisposable
+    {
+        private readonly ISet<IObserver<IBall>> _observers;
+        private readonly IObserver<IBall> _observer;
+
+        public Unsubscriber(ISet<IObserver<IBall>> observers, IObserver<IBall> observer)
+        {
+            _observers = observers;
+            _observer = observer;
+        }
+
+        public void Dispose()
+        {
+            _observers.Remove(_observer);
+        }
     }
 
     public override bool Equals(object? obj)
@@ -89,54 +137,5 @@ namespace BallSimulator.Logic
     public override int GetHashCode()
     {
         return HashCode.Combine(Diameter, Position, Speed);
-    }
-
-        public void Dispose()
-        {
-            MoveTimer.Dispose();
-        }
-
-        public IDisposable Subscribe(IObserver<IBall> observer)
-        {
-            _observers.Add(observer);
-            return new Unsubscriber(_observers, observer);
-        }
-
-    private class Unsubscriber : IDisposable
-    {
-        private readonly ISet<IObserver<IBall>> _observers;
-        private readonly IObserver<IBall> _observer;
-
-        public Unsubscriber(ISet<IObserver<IBall>> observers, IObserver<IBall> observer)
-        {
-            _observers = observers;
-            _observer = observer;
-        }
-
-        public void Dispose()
-        {
-            _observers.Remove(_observer);
-        }
-    }
-
-    public void TrackBall(IBall ball)
-    {
-        if (_observers == null) return;
-        foreach (var observer in _observers)
-        {
-            if (ball is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
-            else observer.OnNext(ball);
-        }
-    }
-
-        public void EndTransmission()
-        {
-            foreach (var observer in _observers)
-            {
-                if (_observers.Contains(observer)) observer.OnCompleted();
-            }
-
-            _observers.Clear();
-        }
     }
 }
