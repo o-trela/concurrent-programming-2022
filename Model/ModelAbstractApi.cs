@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace BallSimulator.Presentation.Model
 {
-    public interface IBallModel
+    public interface IBallModel : IObserver<IBall>, INotifyPropertyChanged
     {
         public int Diameter { get; }
         public int Radius { get; }
@@ -14,7 +14,6 @@ namespace BallSimulator.Presentation.Model
     public abstract class ModelAbstractApi : IObserver<IBall>, IObservable<IBallModel>
     {
         public abstract void SpawnBalls(int count);
-       // public abstract void Start();
         public abstract void Stop();
 
         public abstract void OnCompleted();

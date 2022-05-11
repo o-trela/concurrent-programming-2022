@@ -6,8 +6,6 @@ namespace BallSimulator.Logic
 {
     public class Ball : IBall, IEquatable<Ball>, IDisposable
     {
-        private readonly ISet<IObserver<IBall>> _observers;
-
         public int Diameter { get; init; }
         public int Radius { get; init; }
         public Vector2 Speed { get; private set; }
@@ -38,14 +36,7 @@ namespace BallSimulator.Logic
             _board = board;
             
             _observers = new HashSet<IObserver<IBall>>();
-            MoveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            TrackBall(this);
+            MoveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(10));
         }
 
         public void Move(object state)
@@ -98,6 +89,21 @@ namespace BallSimulator.Logic
             MoveTimer.Dispose();
         }
 
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            TrackBall(this);
+        }
+
+        #endregion
+
+        #region Provider
+
+        private readonly ISet<IObserver<IBall>> _observers;
+
         public IDisposable Subscribe(IObserver<IBall> observer)
         {
             _observers.Add(observer);
@@ -140,5 +146,7 @@ namespace BallSimulator.Logic
 
             _observers.Clear();
         }
+
+        #endregion
     }
 }
