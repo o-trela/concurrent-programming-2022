@@ -5,13 +5,12 @@ using System.Windows.Input;
 
 namespace BallSimulator.Presentation.ViewModel
 {
-    public class SimulationViewModel : ViewModelBase, IObserver<IEnumerable<BallModel>>
+    public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
     {
         // observer
         private IDisposable? unsubscriber;
 
-        private ObservableCollection<BallModel> _balls;
-        private readonly ModelApi _logic;
+        private readonly ModelAbstractApi _model;
         private readonly IValidator<int> _ballsCountValidator;
         private int _ballsCount = 10;
         private bool _isSimulationRunning = false;
@@ -30,38 +29,38 @@ namespace BallSimulator.Presentation.ViewModel
             get => _isSimulationRunning;
             private set => SetField(ref _isSimulationRunning, value);
         }
-        public IEnumerable<BallModel> Balls => _balls;
+        public ObservableCollection<IBallModel> Balls { get; } = new ObservableCollection<IBallModel>();
         public ICommand StartSimulationCommand { get; init; }
         public ICommand StopSimulationCommand { get; init; }
 
-        public SimulationViewModel(ModelApi? model = default, IValidator<int>? ballsCountValidator = default)
+        public SimulationViewModel(ModelAbstractApi? model = default, IValidator<int>? ballsCountValidator = default)
             : base()
         {
-            _logic = model ?? ModelApi.CreateModelApi();
+            _model = model ?? ModelAbstractApi.CreateModelApi();
             _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
-            _balls = new ObservableCollection<BallModel>();
 
             StartSimulationCommand = new StartSimulationCommand(this);
             StopSimulationCommand = new StopSimulationCommand(this);
-            Subscribe(_logic);
+            Subscribe(_model);
+            //_model.Subscribe<IBallModel>(x => Balls.Add(x));
         }
 
         public void StartSimulation()
         {
             IsSimulationRunning = true;
-            _logic.SpawnBalls(BallsCount);
-            _logic.Start();
+            _model.SpawnBalls(BallsCount);
+            //_model.Start();
         }
 
         public void StopSimulation()
         {
             IsSimulationRunning = false;
-            _logic.Stop();
+            _model.Stop();
         }
 
         #region Observer
 
-        public void Subscribe(IObservable<IEnumerable<BallModel>> provider)
+        public void Subscribe(IObservable<IBallModel> provider)
         {
             unsubscriber = provider.Subscribe(this);
         }
@@ -76,11 +75,12 @@ namespace BallSimulator.Presentation.ViewModel
             throw error;
         }
 
-        public void OnNext(IEnumerable<BallModel> balls)
+        public void OnNext(IBallModel ball)
         {
-            if (balls is null) balls = new List<BallModel>();
-            _balls = new ObservableCollection<BallModel>(balls);
+            Balls.Add(ball);
             OnPropertyChanged(nameof(Balls));
+            Trace.WriteLine(Balls.Count);
+
         }
 
         public void Unsubscribe()
