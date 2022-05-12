@@ -29,4 +29,9 @@ public class BallDto : IBallDto
     {
         await Task.Delay(100);
     }
+
+    public IDisposable Subscribe(IObserver<IBallDto> observer)
+    {
+        throw new NotImplementedException();
+    }
 }

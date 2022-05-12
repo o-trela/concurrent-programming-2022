@@ -44,7 +44,6 @@ public class Ball : IBall, IEquatable<Ball>
                 if (_position == value) return;
                 _position = value;
                 TrackBall(this);
-                ballDto?.SetPosition(_position.X, _position.Y);
             }
         }
     }
@@ -95,18 +94,20 @@ public class Ball : IBall, IEquatable<Ball>
 
         lock (locker)
         {
-            Position += Speed * scaler;
             var (posX, posY) = Position;
+            var (speedX, speedY) = Speed;
+
+            ballDto?.SetPosition(posX + speedX * scaler, posY + speedY * scaler);
 
             var (boundryXx, boundryXy) = _board.BoundryX;
-            if (!posX.Between(boundryXx, boundryXy, Radius))
+            if (!ballDto.PositionX.Between(boundryXx, boundryXy, Radius))
             {
-                Speed = new Vector2(-Speed.X, Speed.Y);
+                ballDto.SpeedX = -Speed.X;
             }
             var (boundryYx, boundryYy) = _board.BoundryY;
-            if (!posY.Between(boundryYx, boundryYy, Radius))
+            if (!ballDto.PositionY.Between(boundryYx, boundryYy, Radius))
             {
-                Speed = new Vector2(Speed.X, -Speed.Y);
+                ballDto.PositionY = -Speed.Y;
             }
         }
     }

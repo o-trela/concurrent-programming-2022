@@ -1,6 +1,6 @@
 ﻿namespace BallSimulator.Data;
 
-public interface IBallDto
+public interface IBallDto : IObservable<IBallDto>
 {
     int Diameter { get; init; }
     float SpeedX { get; set; }
