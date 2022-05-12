@@ -93,18 +93,21 @@ public class Ball : IBall, IEquatable<Ball>
     {
         if (Speed.IsZero()) return;
 
-        Position += Speed * scaler;
-        var (posX, posY) = Position;
+        lock (locker)
+        {
+            Position += Speed * scaler;
+            var (posX, posY) = Position;
 
-        var (boundryXx, boundryXy) = _board.BoundryX;
-        if (!posX.Between(boundryXx, boundryXy, Radius))
-        {
-            Speed = new Vector2(-Speed.X, Speed.Y);
-        }
-        var (boundryYx, boundryYy) = _board.BoundryY;
-        if (!posY.Between(boundryYx, boundryYy, Radius))
-        {
-            Speed = new Vector2(Speed.X, -Speed.Y);
+            var (boundryXx, boundryXy) = _board.BoundryX;
+            if (!posX.Between(boundryXx, boundryXy, Radius))
+            {
+                Speed = new Vector2(-Speed.X, Speed.Y);
+            }
+            var (boundryYx, boundryYy) = _board.BoundryY;
+            if (!posY.Between(boundryYx, boundryYy, Radius))
+            {
+                Speed = new Vector2(Speed.X, -Speed.Y);
+            }
         }
     }
 

@@ -33,37 +33,4 @@ public class BallDto : IBallDto
     {
         await Task.Delay(100);
     }
-
-
-    public IDisposable Subscribe(IObserver<IBallDto> observer)
-    {
-        _observers.Add(observer);
-        return new Unsubscriber(_observers, observer);
-    }
-
-    public void TrackBall(IBallDto ball)
-    {
-        if (_observers is null) return;
-        foreach (var observer in _observers)
-        {
-            observer.OnNext(ball);
-        }
-    }
-
-    private class Unsubscriber : IDisposable
-    {
-        private readonly ISet<IObserver<IBallDto>> _observers;
-        private readonly IObserver<IBallDto> _observer;
-
-        public Unsubscriber(ISet<IObserver<IBallDto>> observers, IObserver<IBallDto> observer)
-        {
-            _observers = observers;
-            _observer = observer;
-        }
-
-        public void Dispose()
-        {
-            _observers.Remove(_observer);
-        }
-    }
 }
