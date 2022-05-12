@@ -37,7 +37,7 @@ internal class LogicApi : LogicAbstractApi
             TrackBall(newBall);
         }
         _running = true;
-        Task.Run(LogCollisions);
+        Task.Run(HandleCollisions);
 
         return _balls;
     }
@@ -87,31 +87,20 @@ internal class LogicApi : LogicAbstractApi
         _observers.Clear();
     }
 
-    private void LogCollisions()
+    private void HandleCollisions()
     {
-        while (_running)
+        var collisions = Collisions.Get(_balls);
+        if (collisions.Count > 0)
         {
-            var collisions = Collisions.Get(_balls);
-            if (collisions.Count > 0)
+            foreach (var col in collisions)
             {
-                foreach (var col in collisions)
-                {
-                    var (ball1, ball2) = col;
-                    /*ball1.Yes = true;
-                    ball2.Yes = true;
-                    ball1.LockThread();
-                    ball2.LockThread();*/
-                    var (newSpeed1, newSpeed2) = Collisions.CalculateSpeeds(ball1, ball2);
-                    ball1.Speed = newSpeed1;
-                    ball2.Speed = newSpeed2;
-                    /*ball1.Yes = false;
-                    ball2.Yes = false;*/
-                    //Trace.WriteLine($"{ball1} HIT {ball2}");
-                }
-                //Trace.Write('\n');
+                var (ball1, ball2) = col;
+                var (newSpeed1, newSpeed2) = Collisions.CalculateSpeeds(ball1, ball2);
+                ball1.Speed = newSpeed1;
+                ball2.Speed = newSpeed2;
             }
-            Thread.Sleep(1);
         }
+        Thread.Sleep(1);
     }
 
     private class Unsubscriber : IDisposable

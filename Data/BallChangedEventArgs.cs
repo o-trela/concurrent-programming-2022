@@ -2,9 +2,9 @@
 
 public class BallChangedEventArgs : EventArgs
 {
-    public IBall Ball { get; set; }
+    public IBallDto Ball { get; set; }
 
-    public BallChangedEventArgs(IBall ball)
+    public BallChangedEventArgs(IBallDto ball)
     {
         Ball = ball;
     }

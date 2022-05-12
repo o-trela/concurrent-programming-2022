@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+﻿using BallSimulator.Data;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace BallSimulator.Logic;
 
 public class Ball : IBall, IEquatable<Ball>
 {
-    private readonly object locker = new object();
+    private readonly object locker = new();
 
     public int Diameter { get; init; }
     public int Radius { get; init; }
@@ -18,29 +19,40 @@ public class Ball : IBall, IEquatable<Ball>
                 return _speed;
             }
         }
-
         set
         {
             lock (locker)
             {
                 _speed = value;
+                ballDto.SetSpeed(_speed.X, _speed.Y);
             }
         }
     }
     public Vector2 Position
     {
-        get => _position;
+        get
+        {
+            lock (locker)
+            {
+                return _position;
+            }
+        }
         private set
         {
-            if (_position == value) return;
-            _position = value;
-            TrackBall(this);
+            lock (locker)
+            {
+                if (_position == value) return;
+                _position = value;
+                TrackBall(this);
+                ballDto.SetPosition(_position.X, _position.Y);
+            }
         }
     }
 
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly Board _board;
     private readonly Timey _ballMover;
+    private readonly IBallDto ballDto; 
 
     private Vector2 _speed;
     private Vector2 _position;
@@ -56,7 +68,13 @@ public class Ball : IBall, IEquatable<Ball>
         Speed = speed;
         Radius = diameter / 2;
         _board = board;
-
+        ballDto = new BallDto(Diameter)
+        {
+            SpeedX = Speed.X,
+            SpeedY = Speed.Y,
+            PositionX = Position.X,
+            PositionY = Position.Y,
+        };
         _observers = new HashSet<IObserver<IBall>>();
         _ballMover = new Timey(this.Move);
     }
