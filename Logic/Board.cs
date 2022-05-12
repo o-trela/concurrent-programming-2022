@@ -1,16 +1,15 @@
-﻿namespace BallSimulator.Logic
-{
-    public class Board
-    {
-        public int Height { get; init; }
-        public int Width { get; init; }
-        public Vector2 YBoundry => new Vector2(0, Height);
-        public Vector2 XBoundry => new Vector2(0, Width);
+﻿namespace BallSimulator.Logic;
 
-        public Board(int height, int width)
-        {
-            Height = height;
-            Width = width;
-        }
+public class Board
+{
+    public int Height { get; init; }
+    public int Width { get; init; }
+    public Vector2 BoundryY => new(0, Height);
+    public Vector2 BoundryX => new(0, Width);
+
+    public Board(int height, int width)
+    {
+        Height = height;
+        Width = width;
     }
 }

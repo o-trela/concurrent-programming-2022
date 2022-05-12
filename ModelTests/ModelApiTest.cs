@@ -9,7 +9,7 @@ namespace ModelTests
         [TestMethod]
         public void CreateModelApiTest()
         {
-            ModelApi modelApi = ModelApi.CreateModelApi();
+            ModelAbstractApi modelApi = ModelAbstractApi.CreateModelApi();
             Assert.IsNotNull(modelApi);
         }
     }

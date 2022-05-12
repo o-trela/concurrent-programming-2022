@@ -1,21 +1,16 @@
 using BallSimulator.Data;
 
-namespace BallSimulator.Logic
+namespace BallSimulator.Logic;
+
+public abstract class LogicAbstractApi : IObservable<IBall>, IDisposable
 {
-    public abstract class LogicAbstractApi : IObservable<IEnumerable<Ball>>
+    public static LogicAbstractApi CreateLogicApi(DataAbstractApi? data = default)
     {
-        public abstract IEnumerable<Ball> Balls { get; }
-
-        public abstract void CreateBalls(int count);
-        public abstract void Simulation();
-        public abstract void StartSimulation();
-        public abstract void StopSimulation();
-
-        public abstract IDisposable Subscribe(IObserver<IEnumerable<Ball>> observer);
-
-        public static LogicAbstractApi CreateLogicApi(DataAbstractApi? data = default)
-        {
-            return new SimulationController(data ?? DataAbstractApi.CreateDataApi());
-        }
+        return new LogicApi(data ?? DataAbstractApi.CreateDataApi());
     }
+    public abstract IEnumerable<IBall> CreateBalls(int count);
+
+    public abstract IDisposable Subscribe(IObserver<IBall> observer);
+
+    public abstract void Dispose();
 }
