@@ -24,7 +24,7 @@ public class Ball : IBall, IEquatable<Ball>
             lock (locker)
             {
                 _speed = value;
-                ballDto.SetSpeed(_speed.X, _speed.Y);
+                ballDto?.SetSpeed(_speed.X, _speed.Y);
             }
         }
     }
@@ -44,7 +44,7 @@ public class Ball : IBall, IEquatable<Ball>
                 if (_position == value) return;
                 _position = value;
                 TrackBall(this);
-                ballDto.SetPosition(_position.X, _position.Y);
+                ballDto?.SetPosition(_position.X, _position.Y);
             }
         }
     }

@@ -11,14 +11,14 @@ internal class LogicApi : LogicAbstractApi
     private readonly DataAbstractApi _data;
     private readonly Board _board;
     private readonly Random _rand = new();
-
-    private bool _running = false;
+    private readonly Timey _coliisionHandler;
 
     public LogicApi(DataAbstractApi? data = default)
     {
         _data = data ?? DataAbstractApi.CreateDataApi();
         _observers = new HashSet<IObserver<IBall>>();
 
+        _coliisionHandler = new Timey((_) => HandleCollisions());
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
         _balls = new List<IBall>();
     }
@@ -36,8 +36,7 @@ internal class LogicApi : LogicAbstractApi
 
             TrackBall(newBall);
         }
-        _running = true;
-        Task.Run(HandleCollisions);
+        _coliisionHandler.Start();
 
         return _balls;
     }
@@ -125,7 +124,7 @@ internal class LogicApi : LogicAbstractApi
     public override void Dispose()
     {
         EndTransmission();
-        _running = false;
+        _coliisionHandler.Dispose();
 
         foreach (var ball in _balls)
         {
