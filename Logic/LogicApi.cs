@@ -53,8 +53,8 @@ internal class LogicApi : LogicAbstractApi
 
     private int GetRandomDiameter()
     {
-        //return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
-        return 40;
+        return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
+        //return 40;
     }
 
     #region Provider
@@ -92,6 +92,7 @@ internal class LogicApi : LogicAbstractApi
                 foreach (var col in collisions)
                 {
                     var (ball1, ball2) = col;
+
                     ball1.Yes = true;
                     ball2.Yes = true;
                     ball1.LockThread();
@@ -127,31 +128,25 @@ internal class LogicApi : LogicAbstractApi
         }
 
         public static (Vector2, Vector2) CalculateSpeeds(IBall ball1, IBall ball2)
-        {   
-            Vector2 normal = new Vector2(
-                ball2.Position.X - ball1.Position.X,
-                ball2.Position.Y - ball1.Position.Y);
+        {
+            float ballsDistance = MathF.Sqrt((ball1.Position.X - ball2.Position.X) * (ball1.Position.X - ball2.Position.X) + (ball1.Position.Y - ball2.Position.Y) * (ball1.Position.Y - ball2.Position.Y));
+
+            Vector2 normal = new Vector2((ball2.Position.X - ball1.Position.X) / ballsDistance, (ball2.Position.Y - ball1.Position.Y) / ballsDistance);
+            Vector2 tangent = new Vector2(-normal.Y, normal.X);
 
             if (Vector2.Scalar(ball1.Speed, normal) < 0) return (ball1.Speed, ball2.Speed);
 
-            Vector2 unitNormal = normal/MathF.Sqrt(normal.X*normal.X + normal.Y*normal.Y);
-        
-            Vector2 unitTangent = new Vector2(-unitNormal.Y, unitNormal.X);
+            float dpTan1 = ball1.Speed.X * tangent.X + ball1.Speed.Y * tangent.Y;
+            float dpTan2 = ball2.Speed.X * tangent.X + ball2.Speed.Y * tangent.Y;
 
-            Vector2 velocity1Normal = unitNormal * ball1.Speed;
-            Vector2 velocity2Normal = unitNormal * ball2.Speed;
+            float dpNorm1 = ball1.Speed.X * normal.X + ball1.Speed.Y * normal.Y;
+            float dpNorm2 = ball2.Speed.X * normal.X + ball2.Speed.Y * normal.Y;
 
-            Vector2 velocity1Tangent = unitTangent * ball1.Speed;
-            Vector2 velocity2Tangent = unitTangent * ball2.Speed;
+            float momentum1 = (dpNorm1 * (ball1.Radius - ball2.Radius) + 2.0f * ball2.Radius * dpNorm2) / (ball1.Radius + ball2.Radius);
+            float momentum2 = (dpNorm2 * (ball2.Radius - ball1.Radius) + 2.0f * ball1.Radius * dpNorm1) / (ball1.Radius + ball2.Radius);
 
-            Vector2 acVelocity1Tangent = velocity1Tangent;
-            Vector2 acVelocity2Tangent = velocity2Tangent;
-
-            Vector2 acVelocity1Normal = (velocity1Normal * (ball1.Radius - ball2.Radius) + velocity2Normal * 2 * ball2.Radius) / (ball1.Radius + ball2.Radius);
-            Vector2 acVelocity2Normal = (velocity2Normal * (ball2.Radius - ball1.Radius) + velocity1Normal * 2 * ball1.Radius) / (ball1.Radius + ball2.Radius);
-
-            Vector2 newVelocity1 = acVelocity1Normal * unitNormal + acVelocity1Tangent * unitTangent;
-            Vector2 newVelocity2 = acVelocity2Normal * unitNormal + acVelocity2Tangent * unitTangent;
+            Vector2 newVelocity1 = new Vector2(tangent.X * dpTan1 + normal.X * momentum1, tangent.Y * dpTan1 + normal.Y * momentum1);
+            Vector2 newVelocity2 = new Vector2(tangent.X * dpTan2 + normal.X * momentum2, tangent.Y * dpTan2 + normal.Y * momentum2);
 
             return (newVelocity1, newVelocity2);
         }
