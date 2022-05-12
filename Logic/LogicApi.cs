@@ -53,7 +53,8 @@ internal class LogicApi : LogicAbstractApi
 
     private int GetRandomDiameter()
     {
-        return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
+        //return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
+        return 40;
     }
 
     #region Provider
@@ -91,15 +92,20 @@ internal class LogicApi : LogicAbstractApi
                 foreach (var col in collisions)
                 {
                     var (ball1, ball2) = col;
-                    //ball1.AddSpeed(ball1.Speed);
+                    ball1.Yes = true;
+                    ball2.Yes = true;
+                    ball1.LockThread();
+                    ball2.LockThread();
                     var (newSpeed1, newSpeed2) = Collisions.CalculateSpeeds(ball1, ball2);
                     ball1.Speed = newSpeed1;
                     ball2.Speed = newSpeed2;
+                    ball1.Yes = false;
+                    ball2.Yes = false;
                     //Trace.WriteLine($"{ball1} HIT {ball2}");
                 }
                 //Trace.Write('\n');
             }
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
         }
     }
 
@@ -121,13 +127,12 @@ internal class LogicApi : LogicAbstractApi
         }
 
         public static (Vector2, Vector2) CalculateSpeeds(IBall ball1, IBall ball2)
-        {
-            if (MathF.Sqrt(ball1.Speed.X * ball1.Speed.X + ball1.Speed.Y * ball1.Speed.Y) * MathF.Sqrt(ball2.Speed.X * ball2.Speed.X + ball2.Speed.Y * ball2.Speed.Y) < 0) 
-                return (ball1.Speed, ball2.Speed);
-            
+        {   
             Vector2 normal = new Vector2(
                 ball2.Position.X - ball1.Position.X,
                 ball2.Position.Y - ball1.Position.Y);
+
+            if (Vector2.Scalar(ball1.Speed, normal) < 0) return (ball1.Speed, ball2.Speed);
 
             Vector2 unitNormal = normal/MathF.Sqrt(normal.X*normal.X + normal.Y*normal.Y);
         

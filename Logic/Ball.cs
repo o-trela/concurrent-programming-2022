@@ -7,6 +7,10 @@ public class Ball : IBall, IEquatable<Ball>
 {
     public static int ballsCounter = 0;
 
+    private readonly object x = new object();
+
+    public bool Yes { get; set; } = false;
+
     public int Diameter { get; init; }
     public int Radius { get; init; }
     public Vector2 Speed { get; set; }
@@ -50,18 +54,29 @@ public class Ball : IBall, IEquatable<Ball>
     {
         if (Speed.IsZero()) return;
 
-        Position += Speed * scaler;
+        lock (x)
+        {
+            Position += Speed * scaler;
+            var (posX, posY) = Position;
 
-        var (posX, posY) = Position;
-        var (boundryXx, boundryXy) = _board.BoundryX;
-        if (!posX.Between(boundryXx, boundryXy, Radius))
-        {
-            Speed = new Vector2(-Speed.X, Speed.Y);
+            var (boundryXx, boundryXy) = _board.BoundryX;
+            if (!posX.Between(boundryXx, boundryXy, Radius))
+            {
+                Speed = new Vector2(-Speed.X, Speed.Y);
+            }
+            var (boundryYx, boundryYy) = _board.BoundryY;
+            if (!posY.Between(boundryYx, boundryYy, Radius))
+            {
+                Speed = new Vector2(Speed.X, -Speed.Y);
+            }
         }
-        var (boundryYx, boundryYy) = _board.BoundryY;
-        if (!posY.Between(boundryYx, boundryYy, Radius))
+    }
+
+    public void LockThread()
+    {
+        lock (x)
         {
-            Speed = new Vector2(Speed.X, -Speed.Y);
+            while (true) if (Yes) break;
         }
     }
 

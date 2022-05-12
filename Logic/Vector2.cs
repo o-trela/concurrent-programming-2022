@@ -30,6 +30,11 @@ public struct Vector2 : IEquatable<Vector2>
         return xDifference * xDifference + yDifference * yDifference;
     }
 
+    public static float Scalar(Vector2 point1, Vector2 point2)
+    {
+        return (point1.X * point2.X + point1.Y * point2.Y);
+    }
+
     public bool IsZero()
     {
         return Equals(Zero);
