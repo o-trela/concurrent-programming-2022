@@ -24,6 +24,7 @@ public class Ball : IBall, IEquatable<Ball>
             lock (locker)
             {
                 _speed = value;
+                _ballDto?.SetSpeed(Speed.X, Speed.Y);
             }
         }
     }
@@ -42,6 +43,7 @@ public class Ball : IBall, IEquatable<Ball>
             {
                 if (_position == value) return;
                 _position = value;
+                _ballDto?.SetPosition(Position.X, Position.Y);
                 TrackBall(this);
             }
         }
@@ -50,6 +52,7 @@ public class Ball : IBall, IEquatable<Ball>
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly Board _board;
     private readonly Timey _ballMover;
+    private readonly IBallDto _ballDto;
 
     private IDisposable? _unsubscriber;
     private Vector2 _speed;
@@ -66,7 +69,7 @@ public class Ball : IBall, IEquatable<Ball>
         Speed = speed;
         Radius = diameter / 2;
         _board = board;
-        ballDto ??= new BallDto(Diameter)
+        _ballDto = ballDto ?? new BallDto(Diameter)
         {
             SpeedX = Speed.X,
             SpeedY = Speed.Y,
@@ -76,7 +79,7 @@ public class Ball : IBall, IEquatable<Ball>
 
         _observers = new HashSet<IObserver<IBall>>();
         _ballMover = new Timey(this.Move);
-        Follow(ballDto);
+        Follow(_ballDto);
     }
 
     public void Start()

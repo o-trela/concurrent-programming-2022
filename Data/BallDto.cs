@@ -31,7 +31,7 @@ public class BallDto : IBallDto
 
     private async Task Write()
     {
-        await Task.Delay(100);
+        await Task.Delay(1);
     }
 
     public IDisposable Subscribe(IObserver<IBallDto> observer)
