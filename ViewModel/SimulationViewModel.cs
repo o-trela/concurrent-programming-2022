@@ -9,7 +9,7 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
     private readonly ModelAbstractApi _model;
     private readonly IValidator<int> _ballsCountValidator;
 
-    private int _ballsCount = 10;
+    private int _ballsCount = 4;
     private bool _isSimulationRunning = false;
     private IDisposable? unsubscriber;
 

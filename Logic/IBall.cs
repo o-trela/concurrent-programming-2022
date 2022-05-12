@@ -1,11 +1,13 @@
-﻿using System.ComponentModel;
-
-namespace BallSimulator.Logic;
+﻿namespace BallSimulator.Logic;
 
 public interface IBall : IObservable<IBall>, IDisposable
 {
-    public int Diameter { get; }
-    public int Radius { get; }
-    public Vector2 Speed { get; }
-    public Vector2 Position { get; }
+    int Diameter { get; }
+    int Radius { get; }
+    Vector2 Speed { get; }
+    Vector2 Position { get; }
+
+    void Move(float scaler);
+    Vector2 AddSpeed(Vector2 speed);
+    bool Touches(IBall ball);
 }

@@ -44,13 +44,13 @@ internal class ModelApi : ModelAbstractApi
 
     public override void OnNext(IBall ball)
     {
-        bool contains = _ballToBallModel.TryGetValue(ball, out var ballModel);
-        if (!contains)
+        _ballToBallModel.TryGetValue(ball, out var ballModel);
+        if (ballModel is null)
         {
             ballModel = new BallModel(ball);
             _ballToBallModel.Add(ball, ballModel);
         }
-        TrackBall(ballModel!);
+        TrackBall(ballModel);
     }
 
     #endregion
@@ -65,7 +65,6 @@ internal class ModelApi : ModelAbstractApi
 
     public void TrackBall(IBallModel ball)
     {
-        //if (ball is null) observer.OnError(new NullReferenceException("Ball Object Is Null"));
         foreach (var observer in _observers)
         {
             observer.OnNext(ball);

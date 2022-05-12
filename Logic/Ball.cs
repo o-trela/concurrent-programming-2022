@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace BallSimulator.Logic;
 
 public class Ball : IBall, IEquatable<Ball>
 {
+    public static int ballsCounter = 0;
+
     public int Diameter { get; init; }
     public int Radius { get; init; }
     public Vector2 Speed { get; private set; }
@@ -22,7 +23,8 @@ public class Ball : IBall, IEquatable<Ball>
 
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly Board _board;
-    private readonly Timer _moveTimer;
+    private readonly Timey _ballMover;
+    private readonly int _ballNo;
 
     private Vector2 _position;
 
@@ -32,6 +34,7 @@ public class Ball : IBall, IEquatable<Ball>
 
     public Ball(int diameter, Vector2 position, Vector2 speed, Board board)
     {
+        _ballNo = ballsCounter++;
         Diameter = diameter;
         Position = position;
         Speed = speed;
@@ -39,16 +42,15 @@ public class Ball : IBall, IEquatable<Ball>
         _board = board;
 
         _observers = new HashSet<IObserver<IBall>>();
-        _moveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(10));
+        _ballMover = new Timey(this.Move);
+        _ballMover.Start();
     }
 
-    public void Move(object? state)
+    public void Move(float scaler)
     {
-        if (state is not null) throw new ArgumentOutOfRangeException(nameof(state));
-
         if (Speed.IsZero()) return;
 
-        Position += Speed * 0.1f;
+        Position += Speed * scaler;
 
         var (posX, posY) = Position;
         var (boundryXx, boundryXy) = _board.BoundryX;
@@ -68,10 +70,13 @@ public class Ball : IBall, IEquatable<Ball>
         return Speed += speed;
     }
 
-    public void Dispose()
+    public bool Touches(IBall ball)
     {
-        GC.SuppressFinalize(this);
-        _moveTimer.Dispose();
+        int minDistance = this.Radius + ball.Radius;
+        float minDistanceSquared = minDistance * minDistance;
+        float actualDistanceSquared = Vector2.DistanceSquared(this.Position, ball.Position);
+
+        return minDistanceSquared >= actualDistanceSquared;
     }
 
     public IDisposable Subscribe(IObserver<IBall> observer)
@@ -115,6 +120,12 @@ public class Ball : IBall, IEquatable<Ball>
         }
     }
 
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        _ballMover.Dispose();
+    }
+
     public override bool Equals(object? obj)
     {
         return obj is Ball ball
@@ -132,5 +143,10 @@ public class Ball : IBall, IEquatable<Ball>
     public override int GetHashCode()
     {
         return HashCode.Combine(Diameter, Position, Speed);
+    }
+
+    public override string? ToString()
+    {
+        return $"Ball d={Diameter}, P=[{Position.X:n0}, {Position.Y:n0}], S=[{Speed.X:n0}, {Speed.Y:n0}]";
     }
 }

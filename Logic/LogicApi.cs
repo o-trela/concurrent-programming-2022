@@ -1,4 +1,5 @@
 ﻿using BallSimulator.Data;
+using System.Diagnostics;
 
 namespace BallSimulator.Logic;
 
@@ -31,6 +32,7 @@ internal class LogicApi : LogicAbstractApi
 
             TrackBall(newBall);
         }
+        Task.Run(LogCollisions);
     }
 
     private Vector2 GetRandomPos(int diameter)
@@ -43,9 +45,8 @@ internal class LogicApi : LogicAbstractApi
 
     private Vector2 GetRandomSpeed()
     {
-        float half = _data.MaxSpeed / 2f;
-        double x = _rand.NextDouble() * _data.MaxSpeed - half;
-        double y = _rand.NextDouble() * _data.MaxSpeed - half;
+        double x = (_rand.NextDouble() - 0.5) * _data.MaxSpeed;
+        double y = (_rand.NextDouble() - 0.5) * _data.MaxSpeed;
         return new Vector2((float)x, (float)y);
     }
 
@@ -78,6 +79,44 @@ internal class LogicApi : LogicAbstractApi
             observer.OnCompleted();
         }
         _observers.Clear();
+    }
+
+    private void LogCollisions()
+    {
+        while (true)
+        {
+            var collisions = Collisions.Get(_balls);
+            if (collisions.Count > 0)
+            {
+                foreach (var col in collisions)
+                {
+                    var (ball1, ball2) = col;
+                    /*Vector2 temp = ball1.Speed;
+                    ball1.AddSpeed(ball2.Speed);
+                    ball2.AddSpeed(temp);*/
+                    Trace.WriteLine($"{ball1} HIT {ball2}");
+                }
+                Trace.Write('\n');
+            }
+            Thread.Sleep(50);
+        }
+    }
+
+    private static class Collisions
+    {
+        public static IList<(IBall, IBall)> Get(IList<IBall> balls)
+        {
+            var collisions = new List<(IBall, IBall)>(balls.Count);
+            foreach (var ball1 in balls)
+            {
+                foreach (var ball2 in balls)
+                {
+                    if (ball1 == ball2) continue;
+                    if (ball1.Touches(ball2)) collisions.Add((ball1, ball2));
+                }
+            }
+            return collisions;
+        }
     }
 
     private class Unsubscriber : IDisposable

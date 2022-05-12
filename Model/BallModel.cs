@@ -13,7 +13,8 @@ public class BallModel : IBallModel
     public Vector2 Position => CalculateOffsetPosition(_ball.Position);
     public Vector2 Speed => _ball.Speed;
 
-    private IBall _ball;
+    private readonly IBall _ball;
+
     private IDisposable? _unsubscriber;
 
     public BallModel(IBall ball)
@@ -46,7 +47,7 @@ public class BallModel : IBallModel
 
     public void OnNext(IBall ball)
     {
-        _ball = ball; // Można usunąć, bo to ten sam ball
+        //_ball = ball; // Można usunąć, bo to ten sam ball
         OnPropertyChanged(nameof(Position));
     }
 
