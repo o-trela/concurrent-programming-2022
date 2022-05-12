@@ -16,11 +16,11 @@ internal class ModelApi : ModelAbstractApi
         _logic = logic ?? LogicAbstractApi.CreateLogicApi();
         _observers = new HashSet<IObserver<IBallModel>>();
         _ballToBallModel = new Dictionary<IBall, IBallModel>();
-        Follow(_logic);
     }
 
     public override void Start(int ballsCount)
     {
+        Follow(_logic);
         _logic.CreateBalls(ballsCount);
     }
 

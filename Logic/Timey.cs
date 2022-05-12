@@ -34,9 +34,10 @@ public class Timey : IDisposable
         {
             double delta = watch.Elapsed.TotalMilliseconds;
             watch.Restart();
-
+            
             float scaler = (float)(delta * 0.01);
             _action(scaler.Clamp(0f, 1f));
+            Thread.Sleep(1);
         }
     }
 

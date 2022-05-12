@@ -32,7 +32,7 @@ internal class LogicApi : LogicAbstractApi
 
             TrackBall(newBall);
         }
-        Task.Run(LogCollisions);
+        //Task.Run(LogCollisions);
     }
 
     private Vector2 GetRandomPos(int diameter)
@@ -52,8 +52,7 @@ internal class LogicApi : LogicAbstractApi
 
     private int GetRandomDiameter()
     {
-        int diameter = _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
-        return diameter;
+        return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
     }
 
     #region Provider
@@ -91,9 +90,7 @@ internal class LogicApi : LogicAbstractApi
                 foreach (var col in collisions)
                 {
                     var (ball1, ball2) = col;
-                    /*Vector2 temp = ball1.Speed;
-                    ball1.AddSpeed(ball2.Speed);
-                    ball2.AddSpeed(temp);*/
+                    ball1.AddSpeed(-ball1.Speed);
                     Trace.WriteLine($"{ball1} HIT {ball2}");
                 }
                 Trace.Write('\n');
@@ -117,6 +114,11 @@ internal class LogicApi : LogicAbstractApi
             }
             return collisions;
         }
+
+        /*public static (Vector2, Vector2) CalculateSpeeds(IBall ball1, IBall ball2)
+        {
+
+        }*/
     }
 
     private class Unsubscriber : IDisposable
@@ -146,5 +148,6 @@ internal class LogicApi : LogicAbstractApi
         {
             ball.Dispose();
         }
+        _balls.Clear();
     }
 }

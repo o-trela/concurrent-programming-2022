@@ -35,13 +35,12 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
 
         StartSimulationCommand = new StartSimulationCommand(this);
         StopSimulationCommand = new StopSimulationCommand(this);
-
-        Follow(_model);
     }
 
     public void StartSimulation()
     {
         IsSimulationRunning = true;
+        Follow(_model);
         _model.Start(BallsCount);
     }
 
