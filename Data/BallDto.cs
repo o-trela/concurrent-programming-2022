@@ -8,9 +8,13 @@ public class BallDto : IBallDto
     public float PositionX { get; set; }
     public float PositionY { get; set; }
 
+    private readonly ISet<IObserver<IBallDto>> _observers;
+
     public BallDto(int diameter)
     {
         Diameter = diameter;
+
+        _observers = new HashSet<IObserver<IBallDto>>();
     }
 
     public async Task SetPosition(float positionX, float positionY)
@@ -28,5 +32,38 @@ public class BallDto : IBallDto
     private async Task Write()
     {
         await Task.Delay(100);
+    }
+
+
+    public IDisposable Subscribe(IObserver<IBallDto> observer)
+    {
+        _observers.Add(observer);
+        return new Unsubscriber(_observers, observer);
+    }
+
+    public void TrackBall(IBallDto ball)
+    {
+        if (_observers is null) return;
+        foreach (var observer in _observers)
+        {
+            observer.OnNext(ball);
+        }
+    }
+
+    private class Unsubscriber : IDisposable
+    {
+        private readonly ISet<IObserver<IBallDto>> _observers;
+        private readonly IObserver<IBallDto> _observer;
+
+        public Unsubscriber(ISet<IObserver<IBallDto>> observers, IObserver<IBallDto> observer)
+        {
+            _observers = observers;
+            _observer = observer;
+        }
+
+        public void Dispose()
+        {
+            _observers.Remove(_observer);
+        }
     }
 }

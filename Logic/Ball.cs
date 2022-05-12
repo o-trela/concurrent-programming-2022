@@ -24,7 +24,6 @@ public class Ball : IBall, IEquatable<Ball>
             lock (locker)
             {
                 _speed = value;
-                ballDto?.SetSpeed(_speed.X, _speed.Y);
             }
         }
     }
@@ -44,7 +43,6 @@ public class Ball : IBall, IEquatable<Ball>
                 if (_position == value) return;
                 _position = value;
                 TrackBall(this);
-                ballDto?.SetPosition(_position.X, _position.Y);
             }
         }
     }
@@ -52,31 +50,33 @@ public class Ball : IBall, IEquatable<Ball>
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly Board _board;
     private readonly Timey _ballMover;
-    private readonly IBallDto ballDto; 
 
+    private IDisposable? _unsubscriber;
     private Vector2 _speed;
     private Vector2 _position;
 
-    public Ball(int diameter, int posX, int posY, float speedX, float speedY, Board board)
-        : this(diameter, new Vector2(posX, posY), new Vector2(speedX, speedY), board)
+    public Ball(int diameter, int posX, int posY, float speedX, float speedY, Board board, IBallDto? ballDto = default)
+        : this(diameter, new Vector2(posX, posY), new Vector2(speedX, speedY), board, ballDto)
     { }
 
-    public Ball(int diameter, Vector2 position, Vector2 speed, Board board)
+    public Ball(int diameter, Vector2 position, Vector2 speed, Board board, IBallDto? ballDto = default)
     {
         Diameter = diameter;
         Position = position;
         Speed = speed;
         Radius = diameter / 2;
         _board = board;
-        ballDto = new BallDto(Diameter)
+        ballDto ??= new BallDto(Diameter)
         {
             SpeedX = Speed.X,
             SpeedY = Speed.Y,
             PositionX = Position.X,
             PositionY = Position.Y,
         };
+
         _observers = new HashSet<IObserver<IBall>>();
         _ballMover = new Timey(this.Move);
+        Follow(ballDto);
     }
 
     public void Start()
@@ -93,21 +93,18 @@ public class Ball : IBall, IEquatable<Ball>
     {
         if (Speed.IsZero()) return;
 
-        lock (locker)
-        {
-            Position += Speed * scaler;
-            var (posX, posY) = Position;
+        Position += Speed * scaler;
+        var (posX, posY) = Position;
 
-            var (boundryXx, boundryXy) = _board.BoundryX;
-            if (!posX.Between(boundryXx, boundryXy, Radius))
-            {
-                Speed = new Vector2(-Speed.X, Speed.Y);
-            }
-            var (boundryYx, boundryYy) = _board.BoundryY;
-            if (!posY.Between(boundryYx, boundryYy, Radius))
-            {
-                Speed = new Vector2(Speed.X, -Speed.Y);
-            }
+        var (boundryXx, boundryXy) = _board.BoundryX;
+        if (!posX.Between(boundryXx, boundryXy, Radius))
+        {
+            Speed = new Vector2(-Speed.X, Speed.Y);
+        }
+        var (boundryYx, boundryYy) = _board.BoundryY;
+        if (!posY.Between(boundryYx, boundryYy, Radius))
+        {
+            Speed = new Vector2(Speed.X, -Speed.Y);
         }
     }
 
@@ -115,7 +112,7 @@ public class Ball : IBall, IEquatable<Ball>
     {
         return Speed += speed;
     }
-
+    
     public bool Touches(IBall ball)
     {
         int minDistance = this.Radius + ball.Radius;
@@ -125,6 +122,26 @@ public class Ball : IBall, IEquatable<Ball>
         return minDistanceSquared >= actualDistanceSquared;
     }
 
+
+    public void Follow(IObservable<IBallDto> provider)
+    {
+        _unsubscriber = provider.Subscribe(this);
+    }
+
+    public void OnCompleted()
+    {
+        _unsubscriber?.Dispose();
+    }
+
+    public void OnError(Exception error) => throw error;
+
+    public void OnNext(IBallDto ballDto)
+    {
+        Position = new Vector2(ballDto.PositionX, ballDto.PositionY);
+        Speed = new Vector2(ballDto.SpeedX, ballDto.SpeedY);
+    }
+
+
     public IDisposable Subscribe(IObserver<IBall> observer)
     {
         _observers.Add(observer);
@@ -133,7 +150,7 @@ public class Ball : IBall, IEquatable<Ball>
 
     public void TrackBall(IBall ball)
     {
-        if (_observers == null) return;
+        if (_observers is null) return;
         foreach (var observer in _observers)
         {
             observer.OnNext(ball);
