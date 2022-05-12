@@ -2,7 +2,8 @@
 
 public interface IBall
 {
-    double Diameter { get; }
-    double Left { get; }
-    double Top { get; }
+    int Diameter { get; }
+    int Radius { get; }
+    /*Vector2 Speed { get; set; }
+    Vector2 Position { get; }*/
 }

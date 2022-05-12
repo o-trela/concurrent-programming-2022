@@ -7,7 +7,7 @@ public class Ball : IBall, IEquatable<Ball>
 {
     public static int ballsCounter = 0;
 
-    private readonly object x = new object();
+    private readonly object locker = new object();
 
     public bool Yes { get; set; } = false;
 
@@ -47,14 +47,23 @@ public class Ball : IBall, IEquatable<Ball>
 
         _observers = new HashSet<IObserver<IBall>>();
         _ballMover = new Timey(this.Move);
+    }
+
+    public void Start()
+    {
         _ballMover.Start();
+    }
+
+    public void Stop()
+    {
+        _ballMover.Stop();
     }
 
     public void Move(float scaler)
     {
         if (Speed.IsZero()) return;
 
-        lock (x)
+        lock (locker)
         {
             Position += Speed * scaler;
             var (posX, posY) = Position;
@@ -74,7 +83,7 @@ public class Ball : IBall, IEquatable<Ball>
 
     public void LockThread()
     {
-        lock (x)
+        lock (locker)
         {
             while (true) if (Yes) break;
         }
@@ -138,6 +147,7 @@ public class Ball : IBall, IEquatable<Ball>
     public void Dispose()
     {
         GC.SuppressFinalize(this);
+        Stop();
         _ballMover.Dispose();
     }
 

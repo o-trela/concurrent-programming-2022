@@ -12,6 +12,8 @@ internal class LogicApi : LogicAbstractApi
     private readonly Board _board;
     private readonly Random _rand = new();
 
+    private bool _running = false;
+
     public LogicApi(DataAbstractApi? data = default)
     {
         _data = data ?? DataAbstractApi.CreateDataApi();
@@ -21,7 +23,7 @@ internal class LogicApi : LogicAbstractApi
         _balls = new List<IBall>();
     }
 
-    public override void CreateBalls(int count)
+    public override IEnumerable<IBall> CreateBalls(int count)
     {
         for (var i = 0; i < count; i++)
         {
@@ -29,11 +31,15 @@ internal class LogicApi : LogicAbstractApi
             Vector2 position = GetRandomPos(diameter);
             Vector2 speed = GetRandomSpeed();
             Ball newBall = new(diameter, position, speed, _board);
+            newBall.Start();
             _balls.Add(newBall);
 
             TrackBall(newBall);
         }
+        _running = true;
         Task.Run(LogCollisions);
+
+        return _balls;
     }
 
     private Vector2 GetRandomPos(int diameter)
@@ -54,7 +60,6 @@ internal class LogicApi : LogicAbstractApi
     private int GetRandomDiameter()
     {
         return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
-        //return 40;
     }
 
     #region Provider
@@ -65,7 +70,7 @@ internal class LogicApi : LogicAbstractApi
         return new Unsubscriber(_observers, observer);
     }
 
-    public void TrackBall(IBall ball)
+    private void TrackBall(IBall ball)
     {
         foreach (var observer in _observers)
         {
@@ -73,7 +78,7 @@ internal class LogicApi : LogicAbstractApi
         }
     }
 
-    public void EndTransmission()
+    private void EndTransmission()
     {
         foreach (var observer in _observers)
         {
@@ -84,7 +89,7 @@ internal class LogicApi : LogicAbstractApi
 
     private void LogCollisions()
     {
-        while (true)
+        while (_running)
         {
             var collisions = Collisions.Get(_balls);
             if (collisions.Count > 0)
@@ -92,21 +97,20 @@ internal class LogicApi : LogicAbstractApi
                 foreach (var col in collisions)
                 {
                     var (ball1, ball2) = col;
-
-                    ball1.Yes = true;
+                    /*ball1.Yes = true;
                     ball2.Yes = true;
                     ball1.LockThread();
-                    ball2.LockThread();
+                    ball2.LockThread();*/
                     var (newSpeed1, newSpeed2) = Collisions.CalculateSpeeds(ball1, ball2);
                     ball1.Speed = newSpeed1;
                     ball2.Speed = newSpeed2;
-                    ball1.Yes = false;
-                    ball2.Yes = false;
+                    /*ball1.Yes = false;
+                    ball2.Yes = false;*/
                     //Trace.WriteLine($"{ball1} HIT {ball2}");
                 }
                 //Trace.Write('\n');
             }
-            //Thread.Sleep(1);
+            Thread.Sleep(10);
         }
     }
 
@@ -120,8 +124,7 @@ internal class LogicApi : LogicAbstractApi
                 foreach (var ball2 in balls)
                 {
                     if (ball1 == ball2) continue;
-                    if (ball1.Touches(ball2) && !collisions.Contains((ball2, ball1))) 
-                        collisions.Add((ball1, ball2));
+                    if (ball1.Touches(ball2) && !collisions.Contains((ball2, ball1))) collisions.Add((ball1, ball2));
                 }
             }
             return collisions;
@@ -129,7 +132,7 @@ internal class LogicApi : LogicAbstractApi
 
         public static (Vector2, Vector2) CalculateSpeeds(IBall ball1, IBall ball2)
         {
-            float ballsDistance = MathF.Sqrt((ball1.Position.X - ball2.Position.X) * (ball1.Position.X - ball2.Position.X) + (ball1.Position.Y - ball2.Position.Y) * (ball1.Position.Y - ball2.Position.Y));
+            float ballsDistance = Vector2.Distance(ball1.Position, ball2.Position);
 
             Vector2 normal = new Vector2((ball2.Position.X - ball1.Position.X) / ballsDistance, (ball2.Position.Y - ball1.Position.Y) / ballsDistance);
             Vector2 tangent = new Vector2(-normal.Y, normal.X);
@@ -174,6 +177,7 @@ internal class LogicApi : LogicAbstractApi
     public override void Dispose()
     {
         EndTransmission();
+        _running = false;
 
         foreach (var ball in _balls)
         {

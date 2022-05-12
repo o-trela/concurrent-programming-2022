@@ -13,14 +13,16 @@ namespace BallSimulator.Tests
         private static readonly float TestYSpeed = -0.1f;
         private static readonly int TestDiameter = 2;
 
-        readonly Ball _testBall;
+        private readonly Ball _testBall;
+        private readonly Board _testBoard;
 
         public BallTest()
         {
             Vector2 position = new Vector2(TestXPos, TestYPos);
             Vector2 speed = new Vector2(TestXSpeed, TestYSpeed);
 
-            _testBall = new Ball(TestDiameter, position, speed);
+            _testBoard = new Board(100, 100);
+            _testBall = new Ball(TestDiameter, position, speed, _testBoard);
         }
 
         [TestMethod]
@@ -36,31 +38,30 @@ namespace BallSimulator.Tests
         [TestMethod]
         public void MoveTest()
         {
+            float scaler = 1f;
             Vector2 boundX = new Vector2(0, 100);
             Vector2 boundY = new Vector2(0, 100);
-            Ball ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero);
+            Ball ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero, _testBoard);
 
             ball.AddSpeed(new Vector2(-2.5f, 0));
             Assert.AreEqual(ball.Speed.X, -2.5f);
 
-            ball.Move(boundX, boundY);
+            ball.Move(scaler);
             Assert.AreEqual(ball.Position.X, TestXPos - 2.5f);
 
-            ball.Move(boundX, boundY);
-            ball.Move(boundX, boundY);
-            ball.Move(boundX, boundY);
+            ball.Move(scaler);
+            ball.Move(scaler);
+            ball.Move(scaler);
 
             ball.AddSpeed(new Vector2(-2.5f, -2.5f));
             Assert.AreEqual(ball.Speed, new Vector2(0, -2.5f));
 
-            ball.Move(boundX, boundY);
+            ball.Move(scaler);
             Assert.AreEqual(ball.Position.Y, TestYPos - 2.5f);
 
-            ball.Move(boundX, boundY);
-            ball.Move(boundX, boundY);
-            ball.Move(boundX, boundY);
-
-            Assert.ThrowsException<ArgumentException>(() => ball.Move(boundX, boundY, 2));
+            ball.Move(scaler);
+            ball.Move(scaler);
+            ball.Move(scaler);
         }
 
         [TestMethod]

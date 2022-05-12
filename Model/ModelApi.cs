@@ -63,7 +63,7 @@ internal class ModelApi : ModelAbstractApi
         return new Unsubscriber(_observers, observer);
     }
 
-    public void TrackBall(IBallModel ball)
+    private void TrackBall(IBallModel ball)
     {
         foreach (var observer in _observers)
         {
@@ -71,7 +71,7 @@ internal class ModelApi : ModelAbstractApi
         }
     }
 
-    public void EndTransmission()
+    private void EndTransmission()
     {
         foreach (var observer in _observers)
         {

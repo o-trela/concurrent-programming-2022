@@ -4,14 +4,20 @@ namespace BallSimulator.Logic;
 
 public class Timey : IDisposable
 {
-    private readonly Action<float> _action;
     private readonly Stopwatch watch;
+    private readonly Action<float> _action;
+    private readonly int _minTimeout;
 
     private bool _running = false;
 
     public Timey(Action<float> action)
+        : this (action, 1)
+    { }
+
+    public Timey(Action<float> action, int minTimeout)
     {
         _action = action;
+        _minTimeout = minTimeout;
         watch = new Stopwatch();
     }
 
@@ -37,7 +43,7 @@ public class Timey : IDisposable
             
             float scaler = (float)(delta * 0.01);
             _action(scaler.Clamp(0f, 1f));
-            Thread.Sleep(1);
+            Thread.Sleep(_minTimeout);
         }
     }
 
