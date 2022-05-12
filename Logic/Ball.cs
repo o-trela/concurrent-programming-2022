@@ -9,7 +9,7 @@ public class Ball : IBall, IEquatable<Ball>
 
     public int Diameter { get; init; }
     public int Radius { get; init; }
-    public Vector2 Speed { get; private set; }
+    public Vector2 Speed { get; set; }
     public Vector2 Position
     {
         get => _position;

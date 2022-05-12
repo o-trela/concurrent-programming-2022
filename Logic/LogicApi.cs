@@ -1,5 +1,6 @@
 ﻿using BallSimulator.Data;
 using System.Diagnostics;
+using System.Linq;
 
 namespace BallSimulator.Logic;
 
@@ -32,7 +33,7 @@ internal class LogicApi : LogicAbstractApi
 
             TrackBall(newBall);
         }
-        //Task.Run(LogCollisions);
+        Task.Run(LogCollisions);
     }
 
     private Vector2 GetRandomPos(int diameter)
@@ -90,35 +91,65 @@ internal class LogicApi : LogicAbstractApi
                 foreach (var col in collisions)
                 {
                     var (ball1, ball2) = col;
-                    ball1.AddSpeed(-ball1.Speed);
-                    Trace.WriteLine($"{ball1} HIT {ball2}");
+                    //ball1.AddSpeed(ball1.Speed);
+                    var (newSpeed1, newSpeed2) = Collisions.CalculateSpeeds(ball1, ball2);
+                    ball1.Speed = newSpeed1;
+                    ball2.Speed = newSpeed2;
+                    //Trace.WriteLine($"{ball1} HIT {ball2}");
                 }
-                Trace.Write('\n');
+                //Trace.Write('\n');
             }
-            Thread.Sleep(50);
+            Thread.Sleep(1);
         }
     }
 
     private static class Collisions
     {
-        public static IList<(IBall, IBall)> Get(IList<IBall> balls)
+        public static ISet<(IBall, IBall)> Get(IList<IBall> balls)
         {
-            var collisions = new List<(IBall, IBall)>(balls.Count);
+            var collisions = new HashSet<(IBall, IBall)>(balls.Count);
             foreach (var ball1 in balls)
             {
                 foreach (var ball2 in balls)
                 {
                     if (ball1 == ball2) continue;
-                    if (ball1.Touches(ball2)) collisions.Add((ball1, ball2));
+                    if (ball1.Touches(ball2) && !collisions.Contains((ball2, ball1))) 
+                        collisions.Add((ball1, ball2));
                 }
             }
             return collisions;
         }
 
-        /*public static (Vector2, Vector2) CalculateSpeeds(IBall ball1, IBall ball2)
+        public static (Vector2, Vector2) CalculateSpeeds(IBall ball1, IBall ball2)
         {
+            if (MathF.Sqrt(ball1.Speed.X * ball1.Speed.X + ball1.Speed.Y * ball1.Speed.Y) * MathF.Sqrt(ball2.Speed.X * ball2.Speed.X + ball2.Speed.Y * ball2.Speed.Y) < 0) 
+                return (ball1.Speed, ball2.Speed);
+            
+            Vector2 normal = new Vector2(
+                ball2.Position.X - ball1.Position.X,
+                ball2.Position.Y - ball1.Position.Y);
 
-        }*/
+            Vector2 unitNormal = normal/MathF.Sqrt(normal.X*normal.X + normal.Y*normal.Y);
+        
+            Vector2 unitTangent = new Vector2(-unitNormal.Y, unitNormal.X);
+
+            Vector2 velocity1Normal = unitNormal * ball1.Speed;
+            Vector2 velocity2Normal = unitNormal * ball2.Speed;
+
+            Vector2 velocity1Tangent = unitTangent * ball1.Speed;
+            Vector2 velocity2Tangent = unitTangent * ball2.Speed;
+
+            Vector2 acVelocity1Tangent = velocity1Tangent;
+            Vector2 acVelocity2Tangent = velocity2Tangent;
+
+            Vector2 acVelocity1Normal = (velocity1Normal * (ball1.Radius - ball2.Radius) + velocity2Normal * 2 * ball2.Radius) / (ball1.Radius + ball2.Radius);
+            Vector2 acVelocity2Normal = (velocity2Normal * (ball2.Radius - ball1.Radius) + velocity1Normal * 2 * ball1.Radius) / (ball1.Radius + ball2.Radius);
+
+            Vector2 newVelocity1 = acVelocity1Normal * unitNormal + acVelocity1Tangent * unitTangent;
+            Vector2 newVelocity2 = acVelocity2Normal * unitNormal + acVelocity2Tangent * unitTangent;
+
+            return (newVelocity1, newVelocity2);
+        }
     }
 
     private class Unsubscriber : IDisposable
