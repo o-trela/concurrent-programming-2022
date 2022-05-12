@@ -20,7 +20,7 @@ public struct Vector2 : IEquatable<Vector2>
 
     public static float Distance(Vector2 point1, Vector2 point2)
     {
-        return (float)Math.Sqrt(DistanceSquared(point1, point2));
+        return MathF.Sqrt(DistanceSquared(point1, point2));
     }
 
     public static float DistanceSquared(Vector2 point1, Vector2 point2)

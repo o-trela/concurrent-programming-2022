@@ -5,15 +5,28 @@ namespace BallSimulator.Logic;
 
 public class Ball : IBall, IEquatable<Ball>
 {
-    public static int ballsCounter = 0;
-
     private readonly object locker = new object();
-
-    public bool Yes { get; set; } = false;
 
     public int Diameter { get; init; }
     public int Radius { get; init; }
-    public Vector2 Speed { get; set; }
+    public Vector2 Speed
+    {
+        get
+        {
+            lock (locker)
+            {
+                return _speed;
+            }
+        }
+
+        set
+        {
+            lock (locker)
+            {
+                _speed = value;
+            }
+        }
+    }
     public Vector2 Position
     {
         get => _position;
@@ -28,8 +41,8 @@ public class Ball : IBall, IEquatable<Ball>
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly Board _board;
     private readonly Timey _ballMover;
-    private readonly int _ballNo;
 
+    private Vector2 _speed;
     private Vector2 _position;
 
     public Ball(int diameter, int posX, int posY, float speedX, float speedY, Board board)
@@ -38,7 +51,6 @@ public class Ball : IBall, IEquatable<Ball>
 
     public Ball(int diameter, Vector2 position, Vector2 speed, Board board)
     {
-        _ballNo = ballsCounter++;
         Diameter = diameter;
         Position = position;
         Speed = speed;
@@ -81,14 +93,6 @@ public class Ball : IBall, IEquatable<Ball>
         }
     }
 
-    public void LockThread()
-    {
-        lock (locker)
-        {
-            while (true) if (Yes) break;
-        }
-    }
-
     public Vector2 AddSpeed(Vector2 speed)
     {
         return Speed += speed;
@@ -117,15 +121,6 @@ public class Ball : IBall, IEquatable<Ball>
             observer.OnNext(ball);
         }
     }
-
-    /*public void EndTransmission()
-    {
-        foreach (var observer in _observers)
-        {
-            observer.OnCompleted();
-        }
-        _observers.Clear();
-    }*/
 
     private class Unsubscriber : IDisposable
     {
