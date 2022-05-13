@@ -118,13 +118,13 @@ public class FairQueuer
     {
         TypeCode typeCode = Type.GetTypeCode(typeof(T));
 
-        Action actionNoArgs = () =>
+        return Add(ActionNoArgs);
+
+        void ActionNoArgs()
         {
             T value = (T)Convert.ChangeType(_delta, typeCode, numberFormat);
             action(value);
-        };
-
-        return Add(actionNoArgs);
+        }
     }
 
     public IDisposable Add(Action action)
