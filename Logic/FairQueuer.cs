@@ -98,7 +98,6 @@ public class FairQueuer
                 tasks.Clear();
             }
 
-
             lock (validatorLock)
             {
                 if (_validator is not null)

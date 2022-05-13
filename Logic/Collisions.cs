@@ -10,13 +10,13 @@ public static class Collisions
             foreach (var ball2 in balls)
             {
                 if (ball1 == ball2) continue;
-                if (ball1.Touches(ball2) && !collisions.Contains((ball2, ball1))) collisions.Add((ball1, ball2));
+                if (ball1.Touches(ball2)) collisions.Add((ball1, ball2));
             }
         }
         return collisions;
     }
 
-    public static (Vector2, Vector2) CalculateSpeeds(IBall ball1, IBall ball2)
+    public static (Vector2 speedOne, Vector2 speedTwo) CalculateSpeeds(IBall ball1, IBall ball2)
     {
         float distance = Vector2.Distance(ball1.Position, ball2.Position);
 

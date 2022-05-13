@@ -47,7 +47,6 @@ public class BallModel : IBallModel
 
     public void OnNext(IBall ball)
     {
-        //_ball = ball; // Można usunąć, bo to ten sam ball
         OnPropertyChanged(nameof(Position));
     }
 

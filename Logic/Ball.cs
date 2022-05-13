@@ -4,7 +4,8 @@ namespace BallSimulator.Logic;
 
 public class Ball : IBall, IEquatable<Ball>
 {
-    private readonly object locker = new();
+    private readonly object positionLock = new();
+    private readonly object speedLock = new();
 
     public int Diameter { get; init; }
     public int Radius { get; init; }
@@ -12,17 +13,16 @@ public class Ball : IBall, IEquatable<Ball>
     {
         get
         {
-            lock (locker)
+            lock (speedLock)
             {
                 return _speed;
             }
         }
         set
         {
-            lock (locker)
+            lock (speedLock)
             {
                 _speed = value;
-                _ballDto?.SetSpeed(Speed.X, Speed.Y);
             }
         }
     }
@@ -30,18 +30,17 @@ public class Ball : IBall, IEquatable<Ball>
     {
         get
         {
-            lock (locker)
+            lock (positionLock)
             {
                 return _position;
             }
         }
         private set
         {
-            lock (locker)
+            lock (positionLock)
             {
                 if (_position == value) return;
                 _position = value;
-                _ballDto?.SetPosition(Position.X, Position.Y);
                 TrackBall(this);
             }
         }
@@ -67,13 +66,7 @@ public class Ball : IBall, IEquatable<Ball>
         Speed = speed;
         Radius = diameter / 2;
         _board = board;
-        _ballDto = ballDto ?? new BallDto(Diameter)
-        {
-            SpeedX = Speed.X,
-            SpeedY = Speed.Y,
-            PositionX = Position.X,
-            PositionY = Position.Y,
-        };
+        _ballDto = ballDto ?? new BallDto(Diameter, Position.X, Position.Y, Speed.X, Speed.Y);
 
         _observers = new HashSet<IObserver<IBall>>();
         _disposer = ThreadManager.Add<float>(Move);
@@ -86,11 +79,11 @@ public class Ball : IBall, IEquatable<Ball>
 
         float strength = (delta * 0.01f).Clamp(0f, 1f);
 
-        Position += Speed * strength;
+        var move = Speed * strength;
         var (posX, posY) = Position;
+        var (newSpeedX, newSpeedY) = Speed;
 
         var (boundryXx, boundryXy) = _board.BoundryX;
-        var (newSpeedX, newSpeedY) = Speed;
         if (!posX.Between(boundryXx, boundryXy, Radius))
         {
             if (posX <= boundryXx + Radius)
@@ -101,7 +94,6 @@ public class Ball : IBall, IEquatable<Ball>
             {
                 newSpeedX = -MathF.Abs(newSpeedX);
             }
-            Speed = new Vector2(newSpeedX, Speed.Y);
         }
         var (boundryYx, boundryYy) = _board.BoundryY;
         if (!posY.Between(boundryYx, boundryYy, Radius))
@@ -114,13 +106,10 @@ public class Ball : IBall, IEquatable<Ball>
             {
                 newSpeedY = -MathF.Abs(newSpeedY);
             }
-            Speed = new Vector2(Speed.X, newSpeedY);
         }
-    }
 
-    public Vector2 AddSpeed(Vector2 speed)
-    {
-        return Speed += speed;
+        _ballDto?.SetSpeed(newSpeedX, newSpeedY);
+        _ballDto?.Move(move.X, move.Y);
     }
 
     public bool Touches(IBall ball)
@@ -211,6 +200,6 @@ public class Ball : IBall, IEquatable<Ball>
 
     public override string? ToString()
     {
-        return $"Ball d={Diameter}, P=[{Position.X:n0}, {Position.Y:n0}], S=[{Speed.X:n0}, {Speed.Y:n0}]";
+        return $"Ball d={Diameter}, P=[{Position.X:n1}, {Position.Y:n1}], S=[{Speed.X:n1}, {Speed.Y:n1}]";
     }
 }

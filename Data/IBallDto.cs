@@ -3,11 +3,11 @@
 public interface IBallDto : IObservable<IBallDto>
 {
     int Diameter { get; init; }
-    float SpeedX { get; set; }
-    float SpeedY { get; set; }
-    float PositionX { get; set; }
-    float PositionY { get; set; }
+    float SpeedX { get; }
+    float SpeedY { get; }
+    float PositionX { get; }
+    float PositionY { get; }
 
     Task SetSpeed(float speedX, float speedY);
-    Task SetPosition(float positionX, float positionY);
+    Task Move(float moveX, float moveY);
 }

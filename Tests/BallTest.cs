@@ -40,25 +40,27 @@ namespace BallSimulator.Tests
             float delta = 100f;
             Ball ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero, _testBoard);
 
-            ball.AddSpeed(new Vector2(-2.5f, 0));
-            Assert.AreEqual(ball.Speed.X, -2.5f);
+            ball.Speed = new Vector2(0f, -2.5f);
+            Assert.AreEqual(ball.Speed.X, 0f);
 
             ball.Move(delta);
-            Assert.AreEqual(ball.Position.X, TestXPos - 2.5f);
-
-            ball.Move(delta);
-            ball.Move(delta);
-            ball.Move(delta);
-
-            ball.AddSpeed(new Vector2(-2.5f, -2.5f));
-            Assert.AreEqual(ball.Speed, new Vector2(0, -2.5f));
-
-            ball.Move(delta);
-            Assert.AreEqual(ball.Position.Y, TestYPos - 2.5f);
+            Assert.AreEqual(ball.Position.X, TestXPos);
 
             ball.Move(delta);
             ball.Move(delta);
             ball.Move(delta);
+
+            ball.Speed = new Vector2(3f, 5f);
+            Assert.AreEqual(ball.Speed, new Vector2(3f, 5f));
+
+            ball.Move(delta);
+            Assert.AreEqual(ball.Position.Y, 5f);
+
+            ball.Move(delta);
+            ball.Move(delta);
+            ball.Move(delta);
+
+            Assert.AreEqual(ball.Position, new Vector2(17f, 20f));
         }
 
         [TestMethod]

@@ -48,8 +48,8 @@ internal class LogicApi : LogicAbstractApi
 
     private Vector2 GetRandomSpeed()
     {
-        double x = (_rand.NextDouble() - 0.5) * _data.MaxSpeed;
-        double y = (_rand.NextDouble() - 0.5) * _data.MaxSpeed;
+        double x = (_rand.NextDouble() * 2.0 - 1.0) * _data.MaxSpeed;
+        double y = (_rand.NextDouble() * 2.0 - 1.0) * _data.MaxSpeed;
         return new Vector2((float)x, (float)y);
     }
 
@@ -91,9 +91,7 @@ internal class LogicApi : LogicAbstractApi
             foreach (var col in collisions)
             {
                 var (ball1, ball2) = col;
-                var (newSpeed1, newSpeed2) = Collisions.CalculateSpeeds(ball1, ball2);
-                ball1.Speed = newSpeed1;
-                ball2.Speed = newSpeed2;
+                (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
             }
         }
         Thread.Sleep(1);
