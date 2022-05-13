@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BallSimulator.Logic;
 
@@ -123,7 +118,8 @@ public class FairQueuer
     {
         TypeCode typeCode = Type.GetTypeCode(typeof(T));
 
-        Action actionNoArgs = () => {
+        Action actionNoArgs = () =>
+        {
             T value = (T)Convert.ChangeType(_delta, typeCode, numberFormat);
             action(value);
         };

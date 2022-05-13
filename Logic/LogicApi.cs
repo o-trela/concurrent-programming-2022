@@ -1,6 +1,5 @@
 ﻿using BallSimulator.Data;
 using System.Diagnostics;
-using System.Linq;
 
 namespace BallSimulator.Logic;
 

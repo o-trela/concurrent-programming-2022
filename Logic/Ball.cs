@@ -122,7 +122,7 @@ public class Ball : IBall, IEquatable<Ball>
     {
         return Speed += speed;
     }
-    
+
     public bool Touches(IBall ball)
     {
         int minDistance = this.Radius + ball.Radius;

@@ -2,7 +2,7 @@
 
 public static class ThreadManager
 {
-    private static readonly FairQueuer _fairQueuer = new (Environment.ProcessorCount * 2);
+    private static readonly FairQueuer _fairQueuer = new(Environment.ProcessorCount * 2);
 
     public static double AverageDeltaTime => _fairQueuer.AverageDelta;
     public static double AverageFps => _fairQueuer.AverageFps;

@@ -1,5 +1,4 @@
 ﻿using BallSimulator.Logic;
-using System.Diagnostics;
 
 namespace BallSimulator.Presentation.Model;
 
