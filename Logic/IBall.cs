@@ -9,8 +9,6 @@ public interface IBall : IObservable<IBall>, IObserver<IBallDto>, IDisposable
     Vector2 Position { get; }
     Vector2 Speed { get; set; }
 
-    void Start();
-    void Stop();
     void Move(float scaler);
     Vector2 AddSpeed(Vector2 speed);
     bool Touches(IBall ball);

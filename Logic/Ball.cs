@@ -1,6 +1,4 @@
 ﻿using BallSimulator.Data;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace BallSimulator.Logic;
 
@@ -51,9 +49,9 @@ public class Ball : IBall, IEquatable<Ball>
 
     private readonly ISet<IObserver<IBall>> _observers;
     private readonly Board _board;
-    private readonly Timey _ballMover;
     private readonly IBallDto _ballDto;
 
+    private IDisposable? _disposer;
     private IDisposable? _unsubscriber;
     private Vector2 _speed;
     private Vector2 _position;
@@ -78,36 +76,45 @@ public class Ball : IBall, IEquatable<Ball>
         };
 
         _observers = new HashSet<IObserver<IBall>>();
-        _ballMover = new Timey(this.Move);
+        _disposer = ThreadManager.Add<float>(Move);
         Follow(_ballDto);
     }
 
-    public void Start()
-    {
-        _ballMover.Start();
-    }
-
-    public void Stop()
-    {
-        _ballMover.Stop();
-    }
-
-    public void Move(float scaler)
+    public void Move(float delta)
     {
         if (Speed.IsZero()) return;
 
-        Position += Speed * scaler;
+        float strength = (delta * 0.01f).Clamp(0f, 1f);
+
+        Position += Speed * strength;
         var (posX, posY) = Position;
 
         var (boundryXx, boundryXy) = _board.BoundryX;
+        var (newSpeedX, newSpeedY) = Speed;
         if (!posX.Between(boundryXx, boundryXy, Radius))
         {
-            Speed = new Vector2(-Speed.X, Speed.Y);
+            if (posX <= boundryXx + Radius)
+            {
+                newSpeedX = MathF.Abs(newSpeedX);
+            }
+            else
+            {
+                newSpeedX = -MathF.Abs(newSpeedX);
+            }
+            Speed = new Vector2(newSpeedX, Speed.Y);
         }
         var (boundryYx, boundryYy) = _board.BoundryY;
         if (!posY.Between(boundryYx, boundryYy, Radius))
         {
-            Speed = new Vector2(Speed.X, -Speed.Y);
+            if (posY <= boundryYx + Radius)
+            {
+                newSpeedY = MathF.Abs(newSpeedY);
+            }
+            else
+            {
+                newSpeedY = -MathF.Abs(newSpeedY);
+            }
+            Speed = new Vector2(Speed.X, newSpeedY);
         }
     }
 
@@ -180,8 +187,7 @@ public class Ball : IBall, IEquatable<Ball>
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        Stop();
-        _ballMover.Dispose();
+        _disposer?.Dispose();
     }
 
     public override bool Equals(object? obj)

@@ -38,30 +38,28 @@ namespace BallSimulator.Tests
         [TestMethod]
         public void MoveTest()
         {
-            float scaler = 1f;
-            Vector2 boundX = new Vector2(0, 100);
-            Vector2 boundY = new Vector2(0, 100);
+            float delta = 100f;
             Ball ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero, _testBoard);
 
             ball.AddSpeed(new Vector2(-2.5f, 0));
             Assert.AreEqual(ball.Speed.X, -2.5f);
 
-            ball.Move(scaler);
+            ball.Move(delta);
             Assert.AreEqual(ball.Position.X, TestXPos - 2.5f);
 
-            ball.Move(scaler);
-            ball.Move(scaler);
-            ball.Move(scaler);
+            ball.Move(delta);
+            ball.Move(delta);
+            ball.Move(delta);
 
             ball.AddSpeed(new Vector2(-2.5f, -2.5f));
             Assert.AreEqual(ball.Speed, new Vector2(0, -2.5f));
 
-            ball.Move(scaler);
+            ball.Move(delta);
             Assert.AreEqual(ball.Position.Y, TestYPos - 2.5f);
 
-            ball.Move(scaler);
-            ball.Move(scaler);
-            ball.Move(scaler);
+            ball.Move(delta);
+            ball.Move(delta);
+            ball.Move(delta);
         }
 
         [TestMethod]
