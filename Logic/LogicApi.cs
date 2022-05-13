@@ -124,6 +124,10 @@ internal class LogicApi : LogicAbstractApi
         EndTransmission();
         ThreadManager.Stop();
 
+        Trace.WriteLine($"Average Delta = {ThreadManager.AverageDeltaTime}");
+        Trace.WriteLine($"Average Fps = {ThreadManager.AverageFps}");
+        Trace.WriteLine($"Total Frame Count = {ThreadManager.FrameCount}");
+
         foreach (var ball in _balls)
         {
             ball.Dispose();

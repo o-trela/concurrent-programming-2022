@@ -22,7 +22,7 @@ public class FairQueuer
     private readonly Stopwatch _executionTimer;
     private readonly IList<Action> _workersQueue;
     private readonly int _capacity;
-    private static readonly NumberFormatInfo numberFormat = NumberFormatInfo.InvariantInfo;
+    private readonly NumberFormatInfo numberFormat = NumberFormatInfo.InvariantInfo;
 
     private Action? _validator;
     private double _delta = 0.0;
