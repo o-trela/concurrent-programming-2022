@@ -60,6 +60,15 @@ internal class LogicApi : LogicAbstractApi
         return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
     }
 
+    private void HandleCollisions()
+    {
+        foreach (var col in Collisions.Get(_balls))
+        {
+            var (ball1, ball2) = col;
+            (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
+        }
+    }
+
     #region Provider
 
     public override IDisposable Subscribe(IObserver<IBallLogic> observer)
@@ -83,15 +92,6 @@ internal class LogicApi : LogicAbstractApi
             observer.OnCompleted();
         }
         _observers.Clear();
-    }
-
-    private void HandleCollisions()
-    {
-        foreach (var col in Collisions.Get(_balls))
-        {
-            var (ball1, ball2) = col;
-            (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
-        }
     }
 
     private class Unsubscriber : IDisposable

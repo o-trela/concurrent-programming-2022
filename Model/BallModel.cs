@@ -7,8 +7,6 @@ namespace BallSimulator.Presentation.Model;
 
 public class BallModel : IBallModel
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public int Diameter => _ball.Diameter;
     public int Radius => _ball.Radius;
     public float PositionX => _ball.Position.X - Radius;
@@ -51,8 +49,14 @@ public class BallModel : IBallModel
 
     #endregion
 
+    #region INotifyPropertyChanged
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     private void OnPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    #endregion
 }

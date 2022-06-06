@@ -105,6 +105,8 @@ public class Ball : IBall, IEquatable<Ball>
         return minDistanceSquared >= actualDistanceSquared;
     }
 
+    #region Provider
+
     public IDisposable Subscribe(IObserver<IBall> observer)
     {
         _observers.Add(observer);
@@ -137,11 +139,7 @@ public class Ball : IBall, IEquatable<Ball>
         }
     }
 
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-        _disposer?.Dispose();
-    }
+    #endregion
 
     public override bool Equals(object? obj)
     {
@@ -165,5 +163,11 @@ public class Ball : IBall, IEquatable<Ball>
     public override string? ToString()
     {
         return $"Ball d={Diameter}, P=[{Position.X:n1}, {Position.Y:n1}], S=[{Speed.X:n1}, {Speed.Y:n1}]";
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        _disposer?.Dispose();
     }
 }

@@ -1,19 +1,11 @@
 ﻿using BallSimulator.Data;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BallSimulator.Logic;
 
-public class BallLogic : IBallLogic
+internal class BallLogic : IBallLogic
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public int Diameter => _ball.Diameter;
     public int Radius => _ball.Radius;
     public Vector2 Position => new(_ball.Position.X, _ball.Position.Y);
@@ -57,10 +49,7 @@ public class BallLogic : IBallLogic
 
     #endregion
 
-    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    #region Provider
 
     public IDisposable Subscribe(IObserver<IBallLogic> observer)
     {
@@ -93,5 +82,18 @@ public class BallLogic : IBallLogic
             _observers.Remove(_observer);
         }
     }
+
+    #endregion
+
+    #region INotifyPropertyChanged
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    #endregion
 }
 
