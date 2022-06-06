@@ -20,8 +20,8 @@ public class BallLogic : IBallLogic
     public Vector2 Speed => new(_ball.Speed.X, _ball.Speed.Y);
 
     private readonly IBall _ball;
-
     private readonly ISet<IObserver<IBallLogic>> _observers;
+
     private IDisposable? _unsubscriber;
 
     public BallLogic(IBall ball)

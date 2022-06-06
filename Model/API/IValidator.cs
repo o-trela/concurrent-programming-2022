@@ -1,4 +1,4 @@
-﻿namespace BallSimulator.Presentation.Model;
+﻿namespace BallSimulator.Presentation.Model.API;
 
 public interface IValidator<T>
 {

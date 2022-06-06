@@ -1,7 +1,7 @@
 ﻿using BallSimulator.Logic;
 using System.ComponentModel;
 
-namespace BallSimulator.Presentation.Model;
+namespace BallSimulator.Presentation.Model.API;
 
 public interface IBallModel : IObserver<IBallLogic>, INotifyPropertyChanged
 {

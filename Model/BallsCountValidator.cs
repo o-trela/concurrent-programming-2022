@@ -1,4 +1,5 @@
 ﻿using BallSimulator.Logic;
+using BallSimulator.Presentation.Model.API;
 
 namespace BallSimulator.Presentation.Model;
 
@@ -8,11 +9,11 @@ public class BallsCountValidator : IValidator<int>
     private readonly int _max;
 
     public BallsCountValidator()
-        : this(Int32.MinValue)
+        : this(int.MinValue)
     { }
 
     public BallsCountValidator(int min)
-        : this(min, Int32.MaxValue)
+        : this(min, int.MaxValue)
     { }
 
     public BallsCountValidator(int min, int max)
@@ -23,7 +24,7 @@ public class BallsCountValidator : IValidator<int>
 
     public bool IsValid(int value)
     {
-        return (value >= _min) && (value <= _max);
+        return value >= _min && value <= _max;
     }
 
     public bool IsInvalid(int value)

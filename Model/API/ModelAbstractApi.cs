@@ -1,6 +1,6 @@
 ﻿using BallSimulator.Logic;
 
-namespace BallSimulator.Presentation.Model;
+namespace BallSimulator.Presentation.Model.API;
 
 public abstract class ModelAbstractApi : IObserver<IBallLogic>, IObservable<IBallModel>
 {
