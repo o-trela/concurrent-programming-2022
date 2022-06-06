@@ -48,8 +48,8 @@ public class Ball : IBall, IEquatable<Ball>
     }
 
     private readonly ISet<IObserver<IBall>> _observers;
+    private readonly IDisposable? _disposer;
 
-    private IDisposable? _disposer;
     private Vector2 _speed;
     private Vector2 _position;
 
