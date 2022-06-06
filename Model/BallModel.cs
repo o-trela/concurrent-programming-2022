@@ -10,8 +10,10 @@ public class BallModel : IBallModel
 
     public int Diameter => _ball.Diameter;
     public int Radius => _ball.Radius;
-    public Vector2 Position => CalculateOffsetPosition(_ball.Position);
-    public Vector2 Speed => _ball.Speed;
+    public float PositionX => _ball.Position.X - Radius;
+    public float PositionY => _ball.Position.Y - Radius;
+    public float SpeedX => _ball.Speed.X;
+    public float SpeedY => _ball.Speed.Y;
 
     private readonly IBallLogic _ball;
 
@@ -21,11 +23,6 @@ public class BallModel : IBallModel
     {
         _ball = ball;
         Follow(_ball);
-    }
-
-    private Vector2 CalculateOffsetPosition(Vector2 position)
-    {
-        return new Vector2(position.X - Radius, position.Y - Radius);
     }
 
     #region Observer
@@ -47,7 +44,8 @@ public class BallModel : IBallModel
 
     public void OnNext(IBallLogic ball)
     {
-        OnPropertyChanged(nameof(Position));
+        OnPropertyChanged(nameof(PositionX));
+        OnPropertyChanged(nameof(PositionY));
     }
 
     #endregion

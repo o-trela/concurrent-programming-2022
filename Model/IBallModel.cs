@@ -7,6 +7,8 @@ public interface IBallModel : IObserver<IBallLogic>, INotifyPropertyChanged
 {
     public int Diameter { get; }
     public int Radius { get; }
-    public Vector2 Speed { get; }
-    public Vector2 Position { get; }
+    public float SpeedX { get; }
+    public float SpeedY { get; }
+    public float PositionX { get; }
+    public float PositionY { get; }
 }
