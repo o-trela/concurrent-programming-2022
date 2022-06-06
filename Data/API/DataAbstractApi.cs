@@ -1,4 +1,4 @@
-﻿namespace BallSimulator.Data;
+﻿namespace BallSimulator.Data.API;
 
 public abstract class DataAbstractApi
 {

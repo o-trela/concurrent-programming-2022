@@ -1,5 +1,4 @@
-﻿
-namespace BallSimulator.Data;
+﻿namespace BallSimulator.Data.API;
 
 public interface IBall : IObservable<IBall>, IDisposable
 {

@@ -1,4 +1,4 @@
-﻿using BallSimulator.Logic;
+﻿using BallSimulator.Logic.API;
 using BallSimulator.Presentation.Model.API;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

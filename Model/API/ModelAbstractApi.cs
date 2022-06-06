@@ -1,4 +1,4 @@
-﻿using BallSimulator.Logic;
+﻿using BallSimulator.Logic.API;
 
 namespace BallSimulator.Presentation.Model.API;
 

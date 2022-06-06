@@ -1,9 +1,11 @@
-﻿namespace BallSimulator.Data;
+﻿using BallSimulator.Data.API;
+
+namespace BallSimulator.Data;
 
 public static class Collisions
 {
     private static readonly HashSet<(IBall, IBall)> collisions = new(16);
-    
+
     public static HashSet<(IBall, IBall)> Get(IList<IBall> balls)
     {
         collisions.Clear();

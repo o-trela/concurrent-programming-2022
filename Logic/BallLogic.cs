@@ -1,4 +1,6 @@
 ﻿using BallSimulator.Data;
+using BallSimulator.Data.API;
+using BallSimulator.Logic.API;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
