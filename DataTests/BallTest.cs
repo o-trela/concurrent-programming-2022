@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using BallSimulator.Data;
 
 namespace BallSimulator.Tests
 {
@@ -37,9 +38,10 @@ namespace BallSimulator.Tests
         public void MoveTest()
         {
             float delta = 100f;
-            Ball ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero, _testBoard);
-
-            ball.Speed = new Vector2(0f, -2.5f);
+            var ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero, _testBoard)
+            {
+                Speed = new Vector2(0f, -2.5f)
+            };
             Assert.AreEqual(ball.Speed.X, 0f);
 
             ball.Move(delta);
@@ -53,13 +55,13 @@ namespace BallSimulator.Tests
             Assert.AreEqual(ball.Speed, new Vector2(3f, 5f));
 
             ball.Move(delta);
-            Assert.AreEqual(ball.Position.Y, 5f);
+            Assert.AreEqual(ball.Position.Y, 10f);
 
             ball.Move(delta);
             ball.Move(delta);
             ball.Move(delta);
 
-            Assert.AreEqual(ball.Position, new Vector2(17f, 20f));
+            Assert.AreEqual(ball.Position, new Vector2(17f, 25f));
         }
 
         [TestMethod]

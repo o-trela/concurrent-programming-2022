@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using BallSimulator.Data;
 
 namespace BallSimulator.Tests
 {
@@ -8,8 +9,8 @@ namespace BallSimulator.Tests
         private const float Delta = 1E-6f;
         private const float A = 2f;
         private const float B = 0.4f;
-        private Vector2 Vec1 = new Vector2(A, B);
-        private Vector2 Vec2 = new Vector2(B, A);
+        private Vector2 Vec1 = new(A, B);
+        private Vector2 Vec2 = new(B, A);
 
         [TestMethod]
         public void ConstructorTest()
@@ -24,8 +25,8 @@ namespace BallSimulator.Tests
         [TestMethod]
         public void EqualsTest()
         {
-            Vector2 vec1 = new Vector2(A, B);
-            Vector2 vec2 = new Vector2(A, B);
+            Vector2 vec1 = new(A, B);
+            Vector2 vec2 = new(A, B);
 
             Assert.AreEqual(vec1, vec2);
         }

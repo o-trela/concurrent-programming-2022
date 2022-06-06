@@ -1,4 +1,5 @@
-﻿using BallSimulator.Data;
+﻿using BallSimulator.Data.API;
+using BallSimulator.Logic.API;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ public class SimulationControllerTests
     private readonly DataAbstractApi _dataFixture;
 
     private LogicAbstractApi _controller;
-    private IEnumerable<Logic.IBall>? _balls;
+    private IEnumerable<IBall>? _balls;
 
     public SimulationControllerTests()
     {
@@ -61,7 +62,7 @@ public class SimulationControllerTests
         var balls = _controller.CreateBalls(ballNumber);
         int counter = 0;
 
-        foreach (Ball b in balls)
+        foreach (var b in balls)
         {
             Assert.IsNotNull(b);
             Assert.IsTrue(IsBetween(b.Diameter, _testMinDiameter, _testMaxDiameter));
