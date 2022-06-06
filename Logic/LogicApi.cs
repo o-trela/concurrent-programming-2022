@@ -27,7 +27,7 @@ internal class LogicApi : LogicAbstractApi
             int diameter = GetRandomDiameter();
             Vector2 position = GetRandomPos(diameter);
             Vector2 speed = GetRandomSpeed();
-            Ball newBall = new(diameter, position, speed, _board);
+            var newBall = new Ball(diameter, position, speed, _board);
             _balls.Add(newBall);
 
             TrackBall(newBall);
@@ -85,16 +85,11 @@ internal class LogicApi : LogicAbstractApi
 
     private void HandleCollisions()
     {
-        var collisions = Collisions.Get(_balls);
-        if (collisions.Count > 0)
+        foreach (var col in Collisions.Get(_balls))
         {
-            foreach (var col in collisions)
-            {
-                var (ball1, ball2) = col;
-                (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
-            }
+            var (ball1, ball2) = col;
+            (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
         }
-        Thread.Sleep(1);
     }
 
     private class Unsubscriber : IDisposable

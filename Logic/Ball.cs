@@ -86,26 +86,14 @@ public class Ball : IBall, IEquatable<Ball>
         var (boundryXx, boundryXy) = _board.BoundryX;
         if (!posX.Between(boundryXx, boundryXy, Radius))
         {
-            if (posX <= boundryXx + Radius)
-            {
-                newSpeedX = MathF.Abs(newSpeedX);
-            }
-            else
-            {
-                newSpeedX = -MathF.Abs(newSpeedX);
-            }
+            if (posX <= boundryXx + Radius) newSpeedX = MathF.Abs(newSpeedX);
+            else newSpeedX = -MathF.Abs(newSpeedX);
         }
         var (boundryYx, boundryYy) = _board.BoundryY;
         if (!posY.Between(boundryYx, boundryYy, Radius))
         {
-            if (posY <= boundryYx + Radius)
-            {
-                newSpeedY = MathF.Abs(newSpeedY);
-            }
-            else
-            {
-                newSpeedY = -MathF.Abs(newSpeedY);
-            }
+            if (posY <= boundryYx + Radius) newSpeedY = MathF.Abs(newSpeedY);
+            else newSpeedY = -MathF.Abs(newSpeedY);
         }
 
         _ballDto?.SetSpeed(newSpeedX, newSpeedY);

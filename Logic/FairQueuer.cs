@@ -68,7 +68,7 @@ public class FairQueuer
 
     private async void Loop()
     {
-        IList<Task> tasks = new List<Task>(_capacity);
+        List<Task> tasks = new(_capacity);
         Task? validatorTask = null;
         int iterator = 0;
         int count = 0;
@@ -84,8 +84,7 @@ public class FairQueuer
 
                 if (count < 1) await Task.Delay(10);
 
-                var action = Get(iterator);
-                if (action is not null)
+                if (Get(iterator) is Action action)
                 {
                     Task task = Task.Run(action);
                     tasks.Add(task);
@@ -223,10 +222,10 @@ public class FairQueuer
         private readonly Action _action;
         private readonly FairQueuer _fairQueuer;
 
-        public Disposer(FairQueuer actionQueue, Action task)
+        public Disposer(FairQueuer fairQueuer, Action task)
         {
             _action = task;
-            _fairQueuer = actionQueue;
+            _fairQueuer = fairQueuer;
         }
 
         public void Dispose()
