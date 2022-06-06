@@ -16,8 +16,8 @@ public class BallLogic : IBallLogic
 
     public int Diameter => _ball.Diameter;
     public int Radius => _ball.Radius;
-    public Vector2 Position => new Vector2(_ball.Position.X, _ball.Position.Y);
-    public Vector2 Speed => new Vector2(_ball.Speed.X, _ball.Speed.Y);
+    public Vector2 Position => new(_ball.Position.X, _ball.Position.Y);
+    public Vector2 Speed => new(_ball.Speed.X, _ball.Speed.Y);
 
     private readonly IBall _ball;
 
