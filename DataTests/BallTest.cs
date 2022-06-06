@@ -11,17 +11,16 @@ namespace BallSimulator.Tests
         private static readonly float TestXSpeed = 0.2f;
         private static readonly float TestYSpeed = -0.1f;
         private static readonly int TestDiameter = 2;
+        private static readonly Vector2 Position = new(TestXPos, TestYPos);
+        private static readonly Vector2 Speed = new(TestXSpeed, TestYSpeed);
+        private static readonly Vector2 BoardBoundryX = new(0, 100);
+        private static readonly Vector2 BoardBoundryY = new(0, 100);
 
         private readonly Ball _testBall;
-        private readonly Board _testBoard;
 
         public BallTest()
         {
-            Vector2 position = new Vector2(TestXPos, TestYPos);
-            Vector2 speed = new Vector2(TestXSpeed, TestYSpeed);
-
-            _testBoard = new Board(100, 100);
-            _testBall = new Ball(TestDiameter, position, speed, _testBoard);
+            _testBall = new Ball(TestDiameter, Position, Speed, BoardBoundryX, BoardBoundryY);
         }
 
         [TestMethod]
@@ -38,7 +37,7 @@ namespace BallSimulator.Tests
         public void MoveTest()
         {
             float delta = 100f;
-            var ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero, _testBoard)
+            var ball = new Ball(TestDiameter, Position, Vector2.Zero, BoardBoundryX, BoardBoundryY)
             {
                 Speed = new Vector2(0f, -2.5f)
             };

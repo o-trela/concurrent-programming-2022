@@ -55,10 +55,6 @@ public class Ball : IBall, IEquatable<Ball>
     private Vector2 _speed;
     private Vector2 _position;
 
-/*    public Ball(int diameter, int posX, int posY, float speedX, float speedY,  float board)
-        : this(diameter, new Vector2(posX, posY), new Vector2(speedX, speedY), board)
-    { }*/
-
     public Ball(int diameter, Vector2 position, Vector2 speed, Vector2 boardBoundryX, Vector2 boardBoundryY)
     {
         Diameter = diameter;

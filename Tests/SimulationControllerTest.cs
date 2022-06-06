@@ -21,8 +21,8 @@ public class LogicTest
 
     public LogicTest()
     {
-        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
         _dataFixture = new DataFixture();
+        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
 
         _testWidth = _dataFixture.BoardWidth;
         _testHeight = _dataFixture.BoardHeight;
