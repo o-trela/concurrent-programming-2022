@@ -48,23 +48,25 @@ public class Ball : IBall, IEquatable<Ball>
     }
 
     private readonly ISet<IObserver<IBall>> _observers;
-    private readonly Board _board;
+    private readonly Vector2 _boardBoundryX;
+    private readonly Vector2 _boardBoundryY;
 
     private IDisposable? _disposer;
     private Vector2 _speed;
     private Vector2 _position;
 
-    public Ball(int diameter, int posX, int posY, float speedX, float speedY, Board board)
+/*    public Ball(int diameter, int posX, int posY, float speedX, float speedY,  float board)
         : this(diameter, new Vector2(posX, posY), new Vector2(speedX, speedY), board)
-    { }
+    { }*/
 
-    public Ball(int diameter, Vector2 position, Vector2 speed, Board board)
+    public Ball(int diameter, Vector2 position, Vector2 speed, Vector2 boardBoundryX, Vector2 boardBoundryY)
     {
         Diameter = diameter;
         Position = position;
         Speed = speed;
         Radius = diameter / 2;
-        _board = board;
+        _boardBoundryX = boardBoundryX;
+        _boardBoundryY = boardBoundryY;
 
         _observers = new HashSet<IObserver<IBall>>();
         _disposer = ThreadManager.Add<float>(Move);
@@ -80,14 +82,14 @@ public class Ball : IBall, IEquatable<Ball>
         var (posX, posY) = Position;
         var (newSpeedX, newSpeedY) = Speed;
 
-        var (boundryXx, boundryXy) = _board.BoundryX;
+        var (boundryXx, boundryXy) = _boardBoundryX;
         if (!posX.Between(boundryXx, boundryXy, Radius))
         {
             if (posX <= boundryXx + Radius) newSpeedX = MathF.Abs(newSpeedX);
             else newSpeedX = -MathF.Abs(newSpeedX);
             Trace.WriteLine(Position.ToString());
         }
-        var (boundryYx, boundryYy) = _board.BoundryY;
+        var (boundryYx, boundryYy) = _boardBoundryY;
         if (!posY.Between(boundryYx, boundryYy, Radius))
         {
             if (posY <= boundryYx + Radius) newSpeedY = MathF.Abs(newSpeedY);
