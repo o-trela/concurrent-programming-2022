@@ -8,7 +8,7 @@ using System.Threading;
 namespace BallSimulator.Tests;
 
 [TestClass]
-public class SimulationControllerTests
+public class LogicTest
 {
     private readonly int _testWidth;
     private readonly int _testHeight;
@@ -19,7 +19,7 @@ public class SimulationControllerTests
     private LogicAbstractApi _controller;
     private IEnumerable<IBall>? _balls;
 
-    public SimulationControllerTests()
+    public LogicTest()
     {
         _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
         _dataFixture = new DataFixture();
