@@ -4,7 +4,7 @@ namespace BallSimulator.Presentation.Model;
 
 internal class BoardModel
 {
-    public int Height => _board.Height;
+/*    public int Height => _board.Height;
     public int Width => _board.Width;
 
     private readonly Board _board;
@@ -12,5 +12,5 @@ internal class BoardModel
     public BoardModel(Board board)
     {
         _board = board;
-    }
+    }*/
 }

@@ -2,7 +2,7 @@ using BallSimulator.Data;
 
 namespace BallSimulator.Logic;
 
-public abstract class LogicAbstractApi : IObservable<IBall>, IDisposable
+public abstract class LogicAbstractApi : IObservable<IBallLogic>, IDisposable
 {
     public static LogicAbstractApi CreateLogicApi(DataAbstractApi? data = default)
     {
@@ -10,7 +10,7 @@ public abstract class LogicAbstractApi : IObservable<IBall>, IDisposable
     }
     public abstract IEnumerable<IBall> CreateBalls(int count);
 
-    public abstract IDisposable Subscribe(IObserver<IBall> observer);
+    public abstract IDisposable Subscribe(IObserver<IBallLogic> observer);
 
     public abstract void Dispose();
 }

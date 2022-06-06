@@ -13,11 +13,11 @@ public class BallModel : IBallModel
     public Vector2 Position => CalculateOffsetPosition(_ball.Position);
     public Vector2 Speed => _ball.Speed;
 
-    private readonly IBall _ball;
+    private readonly IBallLogic _ball;
 
     private IDisposable? _unsubscriber;
 
-    public BallModel(IBall ball)
+    public BallModel(IBallLogic ball)
     {
         _ball = ball;
         Follow(_ball);
@@ -30,7 +30,7 @@ public class BallModel : IBallModel
 
     #region Observer
 
-    public void Follow(IObservable<IBall> provider)
+    public void Follow(IObservable<IBallLogic> provider)
     {
         _unsubscriber = provider.Subscribe(this);
     }
@@ -45,7 +45,7 @@ public class BallModel : IBallModel
         _unsubscriber?.Dispose();
     }
 
-    public void OnNext(IBall ball)
+    public void OnNext(IBallLogic ball)
     {
         OnPropertyChanged(nameof(Position));
     }

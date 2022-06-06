@@ -6,7 +6,8 @@ namespace BallSimulator.Logic;
 internal class LogicApi : LogicAbstractApi
 {
     private readonly IList<IBall> _balls;
-    private readonly ISet<IObserver<IBall>> _observers;
+    private readonly ISet<IObserver<IBallLogic>> _observers;
+    private readonly IDictionary<IBall, IBallLogic> _ballToBallLogic;
     private readonly DataAbstractApi _data;
     private readonly Board _board;
     private readonly Random _rand = new();
@@ -14,7 +15,8 @@ internal class LogicApi : LogicAbstractApi
     public LogicApi(DataAbstractApi? data = default)
     {
         _data = data ?? DataAbstractApi.CreateDataApi();
-        _observers = new HashSet<IObserver<IBall>>();
+        _observers = new HashSet<IObserver<IBallLogic>>();
+        _ballToBallLogic = new Dictionary<IBall, IBallLogic>();
 
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
         _balls = new List<IBall>();
@@ -25,12 +27,12 @@ internal class LogicApi : LogicAbstractApi
         for (var i = 0; i < count; i++)
         {
             int diameter = GetRandomDiameter();
-            Vector2 position = GetRandomPos(diameter);
-            Vector2 speed = GetRandomSpeed();
+            Data.Vector2 position = GetRandomPos(diameter);
+            Data.Vector2 speed = GetRandomSpeed();
             var newBall = new Ball(diameter, position, speed, _board);
             _balls.Add(newBall);
 
-            TrackBall(newBall);
+            TrackBall(new BallLogic(newBall));
         }
         ThreadManager.SetValidator(HandleCollisions);
         ThreadManager.Start();
@@ -38,19 +40,19 @@ internal class LogicApi : LogicAbstractApi
         return _balls;
     }
 
-    private Vector2 GetRandomPos(int diameter)
+    private Data.Vector2 GetRandomPos(int diameter)
     {
         int radius = diameter / 2;
         int x = _rand.Next(radius, _board.Width - radius);
         int y = _rand.Next(radius, _board.Height - radius);
-        return new Vector2(x, y);
+        return new Data.Vector2(x, y);
     }
 
-    private Vector2 GetRandomSpeed()
+    private Data.Vector2 GetRandomSpeed()
     {
         double x = (_rand.NextDouble() * 2.0 - 1.0) * _data.MaxSpeed;
         double y = (_rand.NextDouble() * 2.0 - 1.0) * _data.MaxSpeed;
-        return new Vector2((float)x, (float)y);
+        return new Data.Vector2((float)x, (float)y);
     }
 
     private int GetRandomDiameter()
@@ -60,13 +62,13 @@ internal class LogicApi : LogicAbstractApi
 
     #region Provider
 
-    public override IDisposable Subscribe(IObserver<IBall> observer)
+    public override IDisposable Subscribe(IObserver<IBallLogic> observer)
     {
         _observers.Add(observer);
         return new Unsubscriber(_observers, observer);
     }
 
-    private void TrackBall(IBall ball)
+    private void TrackBall(IBallLogic ball)
     {
         foreach (var observer in _observers)
         {
@@ -94,10 +96,10 @@ internal class LogicApi : LogicAbstractApi
 
     private class Unsubscriber : IDisposable
     {
-        private readonly ISet<IObserver<IBall>> _observers;
-        private readonly IObserver<IBall> _observer;
+        private readonly ISet<IObserver<IBallLogic>> _observers;
+        private readonly IObserver<IBallLogic> _observer;
 
-        public Unsubscriber(ISet<IObserver<IBall>> observers, IObserver<IBall> observer)
+        public Unsubscriber(ISet<IObserver<IBallLogic>> observers, IObserver<IBallLogic> observer)
         {
             _observers = observers;
             _observer = observer;

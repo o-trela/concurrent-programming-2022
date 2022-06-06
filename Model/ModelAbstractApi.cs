@@ -2,7 +2,7 @@
 
 namespace BallSimulator.Presentation.Model;
 
-public abstract class ModelAbstractApi : IObserver<IBall>, IObservable<IBallModel>
+public abstract class ModelAbstractApi : IObserver<IBallLogic>, IObservable<IBallModel>
 {
     public static ModelAbstractApi CreateModelApi(LogicAbstractApi? logic = default)
     {
@@ -16,5 +16,5 @@ public abstract class ModelAbstractApi : IObserver<IBall>, IObservable<IBallMode
 
     public abstract void OnCompleted();
     public virtual void OnError(Exception error) => throw error;
-    public abstract void OnNext(IBall value);
+    public abstract void OnNext(IBallLogic value);
 }
