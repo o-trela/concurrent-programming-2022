@@ -31,7 +31,7 @@ internal class LogicApi : LogicAbstractApi
             int diameter = GetRandomDiameter();
             Data.Vector2 position = GetRandomPos(diameter);
             Data.Vector2 speed = GetRandomSpeed();
-            var newBall = new Ball(diameter, position, speed, _board);
+            var newBall = new Ball(diameter, position, speed, _board.BoundryX, _board.BoundryY);
             _balls.Add(newBall);
 
             TrackBall(new BallLogic(newBall));
