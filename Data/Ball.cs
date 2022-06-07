@@ -1,5 +1,5 @@
 ﻿using BallSimulator.Data.API;
-using BallSimulator.Data.LoggerStuff;
+using BallSimulator.Data.Logging;
 using System.Diagnostics;
 
 namespace BallSimulator.Data;

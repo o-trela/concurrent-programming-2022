@@ -15,7 +15,7 @@ public abstract class ViewModelBase : INotifyPropertyChanged
 
     protected bool SetField<T>(ref T field, T value, IValidator<T> validator, T def, [CallerMemberName] string propertyName = "")
     {
-        if (validator.IsInvalid(value)) value = def;
+        if (validator.IsNotValid(value)) value = def;
         return SetField(ref field, value, propertyName);
     }
 

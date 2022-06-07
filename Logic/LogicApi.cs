@@ -1,6 +1,6 @@
 ﻿using BallSimulator.Data;
 using BallSimulator.Data.API;
-using BallSimulator.Data.LoggerStuff;
+using BallSimulator.Data.Logging;
 using BallSimulator.Logic.API;
 using System.Diagnostics;
 
@@ -8,22 +8,18 @@ namespace BallSimulator.Logic;
 
 internal class LogicApi : LogicAbstractApi
 {
+    private readonly Random _rand = new();
+    private readonly DataAbstractApi _data;
+    private readonly ILogger _logger;
     private readonly IList<IBall> _balls;
     private readonly ISet<IObserver<IBallLogic>> _observers;
-    private readonly DataAbstractApi _data;
     private readonly Board _board;
-    private readonly Random _rand = new();
 
-    private readonly Logger _logger;
-
-    public LogicApi(DataAbstractApi? data = default)
+    public LogicApi(DataAbstractApi? data = default, ILogger? logger = default)
     {
         _data = data ?? DataAbstractApi.CreateDataApi();
         _observers = new HashSet<IObserver<IBallLogic>>();
-
-        _logger = new Logger("test.log");
-        _logger.Start();
-
+        _logger = logger ?? new Logger();
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
         _balls = new List<IBall>();
     }
@@ -40,6 +36,7 @@ internal class LogicApi : LogicAbstractApi
 
             TrackBall(new BallLogic(newBall));
         }
+        
         ThreadManager.SetValidator(HandleCollisions);
         ThreadManager.Start();
 
@@ -71,14 +68,12 @@ internal class LogicApi : LogicAbstractApi
         foreach (var (ball1, ball2) in Collisions.GetBallsCollisions(_balls))
         {
             (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
-            _logger.Record(LogLevel.Info, $"Balls collision detected: 1# {ball1}; 2# {ball2}");
-            Trace.WriteLine("test1");
+            _logger.LogInfo($"Balls collision detected: 1# {ball1}; 2# {ball2}");
         }
         foreach (var (ball, boundry, collisionsAxis) in Collisions.GetBoardCollisions(_balls, _board))
         {
             ball.Speed = Collisions.CalculateSpeed(ball, boundry, collisionsAxis);
-            _logger.Record(LogLevel.Info, $"Boundry collision detected: {ball}");
-            Trace.WriteLine("test2");
+            _logger.LogInfo($"Boundry collision detected: {ball}");
         }
     }
 
@@ -132,14 +127,17 @@ internal class LogicApi : LogicAbstractApi
         ThreadManager.Stop();
 
         Trace.WriteLine($"Average Delta = {ThreadManager.AverageDeltaTime}");
+        _logger.LogInfo($"Average Delta = {ThreadManager.AverageDeltaTime}");
         Trace.WriteLine($"Average Fps = {ThreadManager.AverageFps}");
+        _logger.LogInfo($"Average Fps = {ThreadManager.AverageFps}");
         Trace.WriteLine($"Total Frame Count = {ThreadManager.FrameCount}");
+        _logger.LogInfo($"Total Frame Count = {ThreadManager.FrameCount}");
 
         foreach (var ball in _balls)
         {
             ball.Dispose();
         }
         _balls.Clear();
-        _logger.Stop();
+        _logger.Dispose();
     }
 }

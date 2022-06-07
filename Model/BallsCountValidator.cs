@@ -26,7 +26,7 @@ public class BallsCountValidator : IValidator<int>
         return value >= _min && value <= _max;
     }
 
-    public bool IsInvalid(int value)
+    public bool IsNotValid(int value)
     {
         return !IsValid(value);
     }

@@ -1,4 +1,4 @@
-﻿namespace BallSimulator.Data.LoggerStuff;
+﻿namespace BallSimulator.Data.Logging;
 
 public struct LogEntry
 {

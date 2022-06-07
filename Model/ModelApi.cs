@@ -24,11 +24,6 @@ internal class ModelApi : ModelAbstractApi
         _logic.CreateBalls(ballsCount);
     }
 
-    public override void Stop()
-    {
-        _logic.Dispose();
-    }
-
     #region Observer
 
     public void Follow(IObservable<IBallLogic> provider)
@@ -98,4 +93,10 @@ internal class ModelApi : ModelAbstractApi
     }
 
     #endregion
+
+    public override void Dispose()
+    {
+        _logic.Dispose();
+        _unsubscriber?.Dispose();
+    }
 }

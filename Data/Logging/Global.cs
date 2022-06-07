@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BallSimulator.Data.LoggerStuff;
+namespace BallSimulator.Data.Logging;
 
 public static class Global
 {
@@ -13,6 +13,7 @@ public static class Global
             Environment.GetFolderPath(
                 Environment.SpecialFolder.MyDocuments
                 ),
+            "trela-kirsz",
             "concurrent_programming_2022"
             );
 
@@ -36,6 +37,11 @@ public static class Global
         }
 
         if (writePath) Console.WriteLine($"Data path = {BaseDataDirPath}");
+    }
+    
+    public static void DeleteDirectory()
+    {
+        //Directory.Delete(BaseDataDirPath, true);
     }
 }
 

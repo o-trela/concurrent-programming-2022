@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BallSimulator.Data.LoggerStuff;
+namespace BallSimulator.Data.Logging;
 
-public interface ILogWriter
+public enum LogLevel
 {
-    void Write(IEnumerable<LogEntry> logEntries);
+    Info = 0,
+    Warning = 1,
+    Error = 2
 }

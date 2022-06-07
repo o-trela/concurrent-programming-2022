@@ -50,15 +50,15 @@ namespace BallSimulator.Tests
 
             ball.Speed = new Vector2(3f, 5f);
             Assert.AreEqual(ball.Speed, new Vector2(3f, 5f));
+            
+            ball.Move(delta);
+            Assert.AreEqual(ball.Position.Y, 0f);
 
             ball.Move(delta);
-            Assert.AreEqual(ball.Position.Y, 10f);
-
-            ball.Move(delta);
             ball.Move(delta);
             ball.Move(delta);
 
-            Assert.AreEqual(ball.Position, new Vector2(17f, 25f));
+            Assert.AreEqual(ball.Position, new Vector2(17f, 15f));
         }
 
         [TestMethod]

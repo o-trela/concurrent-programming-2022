@@ -7,9 +7,9 @@ namespace BallSimulator.Presentation.ViewModel;
 
 public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
 {
-    private readonly ModelAbstractApi _model;
     private readonly IValidator<int> _ballsCountValidator;
 
+    private ModelAbstractApi? _model;
     private int _ballsCount = 8;
     private bool _isSimulationRunning = false;
     private IDisposable? unsubscriber;
@@ -28,10 +28,9 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
     public ICommand StartSimulationCommand { get; init; }
     public ICommand StopSimulationCommand { get; init; }
 
-    public SimulationViewModel(ModelAbstractApi? model = default, IValidator<int>? ballsCountValidator = default)
+    public SimulationViewModel(IValidator<int>? ballsCountValidator = default)
         : base()
     {
-        _model = model ?? ModelAbstractApi.CreateModelApi();
         _ballsCountValidator = ballsCountValidator ?? new BallsCountValidator();
 
         StartSimulationCommand = new StartSimulationCommand(this);
@@ -40,6 +39,7 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
 
     public void StartSimulation()
     {
+        _model = ModelAbstractApi.CreateModelApi();
         IsSimulationRunning = true;
         Follow(_model);
         _model.Start(BallsCount);
@@ -49,7 +49,7 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
     {
         IsSimulationRunning = false;
         Balls.Clear();
-        _model.Stop();
+        _model?.Dispose();
     }
 
     #region Observer
