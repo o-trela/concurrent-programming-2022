@@ -14,25 +14,20 @@ public class Logger
     private readonly object writeLock = new();
 
     private readonly ILogWriter _logWriter;
-    private readonly ConcurrentQueue<LogEntry> _logs;
+    private readonly ConcurrentQueue<LogEntry> _logs = new();
     private readonly List<LogEntry> _logEntries = new();
     
     private Task? writingAction;
     private bool _logging;
 
-    public Logger(ILogWriter logWriter, bool logging = true)
-        : this(logWriter, logging, new ConcurrentQueue<LogEntry>())
-    { }
-
     public Logger(string fileName, bool logging = true)
-        : this(new LogFileWriter(fileName), logging, new ConcurrentQueue<LogEntry>())
+        : this(new LogFileWriter(fileName), logging)
     { }
-
-    public Logger(ILogWriter logWriter, bool logging, ConcurrentQueue<LogEntry> logs)
+    
+    public Logger(ILogWriter logWriter, bool logging = true)
     {
         _logWriter = logWriter;
         _logging = logging;
-        _logs = logs;
     }
 
     public void Start()
