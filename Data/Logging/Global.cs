@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BallSimulator.Data.Logging;
+﻿namespace BallSimulator.Data.Logging;
 
 public static class Global
 {
@@ -38,7 +32,7 @@ public static class Global
 
         if (writePath) Console.WriteLine($"Data path = {BaseDataDirPath}");
     }
-    
+
     public static void DeleteDirectory()
     {
         //Directory.Delete(BaseDataDirPath, true);

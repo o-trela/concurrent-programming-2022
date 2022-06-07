@@ -12,14 +12,14 @@ public class Logger : ILogger, IDisposable
     private readonly ILogWriter _logWriter;
     private readonly ConcurrentQueue<LogEntry> _logQueue = new();
     private readonly List<LogEntry> _logEntries = new();
-    
+
     private Task? _writingAction;
     private bool _logging;
 
     public Logger(string fileName = "")
         : this(new LogFileWriter(fileName))
     { }
-    
+
     public Logger(ILogWriter logWriter)
     {
         _logWriter = logWriter;
@@ -57,7 +57,7 @@ public class Logger : ILogger, IDisposable
 
     private async void WriteLoop()
     {
-        while(!_logging)
+        while (!_logging)
         {
             try
             {

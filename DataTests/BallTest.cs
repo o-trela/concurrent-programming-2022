@@ -1,5 +1,5 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BallSimulator.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BallSimulator.Tests
 {
@@ -50,7 +50,7 @@ namespace BallSimulator.Tests
 
             ball.Speed = new Vector2(3f, 5f);
             Assert.AreEqual(ball.Speed, new Vector2(3f, 5f));
-            
+
             ball.Move(delta);
             Assert.AreEqual(ball.Position.Y, 0f);
 

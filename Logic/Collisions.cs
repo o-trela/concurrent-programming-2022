@@ -36,7 +36,7 @@ internal static class Collisions
     public static HashSet<(IBall, IBall)> GetBallsCollisions(IList<IBall> balls)
     {
         ballCollisions.Clear();
-        
+
         foreach (var ball1 in balls)
         {
             foreach (var ball2 in balls)
@@ -54,9 +54,9 @@ internal static class Collisions
         Vector2 position = ball.Position;
         Vector2 speed = ball.Speed;
         int radius = ball.Radius;
-            
+
         var (newSpeedX, newSpeedY) = speed;
-        
+
         switch (collisionAxis)
         {
             case CollisionAxis.X:

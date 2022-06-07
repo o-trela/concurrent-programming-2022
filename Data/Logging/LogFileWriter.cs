@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace BallSimulator.Data.Logging;
- 
+
 internal class LogFileWriter : ILogWriter
 {
     private readonly string _logFilePath;
@@ -12,7 +12,7 @@ internal class LogFileWriter : ILogWriter
         Global.EnsureDirectoryIsValid();
 
         if (String.IsNullOrWhiteSpace(fileName)) fileName = $"collisions({DateTime.Now:'D'yyyy-MM-dd'T'HH-mm-ss}).log";
-        
+
         _logFilePath = Path.Combine(Global.BaseDataDirPath, fileName);
     }
 

@@ -36,7 +36,7 @@ internal class LogicApi : LogicAbstractApi
 
             TrackBall(new BallLogic(newBall));
         }
-        
+
         ThreadManager.SetValidator(HandleCollisions);
         ThreadManager.Start();
 

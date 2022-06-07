@@ -12,6 +12,6 @@ public struct LogEntry
         TimeStamp = DateTime.Now.ToString("dd-MM-yyyy - HH:mm:ss:fff");
         Level = level;
         LineNumber = lineNumber;
-        Message = message; 
+        Message = message;
     }
 }
