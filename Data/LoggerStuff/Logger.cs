@@ -19,6 +19,7 @@ public class Logger
     
     private Task? writingAction;
     private bool _logging;
+    private bool _disposed;
 
     public Logger(ILogWriter logWriter, bool logging = true)
         : this(logWriter, logging, new ConcurrentQueue<LogEntry>())
@@ -32,6 +33,7 @@ public class Logger
     {
         _logWriter = logWriter;
         _logging = logging;
+        _disposed = false;
         _logs = logs;
     }
 
@@ -44,7 +46,7 @@ public class Logger
 
     public void Stop()
     {
-        _logging = false;
+        _disposed = true;
 
         writingAction?.Wait();
         WriteLog();
@@ -52,14 +54,14 @@ public class Logger
 
     public void Record(LogLevel level, string message, [CallerLineNumber] int lineNumber = 0)
     {
-        if (_logging) return;
+        if (!_logging) return;
 
         _logs.Enqueue(new LogEntry(level, message, lineNumber));
     }
 
     private async void WriteLoop()
     {
-        while(_logging)
+        while(!_disposed)
         {
             try
             {

@@ -21,7 +21,7 @@ internal class LogicApi : LogicAbstractApi
         _data = data ?? DataAbstractApi.CreateDataApi();
         _observers = new HashSet<IObserver<IBallLogic>>();
 
-        _logger = new Logger("test.log");
+        _logger = new Logger("collisions.log");
         _logger.Start();
 
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
@@ -72,13 +72,11 @@ internal class LogicApi : LogicAbstractApi
         {
             (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
             _logger.Record(LogLevel.Info, $"Balls collision detected: 1# {ball1}; 2# {ball2}");
-            Trace.WriteLine("test1");
         }
         foreach (var (ball, boundry, collisionsAxis) in Collisions.GetBoardCollisions(_balls, _board))
         {
             ball.Speed = Collisions.CalculateSpeed(ball, boundry, collisionsAxis);
             _logger.Record(LogLevel.Info, $"Boundry collision detected: {ball}");
-            Trace.WriteLine("test2");
         }
     }
 
