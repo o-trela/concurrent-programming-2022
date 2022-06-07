@@ -1,21 +1,25 @@
 ﻿using BallSimulator.Data;
+using BallSimulator.Data.API;
+using BallSimulator.Data.Logging;
+using BallSimulator.Logic.API;
 using System.Diagnostics;
 
 namespace BallSimulator.Logic;
 
 internal class LogicApi : LogicAbstractApi
 {
-    private readonly IList<IBall> _balls;
-    private readonly ISet<IObserver<IBall>> _observers;
-    private readonly DataAbstractApi _data;
-    private readonly Board _board;
     private readonly Random _rand = new();
+    private readonly DataAbstractApi _data;
+    private readonly ILogger _logger;
+    private readonly IList<IBall> _balls;
+    private readonly ISet<IObserver<IBallLogic>> _observers;
+    private readonly Board _board;
 
-    public LogicApi(DataAbstractApi? data = default)
+    public LogicApi(DataAbstractApi? data = default, ILogger? logger = default)
     {
         _data = data ?? DataAbstractApi.CreateDataApi();
-        _observers = new HashSet<IObserver<IBall>>();
-
+        _observers = new HashSet<IObserver<IBallLogic>>();
+        _logger = logger ?? new Logger();
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
         _balls = new List<IBall>();
     }
@@ -27,11 +31,12 @@ internal class LogicApi : LogicAbstractApi
             int diameter = GetRandomDiameter();
             Vector2 position = GetRandomPos(diameter);
             Vector2 speed = GetRandomSpeed();
-            var newBall = new Ball(diameter, position, speed, _board);
+            var newBall = new Ball(diameter, position, speed);
             _balls.Add(newBall);
 
-            TrackBall(newBall);
+            TrackBall(new BallLogic(newBall));
         }
+        
         ThreadManager.SetValidator(HandleCollisions);
         ThreadManager.Start();
 
@@ -58,15 +63,29 @@ internal class LogicApi : LogicAbstractApi
         return _rand.Next(_data.MinDiameter, _data.MaxDiameter + 1);
     }
 
+    private void HandleCollisions()
+    {
+        foreach (var (ball1, ball2) in Collisions.GetBallsCollisions(_balls))
+        {
+            (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
+            _logger.LogInfo($"Balls collision detected: 1# {ball1}; 2# {ball2}");
+        }
+        foreach (var (ball, boundry, collisionsAxis) in Collisions.GetBoardCollisions(_balls, _board))
+        {
+            ball.Speed = Collisions.CalculateSpeed(ball, boundry, collisionsAxis);
+            _logger.LogInfo($"Boundry collision detected: {ball}");
+        }
+    }
+
     #region Provider
 
-    public override IDisposable Subscribe(IObserver<IBall> observer)
+    public override IDisposable Subscribe(IObserver<IBallLogic> observer)
     {
         _observers.Add(observer);
         return new Unsubscriber(_observers, observer);
     }
 
-    private void TrackBall(IBall ball)
+    private void TrackBall(IBallLogic ball)
     {
         foreach (var observer in _observers)
         {
@@ -83,21 +102,12 @@ internal class LogicApi : LogicAbstractApi
         _observers.Clear();
     }
 
-    private void HandleCollisions()
-    {
-        foreach (var col in Collisions.Get(_balls))
-        {
-            var (ball1, ball2) = col;
-            (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
-        }
-    }
-
     private class Unsubscriber : IDisposable
     {
-        private readonly ISet<IObserver<IBall>> _observers;
-        private readonly IObserver<IBall> _observer;
+        private readonly ISet<IObserver<IBallLogic>> _observers;
+        private readonly IObserver<IBallLogic> _observer;
 
-        public Unsubscriber(ISet<IObserver<IBall>> observers, IObserver<IBall> observer)
+        public Unsubscriber(ISet<IObserver<IBallLogic>> observers, IObserver<IBallLogic> observer)
         {
             _observers = observers;
             _observer = observer;
@@ -117,13 +127,17 @@ internal class LogicApi : LogicAbstractApi
         ThreadManager.Stop();
 
         Trace.WriteLine($"Average Delta = {ThreadManager.AverageDeltaTime}");
+        _logger.LogInfo($"Average Delta = {ThreadManager.AverageDeltaTime}");
         Trace.WriteLine($"Average Fps = {ThreadManager.AverageFps}");
+        _logger.LogInfo($"Average Fps = {ThreadManager.AverageFps}");
         Trace.WriteLine($"Total Frame Count = {ThreadManager.FrameCount}");
+        _logger.LogInfo($"Total Frame Count = {ThreadManager.FrameCount}");
 
         foreach (var ball in _balls)
         {
             ball.Dispose();
         }
         _balls.Clear();
+        _logger.Dispose();
     }
 }

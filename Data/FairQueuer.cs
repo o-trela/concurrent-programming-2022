@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 
-namespace BallSimulator.Logic;
+namespace BallSimulator.Data;
 
 public class FairQueuer
 {

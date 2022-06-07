@@ -59,8 +59,8 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
                     <Style>
-                        <Setter Property="Canvas.Left" Value="{Binding Position.X}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Position.Y}" />
+                        <Setter Property="Canvas.Left" Value="{Binding PositionX}" />
+                        <Setter Property="Canvas.Top" Value="{Binding PositionY}" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>

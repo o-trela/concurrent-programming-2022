@@ -1,4 +1,5 @@
-﻿using BallSimulator.Logic;
+﻿using BallSimulator.Logic.API;
+using BallSimulator.Presentation.Model.API;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -6,31 +7,26 @@ namespace BallSimulator.Presentation.Model;
 
 public class BallModel : IBallModel
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public int Diameter => _ball.Diameter;
     public int Radius => _ball.Radius;
-    public Vector2 Position => CalculateOffsetPosition(_ball.Position);
-    public Vector2 Speed => _ball.Speed;
+    public float PositionX => _ball.Position.X - Radius;
+    public float PositionY => _ball.Position.Y - Radius;
+    public float SpeedX => _ball.Speed.X;
+    public float SpeedY => _ball.Speed.Y;
 
-    private readonly IBall _ball;
+    private readonly IBallLogic _ball;
 
     private IDisposable? _unsubscriber;
 
-    public BallModel(IBall ball)
+    public BallModel(IBallLogic ball)
     {
         _ball = ball;
         Follow(_ball);
     }
 
-    private Vector2 CalculateOffsetPosition(Vector2 position)
-    {
-        return new Vector2(position.X - Radius, position.Y - Radius);
-    }
-
     #region Observer
 
-    public void Follow(IObservable<IBall> provider)
+    public void Follow(IObservable<IBallLogic> provider)
     {
         _unsubscriber = provider.Subscribe(this);
     }
@@ -45,15 +41,22 @@ public class BallModel : IBallModel
         _unsubscriber?.Dispose();
     }
 
-    public void OnNext(IBall ball)
+    public void OnNext(IBallLogic ball)
     {
-        OnPropertyChanged(nameof(Position));
+        OnPropertyChanged(nameof(PositionX));
+        OnPropertyChanged(nameof(PositionY));
     }
 
     #endregion
+
+    #region INotifyPropertyChanged
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    #endregion
 }

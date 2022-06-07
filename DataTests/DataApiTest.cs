@@ -1,5 +1,6 @@
-using BallSimulator.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using BallSimulator.Data.API;
+
 
 namespace DataTests
 {

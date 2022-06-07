@@ -1,6 +1,8 @@
-﻿using BallSimulator.Data;
+﻿using BallSimulator.Data.API;
+using BallSimulator.Data.Logging;
+using System.Diagnostics;
 
-namespace BallSimulator.Logic;
+namespace BallSimulator.Data;
 
 public class Ball : IBall, IEquatable<Ball>
 {
@@ -47,57 +49,28 @@ public class Ball : IBall, IEquatable<Ball>
     }
 
     private readonly ISet<IObserver<IBall>> _observers;
-    private readonly Board _board;
-    private readonly IBallDto _ballDto;
+    private readonly IDisposable? _disposer;
 
-    private IDisposable? _disposer;
-    private IDisposable? _unsubscriber;
     private Vector2 _speed;
     private Vector2 _position;
 
-    public Ball(int diameter, int posX, int posY, float speedX, float speedY, Board board, IBallDto? ballDto = default)
-        : this(diameter, new Vector2(posX, posY), new Vector2(speedX, speedY), board, ballDto)
-    { }
-
-    public Ball(int diameter, Vector2 position, Vector2 speed, Board board, IBallDto? ballDto = default)
+    public Ball(int diameter, Vector2 position, Vector2 speed)
     {
         Diameter = diameter;
         Position = position;
         Speed = speed;
         Radius = diameter / 2;
-        _board = board;
-        _ballDto = ballDto ?? new BallDto(Diameter, Position.X, Position.Y, Speed.X, Speed.Y);
 
         _observers = new HashSet<IObserver<IBall>>();
         _disposer = ThreadManager.Add<float>(Move);
-        Follow(_ballDto);
     }
 
     public void Move(float delta)
     {
         if (Speed.IsZero()) return;
 
-        float strength = (delta * 0.01f).Clamp(0f, 1f);
-
-        var move = Speed * strength;
-        var (posX, posY) = Position;
-        var (newSpeedX, newSpeedY) = Speed;
-
-        var (boundryXx, boundryXy) = _board.BoundryX;
-        if (!posX.Between(boundryXx, boundryXy, Radius))
-        {
-            if (posX <= boundryXx + Radius) newSpeedX = MathF.Abs(newSpeedX);
-            else newSpeedX = -MathF.Abs(newSpeedX);
-        }
-        var (boundryYx, boundryYy) = _board.BoundryY;
-        if (!posY.Between(boundryYx, boundryYy, Radius))
-        {
-            if (posY <= boundryYx + Radius) newSpeedY = MathF.Abs(newSpeedY);
-            else newSpeedY = -MathF.Abs(newSpeedY);
-        }
-
-        _ballDto?.SetSpeed(newSpeedX, newSpeedY);
-        _ballDto?.Move(move.X, move.Y);
+        float strength = delta.Clamp(0f, 100f) * 0.01f;
+        Position += Speed * strength;
     }
 
     public bool Touches(IBall ball)
@@ -109,25 +82,7 @@ public class Ball : IBall, IEquatable<Ball>
         return minDistanceSquared >= actualDistanceSquared;
     }
 
-
-    public void Follow(IObservable<IBallDto> provider)
-    {
-        _unsubscriber = provider.Subscribe(this);
-    }
-
-    public void OnCompleted()
-    {
-        _unsubscriber?.Dispose();
-    }
-
-    public void OnError(Exception error) => throw error;
-
-    public void OnNext(IBallDto ballDto)
-    {
-        Position = new Vector2(ballDto.PositionX, ballDto.PositionY);
-        Speed = new Vector2(ballDto.SpeedX, ballDto.SpeedY);
-    }
-
+    #region Provider
 
     public IDisposable Subscribe(IObserver<IBall> observer)
     {
@@ -161,11 +116,7 @@ public class Ball : IBall, IEquatable<Ball>
         }
     }
 
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-        _disposer?.Dispose();
-    }
+    #endregion
 
     public override bool Equals(object? obj)
     {
@@ -189,5 +140,11 @@ public class Ball : IBall, IEquatable<Ball>
     public override string? ToString()
     {
         return $"Ball d={Diameter}, P=[{Position.X:n1}, {Position.Y:n1}], S=[{Speed.X:n1}, {Speed.Y:n1}]";
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        _disposer?.Dispose();
     }
 }

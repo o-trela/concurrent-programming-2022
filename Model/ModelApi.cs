@@ -1,4 +1,5 @@
-﻿using BallSimulator.Logic;
+﻿using BallSimulator.Logic.API;
+using BallSimulator.Presentation.Model.API;
 
 namespace BallSimulator.Presentation.Model;
 
@@ -6,7 +7,7 @@ internal class ModelApi : ModelAbstractApi
 {
     private readonly LogicAbstractApi _logic;
     private readonly ISet<IObserver<IBallModel>> _observers;
-    private readonly IDictionary<IBall, IBallModel> _ballToBallModel;
+    private readonly IDictionary<IBallLogic, IBallModel> _ballToBallModel;
 
     private IDisposable? _unsubscriber;
 
@@ -14,7 +15,7 @@ internal class ModelApi : ModelAbstractApi
     {
         _logic = logic ?? LogicAbstractApi.CreateLogicApi();
         _observers = new HashSet<IObserver<IBallModel>>();
-        _ballToBallModel = new Dictionary<IBall, IBallModel>();
+        _ballToBallModel = new Dictionary<IBallLogic, IBallModel>();
     }
 
     public override void Start(int ballsCount)
@@ -23,14 +24,9 @@ internal class ModelApi : ModelAbstractApi
         _logic.CreateBalls(ballsCount);
     }
 
-    public override void Stop()
-    {
-        _logic.Dispose();
-    }
-
     #region Observer
 
-    public void Follow(IObservable<IBall> provider)
+    public void Follow(IObservable<IBallLogic> provider)
     {
         _unsubscriber = provider.Subscribe(this);
     }
@@ -41,7 +37,7 @@ internal class ModelApi : ModelAbstractApi
         EndTransmission();
     }
 
-    public override void OnNext(IBall ball)
+    public override void OnNext(IBallLogic ball)
     {
         _ballToBallModel.TryGetValue(ball, out var ballModel);
         if (ballModel is null)
@@ -97,4 +93,10 @@ internal class ModelApi : ModelAbstractApi
     }
 
     #endregion
+
+    public override void Dispose()
+    {
+        _logic.Dispose();
+        _unsubscriber?.Dispose();
+    }
 }

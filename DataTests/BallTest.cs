@@ -1,5 +1,5 @@
-using BallSimulator.Logic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using BallSimulator.Data;
 
 namespace BallSimulator.Tests
 {
@@ -11,17 +11,14 @@ namespace BallSimulator.Tests
         private static readonly float TestXSpeed = 0.2f;
         private static readonly float TestYSpeed = -0.1f;
         private static readonly int TestDiameter = 2;
+        private static readonly Vector2 Position = new(TestXPos, TestYPos);
+        private static readonly Vector2 Speed = new(TestXSpeed, TestYSpeed);
 
         private readonly Ball _testBall;
-        private readonly Board _testBoard;
 
         public BallTest()
         {
-            Vector2 position = new Vector2(TestXPos, TestYPos);
-            Vector2 speed = new Vector2(TestXSpeed, TestYSpeed);
-
-            _testBoard = new Board(100, 100);
-            _testBall = new Ball(TestDiameter, position, speed, _testBoard);
+            _testBall = new Ball(TestDiameter, Position, Speed);
         }
 
         [TestMethod]
@@ -38,9 +35,10 @@ namespace BallSimulator.Tests
         public void MoveTest()
         {
             float delta = 100f;
-            Ball ball = new Ball(TestDiameter, new Vector2(TestXPos, TestYPos), Vector2.Zero, _testBoard);
-
-            ball.Speed = new Vector2(0f, -2.5f);
+            var ball = new Ball(TestDiameter, Position, Vector2.Zero)
+            {
+                Speed = new Vector2(0f, -2.5f)
+            };
             Assert.AreEqual(ball.Speed.X, 0f);
 
             ball.Move(delta);
@@ -52,15 +50,15 @@ namespace BallSimulator.Tests
 
             ball.Speed = new Vector2(3f, 5f);
             Assert.AreEqual(ball.Speed, new Vector2(3f, 5f));
+            
+            ball.Move(delta);
+            Assert.AreEqual(ball.Position.Y, 0f);
 
             ball.Move(delta);
-            Assert.AreEqual(ball.Position.Y, 5f);
-
-            ball.Move(delta);
             ball.Move(delta);
             ball.Move(delta);
 
-            Assert.AreEqual(ball.Position, new Vector2(17f, 20f));
+            Assert.AreEqual(ball.Position, new Vector2(17f, 15f));
         }
 
         [TestMethod]

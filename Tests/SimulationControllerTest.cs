@@ -1,5 +1,5 @@
-﻿using BallSimulator.Data;
-using BallSimulator.Logic;
+﻿using BallSimulator.Data.API;
+using BallSimulator.Logic.API;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading;
 namespace BallSimulator.Tests;
 
 [TestClass]
-public class SimulationControllerTests
+public class LogicTest
 {
     private readonly int _testWidth;
     private readonly int _testHeight;
@@ -17,12 +17,12 @@ public class SimulationControllerTests
     private readonly DataAbstractApi _dataFixture;
 
     private LogicAbstractApi _controller;
-    private IEnumerable<Logic.IBall>? _balls;
+    private IEnumerable<IBall>? _balls;
 
-    public SimulationControllerTests()
+    public LogicTest()
     {
-        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
         _dataFixture = new DataFixture();
+        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
 
         _testWidth = _dataFixture.BoardWidth;
         _testHeight = _dataFixture.BoardHeight;
@@ -62,7 +62,7 @@ public class SimulationControllerTests
         var balls = _controller.CreateBalls(ballNumber);
         int counter = 0;
 
-        foreach (Ball b in balls)
+        foreach (var b in balls)
         {
             Assert.IsNotNull(b);
             Assert.IsTrue(IsBetween(b.Diameter, _testMinDiameter, _testMaxDiameter));

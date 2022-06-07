@@ -1,4 +1,4 @@
-﻿namespace BallSimulator.Logic;
+﻿namespace BallSimulator.Data;
 
 public struct Vector2 : IEquatable<Vector2>
 {

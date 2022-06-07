@@ -1,8 +1,6 @@
-﻿using BallSimulator.Data;
+﻿namespace BallSimulator.Data.API;
 
-namespace BallSimulator.Logic;
-
-public interface IBall : IObservable<IBall>, IObserver<IBallDto>, IDisposable
+public interface IBall : IObservable<IBall>, IDisposable
 {
     int Diameter { get; }
     int Radius { get; }
