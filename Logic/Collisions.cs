@@ -2,23 +2,76 @@
 
 namespace BallSimulator.Data;
 
-public static class Collisions
+internal static class Collisions
 {
-    private static readonly HashSet<(IBall, IBall)> collisions = new(16);
+    private static readonly int threads = Environment.ProcessorCount;
+    private static readonly HashSet<(IBall, IBall)> ballCollisions = new(threads);
+    private static readonly List<(IBall, Vector2, CollisionAxis)> boardCollisions = new(threads);
 
-    public static HashSet<(IBall, IBall)> Get(IList<IBall> balls)
+    public static List<(IBall, Vector2, CollisionAxis)> GetBoardCollisions(IList<IBall> balls, Board board)
     {
-        collisions.Clear();
+        boardCollisions.Clear();
+
+        var (boundryXx, boundryXy) = board.BoundryX;
+        var (boundryYx, boundryYy) = board.BoundryY;
+
+        foreach (var ball in balls)
+        {
+            var (posX, posY) = ball.Position;
+            int radius = ball.Radius;
+
+            if (!posX.Between(boundryXx, boundryXy, radius))
+            {
+                boardCollisions.Add((ball, board.BoundryX, CollisionAxis.X));
+            }
+            if (!posY.Between(boundryYx, boundryYy, radius))
+            {
+                boardCollisions.Add((ball, board.BoundryY, CollisionAxis.Y));
+            }
+        }
+
+        return boardCollisions;
+    }
+
+    public static HashSet<(IBall, IBall)> GetBallsCollisions(IList<IBall> balls)
+    {
+        ballCollisions.Clear();
+        
         foreach (var ball1 in balls)
         {
             foreach (var ball2 in balls)
             {
                 if (ball1 == ball2) continue;
-                if (ball1.Touches(ball2)) collisions.Add((ball1, ball2));
+                if (ball1.Touches(ball2)) ballCollisions.Add((ball1, ball2));
             }
         }
 
-        return collisions;
+        return ballCollisions;
+    }
+
+    public static Vector2 CalculateSpeed(IBall ball, Vector2 boundry, CollisionAxis collisionAxis)
+    {
+        Vector2 position = ball.Position;
+        Vector2 speed = ball.Speed;
+        int radius = ball.Radius;
+            
+        var (newSpeedX, newSpeedY) = speed;
+        
+        switch (collisionAxis)
+        {
+            case CollisionAxis.X:
+                if (position.X <= boundry.X + radius) newSpeedX = MathF.Abs(newSpeedX);
+                else newSpeedX = -MathF.Abs(newSpeedX);
+                break;
+            case CollisionAxis.Y:
+                if (position.Y <= boundry.X + radius) newSpeedY = MathF.Abs(newSpeedY);
+                else newSpeedY = -MathF.Abs(newSpeedY);
+                break;
+            default:
+                throw new ArgumentException("Collision Point not recognized", nameof(collisionAxis));
+        }
+
+        return new Vector2(newSpeedX, newSpeedY);
     }
 
     public static (Vector2 speedOne, Vector2 speedTwo) CalculateSpeeds(IBall ball1, IBall ball2)
@@ -50,5 +103,11 @@ public static class Collisions
         Vector2 newVelocity2 = new(tangent.X * dpTan2 + normal.X * momentum2, tangent.Y * dpTan2 + normal.Y * momentum2);
 
         return (newVelocity1, newVelocity2);
+    }
+
+    internal enum CollisionAxis
+    {
+        X,
+        Y
     }
 }

@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BallSimulator.Data.Logger;
+namespace BallSimulator.Data.LoggerStuff;
 
 public class Logger
 {

@@ -1,5 +1,5 @@
 ﻿using BallSimulator.Data.API;
-using BallSimulator.Data.Logger;
+using BallSimulator.Data.LoggerStuff;
 using System.Diagnostics;
 
 namespace BallSimulator.Data;
@@ -49,21 +49,17 @@ public class Ball : IBall, IEquatable<Ball>
     }
 
     private readonly ISet<IObserver<IBall>> _observers;
-    private readonly Vector2 _boardBoundryX;
-    private readonly Vector2 _boardBoundryY;
+    private readonly IDisposable? _disposer;
 
-    private IDisposable? _disposer;
     private Vector2 _speed;
     private Vector2 _position;
 
-    public Ball(int diameter, Vector2 position, Vector2 speed, Vector2 boardBoundryX, Vector2 boardBoundryY, Logger logger)
+    public Ball(int diameter, Vector2 position, Vector2 speed)
     {
         Diameter = diameter;
         Position = position;
         Speed = speed;
         Radius = diameter / 2;
-        _boardBoundryX = boardBoundryX;
-        _boardBoundryY = boardBoundryY;
 
         _observers = new HashSet<IObserver<IBall>>();
         _disposer = ThreadManager.Add<float>(Move);
@@ -73,27 +69,8 @@ public class Ball : IBall, IEquatable<Ball>
     {
         if (Speed.IsZero()) return;
 
-        float strength = (delta * 0.01f).Clamp(0f, 1f);
-
+        float strength = delta.Clamp(0f, 100f) * 0.01f;
         Position += Speed * strength;
-        var (posX, posY) = Position;
-        var (newSpeedX, newSpeedY) = Speed;
-
-        var (boundryXx, boundryXy) = _boardBoundryX;
-        if (!posX.Between(boundryXx, boundryXy, Radius))
-        {
-            if (posX <= boundryXx + Radius) newSpeedX = MathF.Abs(newSpeedX);
-            else newSpeedX = -MathF.Abs(newSpeedX);
-            Trace.WriteLine(Position.ToString());
-        }
-        var (boundryYx, boundryYy) = _boardBoundryY;
-        if (!posY.Between(boundryYx, boundryYy, Radius))
-        {
-            if (posY <= boundryYx + Radius) newSpeedY = MathF.Abs(newSpeedY);
-            else newSpeedY = -MathF.Abs(newSpeedY);
-        }
-
-        Speed = new Vector2(newSpeedX, newSpeedY);
     }
 
     public bool Touches(IBall ball)

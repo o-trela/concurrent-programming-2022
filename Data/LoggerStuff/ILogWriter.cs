@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BallSimulator.Data.Logger;
+namespace BallSimulator.Data.LoggerStuff;
 
 public interface ILogWriter
 {

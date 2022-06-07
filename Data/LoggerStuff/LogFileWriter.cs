@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 
-namespace BallSimulator.Data.Logger;
+namespace BallSimulator.Data.LoggerStuff;
  
 internal class LogFileWriter : ILogWriter
 {
