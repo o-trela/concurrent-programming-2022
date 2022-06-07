@@ -1,5 +1,6 @@
 ﻿using BallSimulator.Data;
 using BallSimulator.Data.API;
+using BallSimulator.Data.Logger;
 using BallSimulator.Logic.API;
 using System.Diagnostics;
 
@@ -14,11 +15,15 @@ internal class LogicApi : LogicAbstractApi
     private readonly Board _board;
     private readonly Random _rand = new();
 
+    private readonly Logger _logger;
+
     public LogicApi(DataAbstractApi? data = default)
     {
         _data = data ?? DataAbstractApi.CreateDataApi();
         _observers = new HashSet<IObserver<IBallLogic>>();
         _ballToBallLogic = new Dictionary<IBall, IBallLogic>();
+
+        _logger = new Logger("test.log");
 
         _board = new Board(_data.BoardHeight, _data.BoardWidth);
         _balls = new List<IBall>();

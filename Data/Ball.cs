@@ -1,4 +1,5 @@
 ﻿using BallSimulator.Data.API;
+using BallSimulator.Data.Logger;
 using System.Diagnostics;
 
 namespace BallSimulator.Data;
@@ -55,7 +56,7 @@ public class Ball : IBall, IEquatable<Ball>
     private Vector2 _speed;
     private Vector2 _position;
 
-    public Ball(int diameter, Vector2 position, Vector2 speed, Vector2 boardBoundryX, Vector2 boardBoundryY)
+    public Ball(int diameter, Vector2 position, Vector2 speed, Vector2 boardBoundryX, Vector2 boardBoundryY, Logger logger)
     {
         Diameter = diameter;
         Position = position;
