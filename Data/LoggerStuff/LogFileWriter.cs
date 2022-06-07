@@ -14,25 +14,25 @@ internal class LogFileWriter : ILogWriter
         _logFilePath = Path.Combine(Global.BaseDataDirPath, fileName);
     }
 
-    public void Write(LogEntry[] logEntries)
+    public void Write(IEnumerable<LogEntry> logEntries)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        var sb = new StringBuilder();
         foreach (LogEntry logEntry in logEntries)
         {
-            stringBuilder.Append("[");
-            stringBuilder.Append(logEntry.TimeStamp);
-            stringBuilder.Append("] : ");
-            stringBuilder.Append(logEntry.Level.ToString());
-            stringBuilder.Append(" @ ");
-            stringBuilder.Append(logEntry.LineNumber);
-            stringBuilder.Append("  \t");
-            stringBuilder.Append(logEntry.Message);
-            stringBuilder.AppendLine();
+            sb.Append('[')
+                .Append(logEntry.TimeStamp)
+                .Append("] : ")
+                .Append(logEntry.Level)
+                .Append(" @ ")
+                .Append(logEntry.LineNumber)
+                .Append("  \t")
+                .Append(logEntry.Message)
+                .AppendLine();
         }
 
         try
         {
-            File.AppendAllText(_logFilePath, stringBuilder.ToString());
+            File.AppendAllText(_logFilePath, sb.ToString());
         }
         catch (Exception ex)
         {

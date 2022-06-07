@@ -8,5 +8,5 @@ namespace BallSimulator.Data.LoggerStuff;
 
 public interface ILogWriter
 {
-    void Write(LogEntry[] logEntries);
+    void Write(IEnumerable<LogEntry> logEntries);
 }

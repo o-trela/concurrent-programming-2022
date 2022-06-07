@@ -11,44 +11,42 @@ namespace BallSimulator.Data.LoggerStuff;
 
 public class Logger
 {
+    private readonly object writeLock = new();
+
     private readonly ILogWriter _logWriter;
     private readonly ConcurrentQueue<LogEntry> _logs;
-
-    private Task writingAction;
-
+    private readonly List<LogEntry> _logEntries = new();
+    
+    private Task? writingAction;
     private bool _logging;
 
     public Logger(ILogWriter logWriter, bool logging = true)
-    : this(logging)
+        : this(logWriter, logging, new ConcurrentQueue<LogEntry>())
+    { }
+
+    public Logger(string fileName, bool logging = true)
+        : this(new LogFileWriter(fileName), logging, new ConcurrentQueue<LogEntry>())
+    { }
+
+    public Logger(ILogWriter logWriter, bool logging, ConcurrentQueue<LogEntry> logs)
     {
         _logWriter = logWriter;
         _logging = logging;
-    }
-
-    public Logger(string fileName, bool logging = true)
-    : this(logging) 
-    {
-        _logging = logging;
-        _logWriter = new LogFileWriter(fileName);
-    }
-
-    private Logger(bool logging)
-    {
-        _logs = new ConcurrentQueue<LogEntry>();
+        _logs = logs;
     }
 
     public void Start()
     {
         if (!_logging) return;
 
-        writingAction = Task.Run(() => WriteLoop());
+        writingAction = Task.Run(WriteLoop);
     }
 
     public void Stop()
     {
         _logging = false;
 
-        writingAction.Wait();
+        writingAction?.Wait();
         WriteLog();
     }
 
@@ -77,15 +75,15 @@ public class Logger
 
     private void WriteLog()
     {
-        if (!_logs.TryPeek(out LogEntry temp)) return;
+        if (!_logs.TryPeek(out _)) return;
 
-        List<LogEntry> logEntries = new List<LogEntry>();
-        while (_logs.TryDequeue(out LogEntry entry))
+        lock (writeLock)
         {
-            logEntries.Add(entry);
+            _logEntries.Clear();
+            _logEntries.AddRange(_logs);
+            _logWriter.Write(_logEntries);
+            _logs.Clear();
         }
-
-        _logWriter.Write(logEntries.ToArray());
     }
 }
 
