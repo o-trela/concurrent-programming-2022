@@ -72,6 +72,7 @@ internal class LogicApi : LogicAbstractApi
         {
             (ball1.Speed, ball2.Speed) = Collisions.CalculateSpeeds(ball1, ball2);
             _logger.Record(LogLevel.Info, $"Balls collision detected: 1# {ball1}; 2# {ball2}");
+            Trace.WriteLine("lol");
         }
         foreach (var (ball, boundry, collisionsAxis) in Collisions.GetBoardCollisions(_balls, _board))
         {

@@ -50,6 +50,9 @@ public class Logger
 
         writingAction?.Wait();
         WriteLog();
+
+        _logs.Clear();
+        _logEntries.Clear();
     }
 
     public void Record(LogLevel level, string message, [CallerLineNumber] int lineNumber = 0)
