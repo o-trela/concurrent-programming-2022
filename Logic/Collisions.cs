@@ -74,7 +74,7 @@ internal static class Collisions
         return new Vector2(newSpeedX, newSpeedY);
     }
 
-    public static (Vector2 speedOne, Vector2 speedTwo) CalculateSpeeds(IBall ball1, IBall ball2)
+    public static (Vector2 speedOne, Vector2 speedTwo, bool speedChanged) CalculateSpeeds(IBall ball1, IBall ball2)
     {
         float distance = Vector2.Distance(ball1.Position, ball2.Position);
 
@@ -83,7 +83,7 @@ internal static class Collisions
 
         Vector2 ball1Speed = ball1.Speed;
         Vector2 ball2Speed = ball2.Speed;
-        if (Vector2.Scalar(ball1Speed, normal) < 0f) return (ball1Speed, ball2Speed);
+        if (Vector2.Scalar(ball1Speed, normal) < 0f) return (ball1Speed, ball2Speed, false);
 
         float ball1Radius = ball1.Radius;
         float ball2Radius = ball2.Radius;
@@ -102,7 +102,7 @@ internal static class Collisions
         Vector2 newVelocity1 = new(tangent.X * dpTan1 + normal.X * momentum1, tangent.Y * dpTan1 + normal.Y * momentum1);
         Vector2 newVelocity2 = new(tangent.X * dpTan2 + normal.X * momentum2, tangent.Y * dpTan2 + normal.Y * momentum2);
 
-        return (newVelocity1, newVelocity2);
+        return (newVelocity1, newVelocity2, true);
     }
 
     internal enum CollisionAxis
