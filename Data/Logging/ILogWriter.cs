@@ -2,5 +2,6 @@
 
 public interface ILogWriter : IDisposable
 {
-    void Write(IEnumerable<LogEntry> logEntries);
+    Task WriteAsync(IEnumerable<LogEntry> logEntries);
+    Task WriteAsync(LogEntry logEntry);
 }

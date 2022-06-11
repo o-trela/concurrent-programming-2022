@@ -5,7 +5,8 @@ namespace BallSimulator.Data.Logging;
 
 internal class LogFileWriter : ILogWriter
 {
-    private readonly string _logFilePath;
+    private readonly StreamWriter _logSw;
+    private readonly StringBuilder _logBuilder = new(2048);
 
     public LogFileWriter(string fileName = "")
     {
@@ -13,28 +14,49 @@ internal class LogFileWriter : ILogWriter
 
         if (String.IsNullOrWhiteSpace(fileName)) fileName = $"collisions({DateTime.Now:'D'yyyy-MM-dd'T'HH-mm-ss}).log";
 
-        _logFilePath = Path.Combine(Global.BaseDataDirPath, fileName);
+        string logFilePath = Path.Combine(Global.BaseDataDirPath, fileName);
+        _logSw = File.CreateText(logFilePath);
     }
 
-    public void Write(IEnumerable<LogEntry> logEntries)
+    public async Task WriteAsync(IEnumerable<LogEntry> logEntries)
     {
-        var sb = new StringBuilder();
+        _logBuilder.Clear();
+
         foreach (var logEntry in logEntries)
         {
-            sb.Append('[')
-                .Append(logEntry.TimeStamp)
-                .Append("] : ")
-                .Append(logEntry.Level)
-                .Append(" @ ")
-                .Append(logEntry.LineNumber)
-                .Append("  \t")
-                .Append(logEntry.Message)
-                .AppendLine();
+            CreateAndAppendLog(logEntry);
         }
 
+        await Write();
+    }
+
+    public async Task WriteAsync(LogEntry logEntry)
+    {
+        _logBuilder.Clear();
+
+        CreateAndAppendLog(logEntry);
+
+        await Write();
+    }
+
+    private void CreateAndAppendLog(LogEntry entry)
+    {
+        _logBuilder.Append('[')
+                .Append(entry.TimeStamp)
+                .Append("] : ")
+                .Append(entry.Level)
+                .Append(" @ ")
+                .Append(entry.LineNumber)
+                .Append("  \t")
+                .Append(entry.Message)
+                .AppendLine();
+    }
+
+    private async Task Write()
+    {
         try
         {
-            File.AppendAllText(_logFilePath, sb.ToString());
+            await _logSw.WriteAsync(_logBuilder);
         }
         catch (Exception ex)
         {
@@ -45,6 +67,7 @@ internal class LogFileWriter : ILogWriter
 
     public void Dispose()
     {
+        _logSw.Dispose();
         Global.DeleteDirectory();
     }
 }

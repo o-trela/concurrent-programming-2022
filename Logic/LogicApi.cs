@@ -11,7 +11,7 @@ internal class LogicApi : LogicAbstractApi
     private readonly Random _rand = new();
     private readonly DataAbstractApi _data;
     private readonly ILogger _logger;
-    private readonly IList<IBall> _balls;
+    private readonly ICollection<IBall> _balls;
     private readonly ISet<IObserver<IBallLogic>> _observers;
     private readonly Board _board;
 
@@ -67,7 +67,7 @@ internal class LogicApi : LogicAbstractApi
     {
         foreach (var (ball1, ball2) in Collisions.GetBallsCollisions(_balls))
         {
-            (ball1.Speed, ball2.Speed, var speedChanged) = Collisions.CalculateSpeeds(ball1, ball2);
+            (ball1.Speed, ball2.Speed, bool speedChanged) = Collisions.CalculateSpeeds(ball1, ball2);
             if (speedChanged) _logger.LogInfo($"Balls collision detected: 1# {ball1}; 2# {ball2}");
         }
         foreach (var (ball, boundry, collisionsAxis) in Collisions.GetBoardCollisions(_balls, _board))
@@ -126,11 +126,14 @@ internal class LogicApi : LogicAbstractApi
         EndTransmission();
         ThreadManager.Stop();
 
+#if DEBUG
         Trace.WriteLine($"Average Delta = {ThreadManager.AverageDeltaTime}");
-        _logger.LogInfo($"Average Delta = {ThreadManager.AverageDeltaTime}");
         Trace.WriteLine($"Average Fps = {ThreadManager.AverageFps}");
-        _logger.LogInfo($"Average Fps = {ThreadManager.AverageFps}");
         Trace.WriteLine($"Total Frame Count = {ThreadManager.FrameCount}");
+#endif
+
+        _logger.LogInfo($"Average Delta = {ThreadManager.AverageDeltaTime}");
+        _logger.LogInfo($"Average Fps = {ThreadManager.AverageFps}");
         _logger.LogInfo($"Total Frame Count = {ThreadManager.FrameCount}");
 
         foreach (var ball in _balls)

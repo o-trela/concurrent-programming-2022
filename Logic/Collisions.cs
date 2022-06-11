@@ -8,7 +8,7 @@ internal static class Collisions
     private static readonly HashSet<(IBall, IBall)> ballCollisions = new(threads);
     private static readonly List<(IBall, Vector2, CollisionAxis)> boardCollisions = new(threads);
 
-    public static List<(IBall, Vector2, CollisionAxis)> GetBoardCollisions(IList<IBall> balls, Board board)
+    public static List<(IBall, Vector2, CollisionAxis)> GetBoardCollisions(IEnumerable<IBall> balls, Board board)
     {
         boardCollisions.Clear();
 
@@ -33,7 +33,7 @@ internal static class Collisions
         return boardCollisions;
     }
 
-    public static HashSet<(IBall, IBall)> GetBallsCollisions(IList<IBall> balls)
+    public static HashSet<(IBall, IBall)> GetBallsCollisions(IEnumerable<IBall> balls)
     {
         ballCollisions.Clear();
 

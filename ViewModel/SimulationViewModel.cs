@@ -24,7 +24,7 @@ public class SimulationViewModel : ViewModelBase, IObserver<IBallModel>
         get => _isSimulationRunning;
         private set => SetField(ref _isSimulationRunning, value);
     }
-    public ObservableCollection<IBallModel> Balls { get; } = new();
+    public ObservableCollection<IBallModel> Balls { get; init; } = new();
     public ICommand StartSimulationCommand { get; init; }
     public ICommand StopSimulationCommand { get; init; }
 

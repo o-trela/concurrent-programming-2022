@@ -1,20 +1,15 @@
 ﻿using BallSimulator.Data.API;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace BallSimulator.Data.Logging;
 
 public class Logger : ILogger, IDisposable
 {
-    private readonly object writeLock = new();
-
     private readonly ILogWriter _logWriter;
-    private readonly ConcurrentQueue<LogEntry> _logQueue = new();
-    private readonly List<LogEntry> _logEntries = new();
+    private readonly BlockingCollection<LogEntry> _logQueue = new();
 
     private Task? _writingAction;
-    private bool _logging;
 
     public Logger(string fileName = "")
         : this(new LogFileWriter(fileName))
@@ -23,7 +18,6 @@ public class Logger : ILogger, IDisposable
     public Logger(ILogWriter logWriter)
     {
         _logWriter = logWriter;
-        _logging = false;
 
         Start();
     }
@@ -34,54 +28,32 @@ public class Logger : ILogger, IDisposable
 
     private void Start()
     {
-        if (_logging) return;
-
-        _logging = true;
         _writingAction = Task.Run(WriteLoop);
     }
 
     private void Stop()
     {
-        _logging = false;
-
+        _logQueue.CompleteAdding();
         _writingAction?.Wait();
-        WriteLogs();
     }
 
     private void Log(string message, LogLevel level, int lineNumber)
     {
-        if (!_logging) return;
-
-        _logQueue.Enqueue(new LogEntry(level, message, lineNumber));
+        _logQueue.Add(new LogEntry(level, message, lineNumber));
     }
 
     private async void WriteLoop()
     {
-        while (!_logging)
+        var logsEnumerable = _logQueue.GetConsumingEnumerable();
+        try
         {
-            try
+            foreach (var logEntry in logsEnumerable)
             {
-                await Task.Delay(50);
-                WriteLogs();
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex.Message);
+                await _logWriter.WriteAsync(logEntry);
             }
         }
-    }
-
-    private void WriteLogs()
-    {
-        lock (writeLock)
-        {
-            if (_logQueue.IsEmpty) return;
-
-            _logEntries.Clear();
-            _logEntries.AddRange(_logQueue);
-            _logQueue.Clear();
-            _logWriter.Write(_logEntries);
-        }
+        catch (ObjectDisposedException)
+        { }
     }
 
     public void Dispose()
@@ -89,8 +61,10 @@ public class Logger : ILogger, IDisposable
         GC.SuppressFinalize(this);
 
         Stop();
-        _logWriter.Dispose();
         _writingAction?.Dispose();
+        _writingAction = null;
+        _logWriter.Dispose();
+        _logQueue.Dispose();
     }
 }
 

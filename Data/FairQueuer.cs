@@ -49,6 +49,13 @@ public class FairQueuer
         Task.Run(Loop);
     }
 
+    public void Stop()
+    {
+        Pause();
+        Clear();
+        RemoveValidator();
+    }
+
     public void Pause()
     {
         lock (localLock)
@@ -57,13 +64,6 @@ public class FairQueuer
             _frameTimer.Stop();
         }
         _executionTimer.Stop();
-    }
-
-    public void Stop()
-    {
-        Pause();
-        Clear();
-        RemoveValidator();
     }
 
     private async void Loop()

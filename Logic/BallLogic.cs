@@ -45,7 +45,6 @@ internal class BallLogic : IBallLogic
 
     public void OnNext(IBall ball)
     {
-        OnPropertyChanged(nameof(Position));
         TrackBall(this);
     }
 

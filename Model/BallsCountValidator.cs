@@ -8,11 +8,11 @@ public class BallsCountValidator : IValidator<int>
     private readonly int _max;
 
     public BallsCountValidator()
-        : this(int.MinValue)
+        : this(Int32.MinValue)
     { }
 
     public BallsCountValidator(int min)
-        : this(min, int.MaxValue)
+        : this(min, Int32.MaxValue)
     { }
 
     public BallsCountValidator(int min, int max)

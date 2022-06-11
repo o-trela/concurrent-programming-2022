@@ -3,6 +3,7 @@ using BallSimulator.Logic.API;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace BallSimulator.Tests;
@@ -15,6 +16,7 @@ public class LogicTest
     private readonly int _testMinDiameter;
     private readonly int _testMaxDiameter;
     private readonly DataAbstractApi _dataFixture;
+    private readonly ILogger _loggerFixture;
 
     private LogicAbstractApi _controller;
     private IEnumerable<IBall>? _balls;
@@ -22,7 +24,8 @@ public class LogicTest
     public LogicTest()
     {
         _dataFixture = new DataFixture();
-        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
+        _loggerFixture = new LoggerFixture();
+        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture, _loggerFixture);
 
         _testWidth = _dataFixture.BoardWidth;
         _testHeight = _dataFixture.BoardHeight;
@@ -39,7 +42,7 @@ public class LogicTest
     [TestMethod]
     public void SimulationTest()
     {
-        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
+        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture, _loggerFixture);
         Assert.IsNotNull(_controller);
 
         _balls = _controller.CreateBalls(2);
@@ -54,7 +57,7 @@ public class LogicTest
     [TestMethod]
     public void RandomBallsCreationTest()
     {
-        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture);
+        _controller = LogicAbstractApi.CreateLogicApi(_dataFixture, _loggerFixture);
         Assert.IsNotNull(_controller);
 
         int ballNumber = 10;
@@ -86,5 +89,14 @@ public class LogicTest
         public override float MaxSpeed => 50;
         public override int MinDiameter => 20;
         public override int MaxDiameter => 50;
+    }
+
+    private class LoggerFixture : ILogger
+    {
+        public void LogError(string message, [CallerLineNumber] int lineNumber = -1) { return; }
+        public void LogInfo(string message, [CallerLineNumber] int lineNumber = -1) { return; }
+        public void LogWarning(string message, [CallerLineNumber] int lineNumber = -1) { return; }
+
+        public void Dispose() { return; }
     }
 }

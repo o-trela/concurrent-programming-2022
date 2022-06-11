@@ -8,11 +8,6 @@ public abstract class ViewModelBase : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
     protected bool SetField<T>(ref T field, T value, IValidator<T> validator, T def, [CallerMemberName] string propertyName = "")
     {
         if (validator.IsNotValid(value)) value = def;
@@ -25,5 +20,10 @@ public abstract class ViewModelBase : INotifyPropertyChanged
         field = value;
         OnPropertyChanged(propertyName);
         return true;
+    }
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

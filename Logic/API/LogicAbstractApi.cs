@@ -4,9 +4,9 @@ namespace BallSimulator.Logic.API;
 
 public abstract class LogicAbstractApi : IObservable<IBallLogic>, IDisposable
 {
-    public static LogicAbstractApi CreateLogicApi(DataAbstractApi? data = default)
+    public static LogicAbstractApi CreateLogicApi(DataAbstractApi? data = default, ILogger? logger = default)
     {
-        return new LogicApi(data ?? DataAbstractApi.CreateDataApi());
+        return new LogicApi(data ?? DataAbstractApi.CreateDataApi(), logger);
     }
     public abstract IEnumerable<IBall> CreateBalls(int count);
 
