@@ -1,16 +1,16 @@
 ﻿namespace BallSimulator.Data;
 
-public struct Vector2 : IEquatable<Vector2>
+public readonly struct Vector2 : IEquatable<Vector2>
 {
-    public static readonly Vector2 Zero = new(0, 0);
-    public static readonly Vector2 One = new(1, 1);
-    public static readonly Vector2 Up = new(0f, 1f);
-    public static readonly Vector2 Down = new(0f, -1f);
+    public static readonly Vector2 Zero = new(0f, 0f);
+    public static readonly Vector2 One = new(1f, 1f);
+    public static readonly Vector2 Up = new(0f, -1f);
+    public static readonly Vector2 Down = new(0f, 1f);
     public static readonly Vector2 Left = new(-1f, 0f);
     public static readonly Vector2 Right = new(1f, 0f);
 
-    public float X { get; init; }
-    public float Y { get; init; }
+    public float X { readonly get; init; }
+    public float Y { readonly get; init; }
 
     public Vector2(float x, float y)
     {
@@ -18,19 +18,19 @@ public struct Vector2 : IEquatable<Vector2>
         Y = y;
     }
 
-    public static float Distance(Vector2 point1, Vector2 point2)
+    public static float Distance(in Vector2 point1, in Vector2 point2)
     {
         return MathF.Sqrt(DistanceSquared(point1, point2));
     }
 
-    public static float DistanceSquared(Vector2 point1, Vector2 point2)
+    public static float DistanceSquared(in Vector2 point1, in Vector2 point2)
     {
         float xDifference = point1.X - point2.X;
         float yDifference = point1.Y - point2.Y;
         return xDifference * xDifference + yDifference * yDifference;
     }
 
-    public static float Scalar(Vector2 point1, Vector2 point2)
+    public static float Scalar(in Vector2 point1, in Vector2 point2)
     {
         return point1.X * point2.X + point1.Y * point2.Y;
     }
@@ -40,7 +40,7 @@ public struct Vector2 : IEquatable<Vector2>
         return Equals(Zero);
     }
 
-    public static Vector2 operator +(Vector2 lhs, Vector2 rhs)
+    public static Vector2 operator +(in Vector2 lhs, in Vector2 rhs)
     {
         return new Vector2
         {
@@ -49,7 +49,7 @@ public struct Vector2 : IEquatable<Vector2>
         };
     }
 
-    public static Vector2 operator -(Vector2 lhs, Vector2 rhs)
+    public static Vector2 operator -(in Vector2 lhs, in Vector2 rhs)
     {
         return new Vector2
         {
@@ -58,7 +58,7 @@ public struct Vector2 : IEquatable<Vector2>
         };
     }
 
-    public static Vector2 operator *(Vector2 lhs, Vector2 rhs)
+    public static Vector2 operator *(in Vector2 lhs, in Vector2 rhs)
     {
         return new Vector2
         {
@@ -67,7 +67,7 @@ public struct Vector2 : IEquatable<Vector2>
         };
     }
 
-    public static Vector2 operator /(Vector2 lhs, Vector2 rhs)
+    public static Vector2 operator /(in Vector2 lhs, in Vector2 rhs)
     {
         return new Vector2
         {
@@ -75,7 +75,7 @@ public struct Vector2 : IEquatable<Vector2>
             Y = lhs.Y / rhs.Y,
         };
     }
-    public static Vector2 operator -(Vector2 vector)
+    public static Vector2 operator -(in Vector2 vector)
     {
         return new Vector2
         {
@@ -84,7 +84,7 @@ public struct Vector2 : IEquatable<Vector2>
         };
     }
 
-    public static Vector2 operator *(Vector2 lhs, float d)
+    public static Vector2 operator *(in Vector2 lhs, float d)
     {
         return new Vector2
         {
@@ -93,7 +93,7 @@ public struct Vector2 : IEquatable<Vector2>
         };
     }
 
-    public static Vector2 operator /(Vector2 lhs, float d)
+    public static Vector2 operator /(in Vector2 lhs, float d)
     {
         return new Vector2
         {
@@ -102,12 +102,12 @@ public struct Vector2 : IEquatable<Vector2>
         };
     }
 
-    public static bool operator ==(Vector2 lhs, Vector2 rhs)
+    public static bool operator ==(in Vector2 lhs, in Vector2 rhs)
     {
         return lhs.Equals(rhs);
     }
 
-    public static bool operator !=(Vector2 lhs, Vector2 rhs)
+    public static bool operator !=(in Vector2 lhs, in Vector2 rhs)
     {
         return !(lhs == rhs);
     }
